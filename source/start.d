@@ -18,6 +18,7 @@ import gcc.attribute;
 import rcc;
 import pwr;
 import flash;
+import dma2d;
 
 // These are marked extern(C) to avoid name mangling, so we can refer to them in our linker script
 alias ISR = void function(); // Alias Interrupt Service Routine function pointers
