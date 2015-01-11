@@ -21,7 +21,7 @@ import bus;
 /****************************************************************************************
  LCD-TFT Controller
 */
-final abstract class LTDC : Peripheral!(AHB1, 0x00000040)
+final abstract class LTDC : Peripheral!(APB1, 0x00000040)
 {
     /************************************************************************************
      LTDC Synchronization Size Configuration Register

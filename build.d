@@ -16,10 +16,10 @@ void main(string[] args)
     string cmd = "rm -f " ~ outputFile;
     system(cmd);
 
-    cmd = "arm-none-eabi-gdc -nophoboslib -nostdinc -nodefaultlibs -nostdlib -fno-emit-moduleinfo -ffunction-sections -fdata-sections"
+    cmd = "arm-none-eabi-gdc -O3 -nophoboslib -nostdinc -nodefaultlibs -nostdlib -fno-emit-moduleinfo -ffunction-sections -fdata-sections"
           ~ " "
           ~ " " ~ sourceDir.dirEntries("*.d", SpanMode.depth).map!"a.name".join(" ")
-          ~ " -Wl,-Tsource/linker/linker.ld -Wl,--gc-sections -flto"
+          ~ " -Wl,-Tsource/linker/linker.ld -Wl,--gc-sections"
           ~ " -o " ~ outputFile;                  
             
     writeln(cmd);

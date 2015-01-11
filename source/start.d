@@ -19,6 +19,10 @@ import rcc;
 import pwr;
 import flash;
 import dma2d;
+import ltdc;
+import gpioi;
+import gpioj;
+import gpiok;
 
 // These are marked extern(C) to avoid name mangling, so we can refer to them in our linker script
 alias ISR = void function(); // Alias Interrupt Service Routine function pointers
@@ -88,6 +92,9 @@ extern(C) void* memcpy(void* dest, void* src, size_t num)
     
     return dest;
 } 
+
+// RGB565 buffer
+private ushort[320*240] graphicsBuffer;
 
 extern(C) void main()
 {    
@@ -194,9 +201,64 @@ extern(C) void main()
     while(RCC.CFGR.SWS.value != RCC.CFGR.SW.value)
     { }
    
-
-    // RGB565 buffer
-    ushort[320*240] graphicsBuffer;
+    
+    /*
+    +------------------------+-----------------------+----------------------------+
+    +                       LCD pins assignment                                   +
+    +------------------------+-----------------------+----------------------------+
+    |  LCD_TFT R0 <-> PI.15  |  LCD_TFT G0 <-> PJ.07 |  LCD_TFT B0 <-> PJ.12      |
+    |  LCD_TFT R1 <-> PJ.00  |  LCD_TFT G1 <-> PJ.08 |  LCD_TFT B1 <-> PJ.13      |
+    |  LCD_TFT R2 <-> PJ.01  |  LCD_TFT G2 <-> PJ.09 |  LCD_TFT B2 <-> PJ.14      |
+    |  LCD_TFT R3 <-> PJ.02  |  LCD_TFT G3 <-> PJ.10 |  LCD_TFT B3 <-> PJ.15      |
+    |  LCD_TFT R4 <-> PJ.03  |  LCD_TFT G4 <-> PJ.11 |  LCD_TFT B4 <-> PK.03      |
+    |  LCD_TFT R5 <-> PJ.04  |  LCD_TFT G5 <-> PK.00 |  LCD_TFT B5 <-> PK.04      |
+    |  LCD_TFT R6 <-> PJ.05  |  LCD_TFT G6 <-> PK.01 |  LCD_TFT B6 <-> PK.05      |
+    |  LCD_TFT R7 <-> PJ.06  |  LCD_TFT G7 <-> PK.02 |  LCD_TFT B7 <-> PK.06      |
+    -------------------------------------------------------------------------------
+            |  LCD_TFT HSYNC <-> PI.12  | LCDTFT VSYNC <->  PI.13 |
+            |  LCD_TFT CLK   <-> PI.14  | LCD_TFT DE   <->  PK.07 |
+            -----------------------------------------------------
+    */
+    
+    RCC.APB2ENR.LTDCEN.value = true;
+    RCC.AHB1ENR.DMA2DEN.value = true;
+    RCC.AHB1ENR.GPIOIEN.value = true;
+    RCC.AHB1ENR.GPIOJEN.value = true;
+    RCC.AHB1ENR.GPIOKEN.value = true;
+    
+    // GPIO pins for the LCD
+    // LTDC alternate function code = 0x0E
+    GPIOI.AFRH.AFRH12.value = 0x0E;
+    GPIOI.AFRH.AFRH13.value = 0x0E;
+    GPIOI.AFRH.AFRH14.value = 0x0E;
+    GPIOI.AFRH.AFRH15.value = 0x0E;
+    
+    GPIOJ.AFRL.AFRL0.value = 0x0E;
+    GPIOJ.AFRL.AFRL1.value = 0x0E;
+    GPIOJ.AFRL.AFRL2.value = 0x0E;
+    GPIOJ.AFRL.AFRL3.value = 0x0E;
+    GPIOJ.AFRL.AFRL4.value = 0x0E;
+    GPIOJ.AFRL.AFRL5.value = 0x0E;
+    GPIOJ.AFRL.AFRL6.value = 0x0E;
+    GPIOJ.AFRL.AFRL7.value = 0x0E;
+    GPIOJ.AFRH.AFRH8.value = 0x0E;
+    GPIOJ.AFRH.AFRH9.value = 0x0E;
+    GPIOJ.AFRH.AFRH10.value = 0x0E;
+    GPIOJ.AFRH.AFRH11.value = 0x0E;
+    GPIOJ.AFRH.AFRH12.value = 0x0E;
+    GPIOJ.AFRH.AFRH13.value = 0x0E;
+    GPIOJ.AFRH.AFRH14.value = 0x0E;
+    GPIOJ.AFRH.AFRH15.value = 0x0E;
+    
+    GPIOK.AFRL.AFRL0.value = 0x0E;
+    GPIOK.AFRL.AFRL1.value = 0x0E;
+    GPIOK.AFRL.AFRL2.value = 0x0E;
+    GPIOK.AFRL.AFRL3.value = 0x0E;
+    GPIOK.AFRL.AFRL4.value = 0x0E;
+    GPIOK.AFRL.AFRL5.value = 0x0E;
+    GPIOK.AFRL.AFRL6.value = 0x0E;
+    GPIOK.AFRL.AFRL7.value = 0x0E;
+    
     while(true)
     {
         trace.writeLine("x");
