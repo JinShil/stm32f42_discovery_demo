@@ -96,6 +96,35 @@ extern(C) void* memcpy(void* dest, void* src, size_t num)
 // RGB565 buffer
 private ushort[320*240] graphicsBuffer;
 
+void LTDCPinValues(SPEED, MODE, OT, PUPD, AF)()
+{
+    SPEED.value = 0b11;
+    MODE.value = 0b10;
+    OT.value = 0;
+    PUPD.value = 0;
+    AF.value = 0x0E;
+}
+
+string LTDCPin(string port ,string pin)
+{
+    return "GPIO" ~ port ~ ".OSPEEDR.OSPEEDR" ~ pin ~ ".value = 0b11;"
+         ~ "GPIO" ~ port ~ ".MODER.MODER" ~ pin ~ ".value = 0b10;"
+         ~ "GPIO" ~ port ~ ".OTYPER.OT" ~ pin ~ ".value = 0;"
+         ~ "GPIO" ~ port ~ ".PUPDR.PUPDR" ~ pin ~ ".value = 0;";
+}
+
+string LTDCPinL(string port, string pin)
+{
+    return "GPIO" ~ port ~ ".AFRL.AFRL" ~ pin ~ ".value = 0x0E;"
+        ~ LTDCPin(port, pin);
+}
+
+string LTDCPinH(string port, string pin)
+{
+    return "GPIO" ~ port ~ ".AFRH.AFRH" ~ pin ~ ".value = 0x0E;"
+        ~ LTDCPin(port, pin);
+}
+
 extern(C) void main()
 {    
     // copy data segment out of ROM and into RAM
@@ -103,6 +132,9 @@ extern(C) void main()
     
     // zero out variables initialized to void
     memset(&__bss_start__, 0, &__bss_end__ - &__bss_start__);
+    
+    
+    //LTDCPin!(GPIOK.AFRL.AFRL1);
     
     
     // bring up MCU
@@ -228,36 +260,36 @@ extern(C) void main()
     
     // GPIO pins for the LCD
     // LTDC alternate function code = 0x0E
-    GPIOI.AFRH.AFRH12.value = 0x0E;
-    GPIOI.AFRH.AFRH13.value = 0x0E;
-    GPIOI.AFRH.AFRH14.value = 0x0E;
-    GPIOI.AFRH.AFRH15.value = 0x0E;
+    mixin(LTDCPinH("I", "12"));
+    mixin(LTDCPinH("I", "13"));
+    mixin(LTDCPinH("I", "14"));
+    mixin(LTDCPinH("I", "15"));
     
-    GPIOJ.AFRL.AFRL0.value = 0x0E;
-    GPIOJ.AFRL.AFRL1.value = 0x0E;
-    GPIOJ.AFRL.AFRL2.value = 0x0E;
-    GPIOJ.AFRL.AFRL3.value = 0x0E;
-    GPIOJ.AFRL.AFRL4.value = 0x0E;
-    GPIOJ.AFRL.AFRL5.value = 0x0E;
-    GPIOJ.AFRL.AFRL6.value = 0x0E;
-    GPIOJ.AFRL.AFRL7.value = 0x0E;
-    GPIOJ.AFRH.AFRH8.value = 0x0E;
-    GPIOJ.AFRH.AFRH9.value = 0x0E;
-    GPIOJ.AFRH.AFRH10.value = 0x0E;
-    GPIOJ.AFRH.AFRH11.value = 0x0E;
-    GPIOJ.AFRH.AFRH12.value = 0x0E;
-    GPIOJ.AFRH.AFRH13.value = 0x0E;
-    GPIOJ.AFRH.AFRH14.value = 0x0E;
-    GPIOJ.AFRH.AFRH15.value = 0x0E;
-    
-    GPIOK.AFRL.AFRL0.value = 0x0E;
-    GPIOK.AFRL.AFRL1.value = 0x0E;
-    GPIOK.AFRL.AFRL2.value = 0x0E;
-    GPIOK.AFRL.AFRL3.value = 0x0E;
-    GPIOK.AFRL.AFRL4.value = 0x0E;
-    GPIOK.AFRL.AFRL5.value = 0x0E;
-    GPIOK.AFRL.AFRL6.value = 0x0E;
-    GPIOK.AFRL.AFRL7.value = 0x0E;
+    mixin(LTDCPinL("J", "0"));
+    mixin(LTDCPinL("J", "1"));
+    mixin(LTDCPinL("J", "2"));
+    mixin(LTDCPinL("J", "3"));
+    mixin(LTDCPinL("J", "4"));
+    mixin(LTDCPinL("J", "5"));
+    mixin(LTDCPinL("J", "6"));
+    mixin(LTDCPinL("J", "7"));
+    mixin(LTDCPinH("J", "8"));
+    mixin(LTDCPinH("J", "9"));
+    mixin(LTDCPinH("J", "10"));
+    mixin(LTDCPinH("J", "11"));
+    mixin(LTDCPinH("J", "12"));
+    mixin(LTDCPinH("J", "13"));
+    mixin(LTDCPinH("J", "14"));
+    mixin(LTDCPinH("J", "15"));
+   
+    mixin(LTDCPinL("K", "0"));
+    mixin(LTDCPinL("K", "1"));
+    mixin(LTDCPinL("K", "2"));
+    mixin(LTDCPinL("K", "3"));
+    mixin(LTDCPinL("K", "4"));
+    mixin(LTDCPinL("K", "5"));
+    mixin(LTDCPinL("K", "6"));
+    mixin(LTDCPinL("K", "7"));
     
     while(true)
     {
