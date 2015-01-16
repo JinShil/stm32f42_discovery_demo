@@ -16,6 +16,12 @@ void main(string[] args)
     auto objectFile = buildPath(binaryDir, "firmware.o");
     auto outputFile = buildPath(binaryDir, "firmware");
     
+    // Create any directories that may not exist
+    if (!binaryDir.exists())
+    {
+        mkdir(binaryDir);
+    }
+    
     string cmd = "rm -f " ~ outputFile;
     system(cmd);
 
