@@ -87,6 +87,22 @@ private immutable size_t  SRAMRegionSize               = 0x000F_FFFFu;
 private immutable Address SRAMRegionEnd                = SRAMRegionStart + SRAMRegionSize - 1;
 private immutable Address SRAMBitBandRegionStart       = 0x2200_0000u;
 
+T volatileLoad(T)(T* v) 
+{
+    asm { "" : "+m" v; }
+    T res = *v;
+    asm { "" : "+g" res; }
+    return res;
+}
+
+T volatileStore(T)(T* v, in T a) 
+{
+    asm { "" : : "m" v; }
+    *v = a;
+    asm { "" : "+m" v; }
+    return a;
+}
+
 enum Access
 {    
     /****************************************************************************
@@ -336,21 +352,21 @@ mixin template BitFieldMutation(Mutability mutability, ValueType_)
         {
             static if (numberOfBits == 1)
             {
-                return *(cast(shared ValueType*)bitBandAddress);
+                return volatileLoad(cast(ValueType*)bitBandAddress);
             }
             else static if (isHalfWordAligned 
                 && (access == Access.Byte_HalfWord_Word || access == Access.HalfWord_Word))
             {
-                return *(cast(shared ValueType*)halfWordAlignedAddress);
+                return volatileLoad(cast(ValueType*)halfWordAlignedAddress);
             }
             else static if (isByteAligned 
                 && (access == Access.Byte_HalfWord_Word || access == Access.Byte_Word))
             {
-                return *(cast(shared ValueType*)byteAlignedAddress);
+                return volatileLoad(cast(ValueType*)byteAlignedAddress);
             }
             else
             {
-                return cast(ValueType)((*(cast(shared Word*)address) & bitMask) >> leastSignificantBitIndex);
+                return cast(ValueType)((volatileLoad(cast(Word*)address) & bitMask) >> leastSignificantBitIndex);
             }
         }
     }
@@ -404,23 +420,27 @@ mixin template BitFieldMutation(Mutability mutability, ValueType_)
             // If only a single bit, use bit banding
             static if (numberOfBits == 1 && isBitBandable)
             {
+                //volatileStore(cast(ValueType*)bitBandAddress, value_);
                 *(cast(shared ValueType*)bitBandAddress) = value_;
             }
             // if can access data with perfect halfword alignment
             else static if (isHalfWordAligned 
                 && (access == Access.Byte_HalfWord_Word || access == Access.HalfWord_Word))
             {
+                //volatileStore(cast(ValueType*)halfWordAlignedAddress, value_);
                 *(cast(shared ValueType*)halfWordAlignedAddress) = value_;
             }
             // if can access data with perfect byte alignment
             else static if (isByteAligned 
                 && (access == Access.Byte_HalfWord_Word || access == Access.Byte_Word))
             {
+                //volatileStore(cast(ValueType*)byteAlignedAddress, value_);
                 *(cast(shared ValueType*)byteAlignedAddress) = value_;
             }
             // catch-all.  No optimizations possible, so just do read-modify-write
             else
             {
+                //volatileStore(cast(Word*)address, (volatileLoad(cast(Word*)address) & ~bitMask) | ((cast(Word)value_) << leastSignificantBitIndex));
                 *(cast(shared Word*)address) = (*(cast(shared Word*)address) & ~bitMask) | ((cast(Word)value_) << leastSignificantBitIndex);
             }
         }
