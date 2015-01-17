@@ -20,9 +20,11 @@ import pwr;
 import flash;
 import dma2d;
 import ltdc;
-import gpioi;
-import gpioj;
-import gpiok;
+import gpioa;
+import gpiob;
+import gpioc;
+import gpiof;
+import gpiog;
 
 // These are marked extern(C) to avoid name mangling, so we can refer to them in our linker script
 alias ISR = void function(); // Alias Interrupt Service Routine function pointers
@@ -38,8 +40,7 @@ void OnHardFault()
     //trace.writeLine("Hard Fault");
     // Enter an infinite loop so we can use the debugger
     // to examine registers, memory, etc...
-    while(true)
-    { }
+    while(true) { }
 }
 
 @attribute("naked") void OnReset()
@@ -94,7 +95,7 @@ extern(C) void* memcpy(void* dest, void* src, size_t num)
 } 
 
 // RGB565 buffer
-private ushort[320*240] graphicsBuffer;
+private ushort[240*320] graphicsBuffer;
 
 string LTDCPin(string port ,string pin)
 {
@@ -146,6 +147,7 @@ extern(C) void main()
     
     RCC.CR.HSEON.value = false;
     RCC.CR.CSSON.value = false;
+    RCC.CR.PLLON.value = false;
     
     RCC.PLLCFGR.PLLQ.value = 0b0100;
     RCC.PLLCFGR.PLLSRC.value = false; // HSI
@@ -172,6 +174,9 @@ extern(C) void main()
     RCC.CIR.LSERDYIE.value = false;
     RCC.CIR.LSIRDYIE.value = false;
     
+    /*##-1- System Clock Configuration #########################################*/  
+    /* Enable HSE Oscillator and activate PLL with HSE as source */
+    
     // Bring up HSE
     RCC.CR.HSEON.value = true;
     
@@ -189,7 +194,7 @@ extern(C) void main()
     // configure PLL
     RCC.CR.PLLON.value = false;
     RCC.PLLCFGR.PLLSRC.value = true; // HSE
-    RCC.PLLCFGR.PLLM.value = 25;
+    RCC.PLLCFGR.PLLM.value = 8;
     RCC.PLLCFGR.PLLN.value = 360;
     RCC.PLLCFGR.PLLP.value = 0;
     RCC.PLLCFGR.PLLQ.value = 7;
@@ -214,63 +219,93 @@ extern(C) void main()
     RCC.CFGR.SW.value = 0b10; // PLL
     while(RCC.CFGR.SWS.value != RCC.CFGR.SW.value) { }
     
-    /*
-    +------------------------+-----------------------+----------------------------+
-    +                       LCD pins assignment                                   +
-    +------------------------+-----------------------+----------------------------+
-    |  LCD_TFT R0 <-> PI.15  |  LCD_TFT G0 <-> PJ.07 |  LCD_TFT B0 <-> PJ.12      |
-    |  LCD_TFT R1 <-> PJ.00  |  LCD_TFT G1 <-> PJ.08 |  LCD_TFT B1 <-> PJ.13      |
-    |  LCD_TFT R2 <-> PJ.01  |  LCD_TFT G2 <-> PJ.09 |  LCD_TFT B2 <-> PJ.14      |
-    |  LCD_TFT R3 <-> PJ.02  |  LCD_TFT G3 <-> PJ.10 |  LCD_TFT B3 <-> PJ.15      |
-    |  LCD_TFT R4 <-> PJ.03  |  LCD_TFT G4 <-> PJ.11 |  LCD_TFT B4 <-> PK.03      |
-    |  LCD_TFT R5 <-> PJ.04  |  LCD_TFT G5 <-> PK.00 |  LCD_TFT B5 <-> PK.04      |
-    |  LCD_TFT R6 <-> PJ.05  |  LCD_TFT G6 <-> PK.01 |  LCD_TFT B6 <-> PK.05      |
-    |  LCD_TFT R7 <-> PJ.06  |  LCD_TFT G7 <-> PK.02 |  LCD_TFT B7 <-> PK.06      |
-    -------------------------------------------------------------------------------
-            |  LCD_TFT HSYNC <-> PI.12  | LCDTFT VSYNC <->  PI.13 |
-            |  LCD_TFT CLK   <-> PI.14  | LCD_TFT DE   <->  PK.07 |
-            -----------------------------------------------------
-    */
+    /*##-2- LTDC Clock Configuration ###########################################*/  
+    /* LCD clock configuration */
+    /* PLLSAI_VCO Input = HSE_VALUE/PLL_M = 1 MHz */
+    /* PLLSAI_VCO Output = PLLSAI_VCO Input * PLLSAIN = 192 MHz */
+    /* PLLLCDCLK = PLLSAI_VCO Output/PLLSAIR = 192/4 = 48 MHz */
+    /* LTDC clock frequency = PLLLCDCLK / RCC_PLLSAIDIVR_8 = 48/8 = 6 MHz */
+    RCC.CR.PLLISAION.value = false;
+    while(RCC.CR.PLLSAIRDY.value) { }
+    
+    RCC.PLLSAICFGR.PLLSAIN.value = 192;
+    RCC.PLLSAICFGR.PLLSAIR.value = 4;
+    RCC.DCKCFGR.PLLSAIDIVR.value = 0b10;  // divide by 8
+    
+    RCC.CR.PLLISAION.value = true;
+    while(!RCC.CR.PLLSAIRDY.value) { }
+
+  /*
+   +------------------------+-----------------------+----------------------------+
+   +                       LCD pins assignment                                   +
+   +------------------------+-----------------------+----------------------------+
+   |  LCD_TFT R2 <-> PC.10  |  LCD_TFT G2 <-> PA.06 |  LCD_TFT B2 <-> PD.06      |
+   |  LCD_TFT R3 <-> PB.00  |  LCD_TFT G3 <-> PG.10 |  LCD_TFT B3 <-> PG.11      |
+   |  LCD_TFT R4 <-> PA.11  |  LCD_TFT G4 <-> PB.10 |  LCD_TFT B4 <-> PG.12      |
+   |  LCD_TFT R5 <-> PA.12  |  LCD_TFT G5 <-> PB.11 |  LCD_TFT B5 <-> PA.03      |
+   |  LCD_TFT R6 <-> PB.01  |  LCD_TFT G6 <-> PC.07 |  LCD_TFT B6 <-> PB.08      |
+   |  LCD_TFT R7 <-> PG.06  |  LCD_TFT G7 <-> PD.03 |  LCD_TFT B7 <-> PB.09      |
+   -------------------------------------------------------------------------------
+            |  LCD_TFT HSYNC <-> PC.06  | LCDTFT VSYNC <->  PA.04 |
+            |  LCD_TFT CLK   <-> PG.07  | LCD_TFT DE   <->  PF.10 |
+             -----------------------------------------------------
+
+  */
     
     RCC.APB2ENR.LTDCEN.value = true;
-    RCC.AHB1ENR.DMA2DEN.value = true;
-    RCC.AHB1ENR.GPIOIEN.value = true;
-    RCC.AHB1ENR.GPIOJEN.value = true;
-    RCC.AHB1ENR.GPIOKEN.value = true;
+    //RCC.AHB1ENR.DMA2DEN.value = true;
+    RCC.AHB1ENR.GPIOAEN.value = true;
+    RCC.AHB1ENR.GPIOBEN.value = true;
+    RCC.AHB1ENR.GPIOCEN.value = true;
+    RCC.AHB1ENR.GPIOFEN.value = true;
+    RCC.AHB1ENR.GPIOGEN.value = true;
     
     // GPIO pins for the LCD
     // LTDC alternate function code = 0x0E
-    mixin(LTDCPinH("I", "12"));
-    mixin(LTDCPinH("I", "13"));
-    mixin(LTDCPinH("I", "14"));
-    mixin(LTDCPinH("I", "15"));
+    mixin(LTDCPinL("A", "3"));
+    mixin(LTDCPinL("A", "4"));
+    mixin(LTDCPinL("A", "6"));
+    mixin(LTDCPinH("A", "11"));
+    mixin(LTDCPinH("A", "12"));
     
-    mixin(LTDCPinL("J", "0"));
-    mixin(LTDCPinL("J", "1"));
-    mixin(LTDCPinL("J", "2"));
-    mixin(LTDCPinL("J", "3"));
-    mixin(LTDCPinL("J", "4"));
-    mixin(LTDCPinL("J", "5"));
-    mixin(LTDCPinL("J", "6"));
-    mixin(LTDCPinL("J", "7"));
-    mixin(LTDCPinH("J", "8"));
-    mixin(LTDCPinH("J", "9"));
-    mixin(LTDCPinH("J", "10"));
-    mixin(LTDCPinH("J", "11"));
-    mixin(LTDCPinH("J", "12"));
-    mixin(LTDCPinH("J", "13"));
-    mixin(LTDCPinH("J", "14"));
-    mixin(LTDCPinH("J", "15"));
-   
-    mixin(LTDCPinL("K", "0"));
-    mixin(LTDCPinL("K", "1"));
-    mixin(LTDCPinL("K", "2"));
-    mixin(LTDCPinL("K", "3"));
-    mixin(LTDCPinL("K", "4"));
-    mixin(LTDCPinL("K", "5"));
-    mixin(LTDCPinL("K", "6"));
-    mixin(LTDCPinL("K", "7"));
+    mixin(LTDCPinL("B", "0"));
+    mixin(LTDCPinL("B", "1"));
+    mixin(LTDCPinH("B", "8"));
+    mixin(LTDCPinH("B", "9"));
+    mixin(LTDCPinH("B", "10"));
+    mixin(LTDCPinH("B", "11"));
     
+    mixin(LTDCPinL("C", "6"));
+    mixin(LTDCPinL("C", "7"));
+    mixin(LTDCPinH("C", "10"));
+    
+    mixin(LTDCPinH("F", "10"));
+    
+    mixin(LTDCPinL("G", "6"));
+    mixin(LTDCPinL("G", "7"));
+    mixin(LTDCPinH("G", "10"));
+    mixin(LTDCPinH("G", "11"));
+    mixin(LTDCPinH("G", "12"));
+    
+    
+//     LTDC.SSCR.HSW.value = 29;
+//     LTDC.SSCR.VSH.value = 2;
+//     LTDC.BPCR.AHBP.value = 143;
+//     LTDC.BPCR.AVBP.value = 34;
+//     LTDC.AWCR.AAW.value = 783;
+//     LTDC.AWCR.AAH.value = 514;
+//     LTDC.TWCR.TOTAL.value = 799;
+//     LTDC.TWCR.TOTAL.value = 524;
+//     LTDC.GCR.HSPOL.value = true;  // active low
+//     LTDC.GCR.VSPOL.value = true;  // active low
+//     LTDC.GCR.DEPOL.value = true;  // active low
+//     LTDC.GCR.PCPOL.value = false; // input pixel clock
+    
+    // background color black
+//     LTDC.BCCR.BCBLUE = 0;
+//     LTDC.BCCR.BCGREEN = 0;
+//     LTDC.BCCR.BCRED = 0;
+  
     while(true)
     {
         trace.writeLine("x");
