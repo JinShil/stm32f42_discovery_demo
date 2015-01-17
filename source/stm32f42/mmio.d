@@ -343,7 +343,8 @@ mixin template BitFieldDimensions(BitIndex bitIndex0, BitIndex bitIndex1)
         }
         else
         {
-            static assert(false, "Not a valid bit band address");
+            return address; //TODO: I need to fix this for SCB
+            //static assert(0, "Not a valid bit band address");
         }
     }
 }
@@ -370,20 +371,25 @@ mixin template BitFieldMutation(Mutability mutability, ValueType_)
         */
         static @property ValueType value()
         {
-            static if (numberOfBits == 1)
-            {
+            // If only a single bit, use bit banding
+            static if (numberOfBits == 1 && isBitBandable)
+            {   
+                //return false;
                 return volatileLoad(cast(ValueType*)bitBandAddress);
             }
+            // if can access data with perfect halfword alignment
             else static if (isHalfWordAligned 
                 && (access == Access.Byte_HalfWord_Word || access == Access.HalfWord_Word))
             {
                 return volatileLoad(cast(ValueType*)halfWordAlignedAddress);
             }
+            // if can access data with perfect byte alignment
             else static if (isByteAligned 
                 && (access == Access.Byte_HalfWord_Word || access == Access.Byte_Word))
             {
                 return volatileLoad(cast(ValueType*)byteAlignedAddress);
             }
+            // catch-all.  No optimizations possible, so read and mask and shift
             else
             {
                 return cast(ValueType)((volatileLoad(cast(Word*)address) & bitMask) >> leastSignificantBitIndex);
@@ -541,7 +547,7 @@ abstract class Peripheral(Bus, Address peripheralOffset)
           Whether or not the address has a bit-banded alias
         */
         private static @property auto isBitBandable()
-        {
+        {                
             return (address >= PeripheralRegionStart && address <= PeripheralRegionEnd)
                 || (address >= SRAMRegionStart && address <= SRAMRegionEnd);
         }
