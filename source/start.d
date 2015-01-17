@@ -96,15 +96,6 @@ extern(C) void* memcpy(void* dest, void* src, size_t num)
 // RGB565 buffer
 private ushort[320*240] graphicsBuffer;
 
-void LTDCPinValues(SPEED, MODE, OT, PUPD, AF)()
-{
-    SPEED.value = 0b11;
-    MODE.value = 0b10;
-    OT.value = 0;
-    PUPD.value = 0;
-    AF.value = 0x0E;
-}
-
 string LTDCPin(string port ,string pin)
 {
     return "GPIO" ~ port ~ ".OSPEEDR.OSPEEDR" ~ pin ~ ".value = 0b11;"
@@ -132,10 +123,6 @@ extern(C) void main()
     
     // zero out variables initialized to void
     memset(&__bss_start__, 0, &__bss_end__ - &__bss_start__);
-    
-    
-    //LTDCPin!(GPIOK.AFRL.AFRL1);
-    
     
     // bring up MCU
     // this code was ported from the STM32F4 peripheral library 
@@ -206,22 +193,17 @@ extern(C) void main()
     RCC.PLLCFGR.PLLN.value = 360;
     RCC.PLLCFGR.PLLP.value = 0;
     RCC.PLLCFGR.PLLQ.value = 7;
+    
     RCC.CR.PLLON.value = true;
-    
-    while(!RCC.CR.PLLRDY.value)
-    { }
-    
+    while(!RCC.CR.PLLRDY.value){ }
     
     // Enable the Over-drive to extend the clock frequency to 180 Mhz
     PWR.CR.ODEN.value = true;
-    while(!PWR.CSR.ODRDY.value)
-    { }
-   
+    while(!PWR.CSR.ODRDY.value) { }
     
     PWR.CR.ODSWEN.value = true;
-    while(!PWR.CSR.ODSWRDY.value)
-    { }
-    
+    while(!PWR.CSR.ODSWRDY.value) { }
+
     // Configure Flash prefetch, Instruction cache, Data cache and wait state
     FLASH.ACR.PRFTEN.value = true;
     FLASH.ACR.ICEN.value = true;
@@ -230,9 +212,7 @@ extern(C) void main()
     
     // Select the main PLL as system clock source
     RCC.CFGR.SW.value = 0b10; // PLL
-    while(RCC.CFGR.SWS.value != RCC.CFGR.SW.value)
-    { }
-   
+    while(RCC.CFGR.SWS.value != RCC.CFGR.SW.value) { }
     
     /*
     +------------------------+-----------------------+----------------------------+
