@@ -75,6 +75,12 @@ private alias BitIndex   = uint;
 private alias HalfWord   = ushort;
 private alias Word       = uint;
 
+version (GNU) 
+{
+  static import gcc.attribute;
+  enum inline = gcc.attribute.attribute("forceinline");
+}
+
 // These are the bit band address that can be translated to bit-band addresses
 // that can address a single bit
 private immutable Address PeripheralRegionStart        = 0x4000_0000u;
@@ -87,20 +93,34 @@ private immutable size_t  SRAMRegionSize               = 0x000F_FFFFu;
 private immutable Address SRAMRegionEnd                = SRAMRegionStart + SRAMRegionSize - 1;
 private immutable Address SRAMBitBandRegionStart       = 0x2200_0000u;
 
-T volatileLoad(T)(T* v) 
+// see http://forum.dlang.org/post/mailman.1167.1408219266.16021.d.gnu@puremagic.com
+__gshared int volatileDummy; //hack to ensure ordering
+
+@inline T volatileLoad(T)(T* v) 
 {
-    asm { "" : "+m" v; }
-    T res = *v;
-    asm { "" : "+g" res; }
-    return res;
+    version (GNU) 
+    {
+        asm { "" : "+m" v, "+m" volatileDummy; }
+        T res = *v;
+        asm { "" : "+g" res, "+m" v, "+m" volatileDummy; }
+        return res;
+    }
 }
 
-T volatileStore(T)(T* v, in T a) 
+// the template currently causing GDC to crash, but only within
+// this application.  I have not been able to reproduce the crash
+// anywhere else.  2.067 should introduce volatileLoad/Store intrinsics
+// so it may not be a problem in the future.  Althgouh it would be
+// good to reduce and submit a bug report so it can be fixed
+@inline T volatileStore(T)(T* v, in T a) 
 {
-    asm { "" : : "m" v; }
-    *v = a;
-    asm { "" : "+m" v; }
-    return a;
+    version (GNU) 
+    {
+        asm { "" : "+m" volatileDummy : "m" v; }
+        *v = a;
+        asm { "" : "+m" v, "+m" volatileDummy; }
+        return a;
+    }
 }
 
 enum Access
