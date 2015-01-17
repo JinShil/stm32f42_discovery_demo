@@ -22,29 +22,36 @@ void main(string[] args)
         mkdir(binaryDir);
     }
     
-    string cmd = "rm -f " ~ outputFile;
+    // remove any intermediate files
+    string cmd = "rm -f " ~ binaryDir ~ "/*";
     system(cmd);
 
-    cmd = "arm-none-eabi-gdc -c -O3 -nophoboslib -nostdinc -nodefaultlibs -nostdlib -fno-emit-moduleinfo -ffunction-sections -fdata-sections"
+    // compile to temporary assembly file
+    cmd = "arm-none-eabi-gdc -c -O1 -nophoboslib -nostdinc -nodefaultlibs -nostdlib -fno-emit-moduleinfo -ffunction-sections -fdata-sections"
           ~ " -S"
+          ~ " -fno-section-anchors"
           ~ " " ~ sourceDir.dirEntries("*.d", SpanMode.depth).map!"a.name".join(" ")
-          //~ " -Wl,-Tsource/linker/linker.ld -Wl,--gc-sections"
           ~ " -o " ~ assemblyFile1;                  
             
     writeln(cmd);
     system(cmd);
     
+    // compensate for GCC bug 192: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=192
     cmd = `sed -e 's/^\(\.LC[0-9]*\)\(\:\)/\.section .rodata\1\n\1\2/g' ` ~ assemblyFile1 ~ " >" ~ assemblyFile2;
+    //cmd = "cp " ~ assemblyFile1 ~ " " ~ assemblyFile2;
     writeln(cmd);
     system(cmd);
     
+    // compile new assembly file
     cmd = "arm-none-eabi-as " ~ assemblyFile2 ~ " -o " ~ objectFile;
     writeln(cmd);
     system(cmd);
     
+    // link, creating executable
     cmd = "arm-none-eabi-ld " ~ objectFile ~ " -Tsource/linker/linker.ld --gc-sections -o " ~ outputFile;
     writeln(cmd);
     system(cmd);
     
+    // display the size
     system("arm-none-eabi-size " ~ outputFile);
 }
