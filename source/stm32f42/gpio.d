@@ -1,12 +1,26 @@
-module gpiof;
+module gpio;
 
 import bus;
 import mmio;
 
+//t his just makes the sysntax an look of the code more
+// consistent with other peripherals and registers
+alias GPIOA = PeripheralTemplate!0;
+alias GPIOB = PeripheralTemplate!1;
+alias GPIOC = PeripheralTemplate!2;
+alias GPIOD = PeripheralTemplate!3;
+alias GPIOE = PeripheralTemplate!4;
+alias GPIOF = PeripheralTemplate!5;
+alias GPIOG = PeripheralTemplate!6;
+alias GPIOH = PeripheralTemplate!7;
+alias GPIOI = PeripheralTemplate!8;
+alias GPIOJ = PeripheralTemplate!9;
+alias GPIOK = PeripheralTemplate!10;
+
 /****************************************************************************************
- GPIOF Peripheral
+ GPIO Peripheral
 */
-final abstract class GPIOF : Peripheral!(AHB1, 0x00001400)
+private final abstract class PeripheralTemplate(int port) : Peripheral!(AHB1, 0x400 * port)
 {
     /************************************************************************************
      GPIO port mode register

@@ -27,9 +27,12 @@ void main(string[] args)
     system(cmd);
 
     // compile to temporary assembly file
-    cmd = "arm-none-eabi-gdc -c -O1 -nophoboslib -nostdinc -nodefaultlibs -nostdlib -fno-emit-moduleinfo -ffunction-sections -fdata-sections"
+    // anything greater than -01 breaks things.  Still trying to figure out why
+    cmd = "arm-none-eabi-gdc -c -O1 -nophoboslib -nostdinc -nodefaultlibs -nostdlib -fno-emit-moduleinfo"
           ~ " -S"
           ~ " -fno-section-anchors"
+          // -ffunction-sections breaks things.  Still trying to figure out why
+          ~ " -fdata-sections"  
           ~ " " ~ sourceDir.dirEntries("*.d", SpanMode.depth).map!"a.name".join(" ")
           ~ " -o " ~ assemblyFile1;                  
             

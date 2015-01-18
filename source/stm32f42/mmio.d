@@ -374,7 +374,6 @@ mixin template BitFieldMutation(Mutability mutability, ValueType_)
             // If only a single bit, use bit banding
             static if (numberOfBits == 1 && isBitBandable)
             {   
-                //return false;
                 return volatileLoad(cast(ValueType*)bitBandAddress);
             }
             // if can access data with perfect halfword alignment
