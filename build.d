@@ -30,8 +30,27 @@ void main(string[] args)
     // anything greater than -01 breaks things.  Still trying to figure out why
     cmd = "arm-none-eabi-gdc -c -O1 -nophoboslib -nostdinc -nodefaultlibs -nostdlib -fno-emit-moduleinfo"
           ~ " -S"
-          ~ " -fno-section-anchors"
+          
+          // use with -O2 (doesn't work)
+//           ~ " -fno-section-anchors -fno-tree-vrp -fno-optimize-sibling-calls -fno-reorder-blocks -fno-rerun-cse-after-loop"
+//           ~ " -fno-inline-small-functions -fno-expensive-optimizations -fno-gcse -fno-cse-follow-jumps"
+          
+          // use with -O1 in an attempt to improve optimization
+          ~ " -faggressive-loop-optimizations -ftree-pre -ftree-switch-conversion -ftree-tail-merge"
+          ~ " -fschedule-insns2 -fstrict-aliasing -fthread-jumps -ftree-builtin-call-dce"
+          ~ " -foptimize-strlen -fpeephole2 -freorder-functions"  
+          ~ " -fhoist-adjacent-loads -fipa-cp -fipa-sra"
+          ~ " -fisolate-erroneous-paths-dereference -fdevirtualize -fdevirtualize-speculatively"
+          ~ " -fcaller-saves -fcrossjumping"
+          ~ " -falign-functions -falign-jumps -falign-labels -falign-loops"
+          
+          // Adding any one of these seems to cause problems with -O1
+          // ~ " -frerun-cse-after-loop freorder-blocks -foptimize-sibling-calls -ftree-vrp -fexpensive-optimizations"
+          // ~ " -finline-small-functions -fgcse -fcse-follow-jumps"
+          
+          
           // -ffunction-sections breaks things.  Still trying to figure out why
+          //~ " -ffunction-sections"
           ~ " -fdata-sections"  
           ~ " " ~ sourceDir.dirEntries("*.d", SpanMode.depth).map!"a.name".join(" ")
           ~ " -o " ~ assemblyFile1;                  

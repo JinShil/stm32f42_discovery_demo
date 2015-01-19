@@ -237,18 +237,18 @@ extern(C) void hardwareInit()
         )();                 //   the clock speed, which we intend to do  
     }
     
-    // blinky
+    mainProgram();
+}
+
+void mainProgram()
+{        
+     // blinky
     RCC.AHB1ENR.GPIOGEN.value     = true;
     GPIOG.OSPEEDR.OSPEEDR13.value = 0b11;
     GPIOG.MODER.MODER13.value     = 0b01;
     GPIOG.OTYPER.OT13.value       = 0b00;
     GPIOG.PUPDR.PUPDR13.value     = 0b00;
-    
-    mainProgram();
-}
 
-extern(C) void mainProgram()
-{        
     while(true)
     {
         GPIOG.ODR.ODR13.value = !GPIOG.ODR.ODR13.value;
