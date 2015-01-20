@@ -28,26 +28,12 @@ void main(string[] args)
 
     // compile to temporary assembly file
     // anything greater than -01 breaks things.  Still trying to figure out why
-    cmd = "arm-none-eabi-gdc -c -O1 -nophoboslib -nostdinc -nodefaultlibs -nostdlib -fno-emit-moduleinfo"
+    cmd = "arm-none-eabi-gdc -c -O2 -nophoboslib -nostdinc -nodefaultlibs -nostdlib -fno-emit-moduleinfo"
           ~ " -S"
           
-          // use with -O2 (doesn't work)
-//           ~ " -fno-section-anchors -fno-tree-vrp -fno-optimize-sibling-calls -fno-reorder-blocks -fno-rerun-cse-after-loop"
-//           ~ " -fno-inline-small-functions -fno-expensive-optimizations -fno-gcse -fno-cse-follow-jumps"
-          
-          // use with -O1 in an attempt to improve optimization
-          ~ " -faggressive-loop-optimizations -ftree-pre -ftree-switch-conversion -ftree-tail-merge"
-          ~ " -fschedule-insns2 -fstrict-aliasing -fthread-jumps -ftree-builtin-call-dce"
-          ~ " -foptimize-strlen -fpeephole2 -freorder-functions"  
-          ~ " -fhoist-adjacent-loads -fipa-cp -fipa-sra"
-          ~ " -fisolate-erroneous-paths-dereference -fdevirtualize -fdevirtualize-speculatively"
-          ~ " -fcaller-saves -fcrossjumping"
-          ~ " -falign-functions -falign-jumps -falign-labels -falign-loops"
-          
-          // Adding any one of these seems to cause problems with -O1
-          // ~ " -frerun-cse-after-loop freorder-blocks -foptimize-sibling-calls -ftree-vrp -fexpensive-optimizations"
-          // ~ " -finline-small-functions -fgcse -fcse-follow-jumps"
-          
+          ~ " -fno-section-anchors -fno-tree-vrp -fno-optimize-sibling-calls -fno-reorder-blocks -fno-rerun-cse-after-loop"
+          ~ " -fno-inline-small-functions -fno-expensive-optimizations -fno-gcse -fno-cse-follow-jumps"
+          ~ " -fno-reorder-blocks-and-partition -fno-schedule-insns"
           
           // -ffunction-sections breaks things.  Still trying to figure out why
           //~ " -ffunction-sections"
