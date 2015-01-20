@@ -28,12 +28,13 @@ void main(string[] args)
 
     // compile to temporary assembly file
     // anything greater than -01 breaks things.  Still trying to figure out why
-    cmd = "arm-none-eabi-gdc -c -O2 -nophoboslib -nostdinc -nodefaultlibs -nostdlib -fno-emit-moduleinfo"
+    cmd = "arm-none-eabi-gdc -c -O3 -nophoboslib -nostdinc -nodefaultlibs -nostdlib -fno-emit-moduleinfo"
           ~ " -S"
           
           ~ " -fno-section-anchors -fno-tree-vrp -fno-optimize-sibling-calls -fno-reorder-blocks -fno-rerun-cse-after-loop"
           ~ " -fno-inline-small-functions -fno-expensive-optimizations -fno-gcse -fno-cse-follow-jumps"
-          ~ " -fno-reorder-blocks-and-partition -fno-schedule-insns"
+          ~ " -fno-reorder-blocks-and-partition -fno-schedule-insns -fno-inline-functions -fno-ipa-cp-clone"
+          ~ " -fno-tree-loop-distribute-patterns"
           
           // -ffunction-sections breaks things.  Still trying to figure out why
           //~ " -ffunction-sections"
