@@ -29,17 +29,27 @@ void main(string[] args)
     // compile to temporary assembly file
     // anything greater than -01 breaks things.  Still trying to figure out why
     cmd = "arm-none-eabi-gdc -c -O3 -nophoboslib -nostdinc -nodefaultlibs -nostdlib -fno-emit-moduleinfo"
+          ~ " -mthumb -mcpu=cortex-m4"
           ~ " -S"
           
-          ~ " -fno-section-anchors -fno-tree-vrp -fno-optimize-sibling-calls -fno-reorder-blocks -fno-rerun-cse-after-loop"
-          ~ " -fno-inline-small-functions -fno-expensive-optimizations -fno-gcse -fno-cse-follow-jumps"
-          ~ " -fno-reorder-blocks-and-partition -fno-schedule-insns -fno-inline-functions -fno-ipa-cp-clone"
-          ~ " -fno-tree-loop-distribute-patterns"
+          // section anchors with -fdata-sections and --gc-sections causes problems
+          // http://forum.dlang.org/post/yjhogkcbegpsrxjkrfmh@forum.dlang.org
+          ~ " -fno-section-anchors" 
           
-          // -ffunction-sections breaks things.  Still trying to figure out why
-          //~ " -ffunction-sections"
-          ~ " -fdata-sections"  
+          //~ " -fno-tree-vrp -fno-optimize-sibling-calls -fno-reorder-blocks -fno-rerun-cse-after-loop"
+          //~ " -fno-expensive-optimizations"
+          //~ " -fno-gcse -fno-cse-follow-jumps"
+          //~ " -fno-reorder-blocks-and-partition -fno-schedule-insns -fno-ipa-cp-clone"
+          //~ " -fno-tree-loop-distribute-patterns"
+          //~ " -fno-inline-functions" 
+          //~ " -fno-inline-small-functions"
+          
+          
+          ~ " -ffunction-sections"
+          ~ " -fdata-sections" 
+          
           ~ " " ~ sourceDir.dirEntries("*.d", SpanMode.depth).map!"a.name".join(" ")
+          
           ~ " -o " ~ assemblyFile1;                  
             
     writeln(cmd);

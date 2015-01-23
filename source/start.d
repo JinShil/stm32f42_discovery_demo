@@ -14,14 +14,19 @@
 // along with this file.  If not, see <http://www.gnu.org/licenses/>.
 
 import trace;
-import gcc.attribute;
 import rcc;
 import pwr;
 import flash;
-import dma2d;
-import ltdc;
+// import dma2d;
+// import ltdc;
 import gpio;
-import nvic;
+// import nvic;
+
+version (GNU) 
+{
+  static import gcc.attribute;
+  enum naked = gcc.attribute.attribute("naked");
+}
 
 // These are marked extern(C) to avoid name mangling, so we can refer to them in our linker script
 alias ISR = void function(); // Alias Interrupt Service Routine function pointers
@@ -40,7 +45,7 @@ void OnHardFault()
     while(true) { }
 }
 
-@attribute("naked") void OnReset()
+@naked void OnReset()
 {
     // Enable Core-coupled memory for stack
     RCC.AHB1ENR.CCMDATARAMEN.value = true;
@@ -109,6 +114,27 @@ extern(C) void hardwareInit()
     // increase voltage from the voltage regulator to acheive a 
     // greater clock speed at the expense of power consumption
     PWR.CR.VOS.value = 0b11;
+    
+    // Enable the Over-drive to extend the clock frequency to 180 Mhz
+    PWR.CR.ODEN.value = true;
+    while(!PWR.CSR.ODRDY.value) { }
+    
+    
+    //----------------------------------------------------------------------
+    // Flash configuration
+    //----------------------------------------------------------------------
+    
+    // Enable Flash prefetch, Instruction cache, Data cache and wait state
+    with(FLASH.ACR)
+    {
+        setValue
+        !(
+              PRFTEN,  true  // prefetch
+            , ICEN,    true  // instruction cache
+            , DCEN,    true  // data cache
+            , LATENCY, 5     // 5 wait states. No choice if we increase them
+        )();                 //   the clock speed, which we intend to do  
+    }
     
  
     //----------------------------------------------------------------------
@@ -179,6 +205,22 @@ extern(C) void hardwareInit()
             , PLLM,   16
         )();
     }
+    
+    // Clock prescalers
+    with(RCC.CFGR)
+    {
+        setValue
+        !(
+              HPRE,  0b000 // AHB  = HCLK divided by 1
+            , PPRE2, 0b100 // APB1 = HCLK divided by 2
+            , PPRE1, 0b101 // APB2 = HCLK divide by 4
+        )();
+    }
+    
+    // Turn on high speed external clock
+    RCC.CR.HSEON.value = true;
+    while(!RCC.CR.HSERDY.value) { }
+    
 
     // Turn off and configure PLL
     RCC.CR.PLLON.value = false;
@@ -193,26 +235,7 @@ extern(C) void hardwareInit()
             , PLLQ,   7
         )();
     }
-    
-    // Clock prescalers
-    with(RCC.CFGR)
-    {
-        setValue
-        !(
-              HPRE,  0b000 // AHB  = HCLK divided by 1
-            , PPRE2, 0b100 // APB1 = HCLK divided by 2
-            , PPRE1, 0b101 // APB2 = HCLK divide by 4
-        )();
-    }
-    
-    // Enable the Over-drive to extend the clock frequency to 180 Mhz
-    PWR.CR.ODEN.value = true;
-    while(!PWR.CSR.ODRDY.value) { }
-    
-    // Turn on high speed external clock
-    RCC.CR.HSEON.value = true;
-    while(!RCC.CR.HSERDY.value) { }
-    
+
     // Turn on PLL
     RCC.CR.PLLON.value = true;
     while(!RCC.CR.PLLRDY.value){ }
@@ -220,22 +243,6 @@ extern(C) void hardwareInit()
     // Select the main PLL as system clock source
     RCC.CFGR.SW.value = 0b10; // PLL
     while(RCC.CFGR.SWS.value != RCC.CFGR.SW.value) { }
-    
-    //----------------------------------------------------------------------
-    // Flash configuration
-    //----------------------------------------------------------------------
-    
-    // Enable Flash prefetch, Instruction cache, Data cache and wait state
-    with(FLASH.ACR)
-    {
-        setValue
-        !(
-              PRFTEN,  true  // prefetch
-            , ICEN,    true  // instruction cache
-            , DCEN,    true  // data cache
-            , LATENCY, 5     // 5 wait states. No choice if we increase them
-        )();                 //   the clock speed, which we intend to do  
-    }
     
     mainProgram();
 }
@@ -252,6 +259,6 @@ void mainProgram()
     while(true)
     {
         GPIOG.ODR.ODR13.value = !GPIOG.ODR.ODR13.value;
-        trace.writeLine(GPIOG.ODR.ODR13.value); //mostly for delay
+        trace.writeLine("x"); //mostly for delay
     }
 }
