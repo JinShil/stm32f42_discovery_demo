@@ -14,12 +14,12 @@
 // along with this file.  If not, see <http://www.gnu.org/licenses/>.
 
 import trace;
-import rcc;
-import pwr;
-import flash;
+import stm32f42.rcc;
+import stm32f42.pwr;
+import stm32f42.flash;
 // import dma2d;
 // import ltdc;
-import gpio;
+import stm32f42.gpio;
 // import nvic;
 
 version (GNU) 
@@ -109,7 +109,7 @@ extern(C) void hardwareInit()
     //----------------------------------------------------------------------
     
     // Enable clock for the power management peripheral
-    RCC.APB1ENR.PWREN.value = true;
+    RCC.APB1ENR.PWREN = true;
     
     // increase voltage from the voltage regulator to acheive a 
     // greater clock speed at the expense of power consumption

@@ -1,6 +1,6 @@
-module gpio;
+module stm32f42.gpio;
 
-import bus;
+import stm32f42.bus;
 import mmio;
 
 //t his just makes the sysntax an look of the code more

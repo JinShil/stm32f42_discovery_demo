@@ -1,6 +1,6 @@
-module nvic;
+module stm32f42.nvic;
 
-import bus;
+import stm32f42.bus;
 import mmio;
 
 /****************************************************************************************

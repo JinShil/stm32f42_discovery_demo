@@ -1,6 +1,6 @@
-module scb;
+module stm32f42.scb;
 
-import bus;
+import stm32f42.bus;
 import mmio;
 
 /****************************************************************************************

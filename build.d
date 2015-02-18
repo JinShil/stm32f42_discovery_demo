@@ -30,6 +30,7 @@ void main(string[] args)
     // anything greater than -01 breaks things.  Still trying to figure out why
     cmd = "arm-none-eabi-gdc -c -O3 -nophoboslib -nostdinc -nodefaultlibs -nostdlib -fno-emit-moduleinfo"
           ~ " -mthumb -mcpu=cortex-m4"
+          ~ " -Iruntime -Immio"
           ~ " -S"
           
           // section anchors with -fdata-sections and --gc-sections causes problems
@@ -67,7 +68,7 @@ void main(string[] args)
     system(cmd);
     
     // link, creating executable
-    cmd = "arm-none-eabi-ld " ~ objectFile ~ " -Tsource/linker/linker.ld --gc-sections -o " ~ outputFile;
+    cmd = "arm-none-eabi-ld " ~ objectFile ~ " -Tlinker/linker.ld --gc-sections -o " ~ outputFile;
     writeln(cmd);
     system(cmd);
     
