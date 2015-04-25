@@ -13,10 +13,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this file.  If not, see <http://www.gnu.org/licenses/>.
 
-module ltdc;
+module stm32f42.ltdc;
 
-import mmio;
-import bus;
+import stm32f42.mmio;
+import stm32f42.bus;
 
 /****************************************************************************************
  LCD-TFT Controller

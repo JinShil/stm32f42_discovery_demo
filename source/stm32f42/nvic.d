@@ -1,7 +1,7 @@
-module nvic;
+module stm32f42.nvic;
 
-import bus;
-import mmio;
+import stm32f42.bus;
+import stm32f42.mmio;
 
 /****************************************************************************************
  Nested vectored interrupt controller

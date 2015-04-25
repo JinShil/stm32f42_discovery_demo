@@ -1,6 +1,6 @@
 module exception;
 
-import trace;
+import trace = stm32f42.trace;
 
 /***********************************************************************
   For assert(condition) statements

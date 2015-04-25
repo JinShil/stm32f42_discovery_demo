@@ -1,7 +1,7 @@
-module gpio;
+module stm32f42.gpio;
 
-import bus;
-import mmio;
+import stm32f42.bus;
+import stm32f42.mmio;
 
 //t his just makes the sysntax an look of the code more
 // consistent with other peripherals and registers

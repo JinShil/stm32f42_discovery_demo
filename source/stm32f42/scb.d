@@ -1,7 +1,7 @@
-module scb;
+module stm32f42.scb;
 
-import bus;
-import mmio;
+import stm32f42.bus;
+import stm32f42.mmio;
 
 /****************************************************************************************
  The System control block (SCB) provides system implementation information, and system

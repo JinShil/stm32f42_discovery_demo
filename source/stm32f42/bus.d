@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this file.  If not, see <http://www.gnu.org/licenses/>.
 
-module bus;
+module stm32f42.bus;
 
 // see pp. 63 of the STM32F4 datasheet
 
