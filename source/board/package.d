@@ -23,6 +23,7 @@ import stm32f42.flash;
 import stm32f42.gpio;
 // import nvic;
 
+import ILI9341 = board.ILI9341;
 import trace = stm32f42.trace;
 
 extern void main();
@@ -117,7 +118,7 @@ extern(C) void hardwareInit()
     //----------------------------------------------------------------------
     
     // Enable clock for the power management peripheral
-    RCC.APB1ENR.PWREN = true;
+    RCC.APB1ENR.PWREN.value = true;
     
     // increase voltage from the voltage regulator to acheive a 
     // greater clock speed at the expense of power consumption
@@ -253,6 +254,9 @@ extern(C) void hardwareInit()
     // Select the main PLL as system clock source
     RCC.CFGR.SW.value = 0b10; // PLL
     while(RCC.CFGR.SWS.value != RCC.CFGR.SW.value) { }
+    
+    //Initialize the LCD
+    ILI9341.init();
     
     main();
 }

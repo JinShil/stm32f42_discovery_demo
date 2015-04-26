@@ -15,8 +15,8 @@
 
 module stm32f42.spi;
 
-import stm32f42.mmio;
 import stm32f42.bus;
+import stm32f42.mmio;
 
 alias SPI1 = PeripheralTemplate!(APB2, 0x3000);
 alias SPI2 = PeripheralTemplate!(APB1, 0x3800);
@@ -28,7 +28,6 @@ alias SPI6 = PeripheralTemplate!(APB2, 0x5400);
 /****************************************************************************************
  Serial peripheral interface (SPI)
 */
-//final abstract class SPI : Peripheral!(AHB1, 0x00003000)
 private final abstract class PeripheralTemplate(TBus, uint addressOffset) : Peripheral!(TBus, addressOffset)
 {
     /************************************************************************************
