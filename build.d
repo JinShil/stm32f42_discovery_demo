@@ -26,15 +26,23 @@ void main(string[] args)
     string cmd = "rm -f " ~ binaryDir ~ "/*";
     system(cmd);
 
+	string sourceFiles = sourceDir
+		.dirEntries("*.d", SpanMode.depth)
+		.filter!(a => !a.name.startsWith("source/runtime")) // runtime will be imported automatically
+		.map!"a.name"
+		.join(" ");
+
+	
     // compile to temporary assembly file
     // anything greater than -01 breaks things.  Still trying to figure out why
     cmd = "arm-none-eabi-gdc -c -O3 -nophoboslib -nostdinc -nodefaultlibs -nostdlib -fno-emit-moduleinfo"
           ~ " -mthumb -mcpu=cortex-m4"
           ~ " -S"
+          ~ " -Isource/runtime" // to import runtime automatically
           
           // section anchors with -fdata-sections and --gc-sections causes problems
           // http://forum.dlang.org/post/yjhogkcbegpsrxjkrfmh@forum.dlang.org
-          ~ " -fno-section-anchors" 
+          //~ " -fno-section-anchors" 
           
           //~ " -fno-tree-vrp -fno-optimize-sibling-calls -fno-reorder-blocks -fno-rerun-cse-after-loop"
           //~ " -fno-expensive-optimizations"
@@ -48,7 +56,7 @@ void main(string[] args)
           ~ " -ffunction-sections"
           ~ " -fdata-sections" 
           
-          ~ " " ~ sourceDir.dirEntries("*.d", SpanMode.depth).map!"a.name".join(" ")
+          ~ " " ~ sourceFiles
           
           ~ " -o " ~ assemblyFile1;                  
             
@@ -67,7 +75,7 @@ void main(string[] args)
     system(cmd);
     
     // link, creating executable
-    cmd = "arm-none-eabi-ld " ~ objectFile ~ " -Tsource/linker/linker.ld --gc-sections -o " ~ outputFile;
+    cmd = "arm-none-eabi-ld " ~ objectFile ~ " -Tlinker/linker.ld --gc-sections -o " ~ outputFile;
     writeln(cmd);
     system(cmd);
     
