@@ -13,13 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this file.  If not, see <http://www.gnu.org/licenses/>.
 
-<<<<<<< HEAD:source/board/package.d
 module board;
 
-import trace = stm32f42.trace;
-=======
-import trace;
->>>>>>> 0f355d63bd7823f593ef770db1703bc2cf3454a6:source/start.d
 import stm32f42.rcc;
 import stm32f42.pwr;
 import stm32f42.flash;
@@ -27,6 +22,8 @@ import stm32f42.flash;
 // import ltdc;
 import stm32f42.gpio;
 // import nvic;
+
+import trace = stm32f42.trace;
 
 extern void main();
 
