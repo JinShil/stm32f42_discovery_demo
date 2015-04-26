@@ -1,7 +1,11 @@
 module stm32f42.nvic;
 
 import stm32f42.bus;
+<<<<<<< HEAD
 import stm32f42.mmio;
+=======
+import mmio;
+>>>>>>> 0f355d63bd7823f593ef770db1703bc2cf3454a6
 
 /****************************************************************************************
  Nested vectored interrupt controller

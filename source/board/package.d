@@ -13,9 +13,13 @@
 // You should have received a copy of the GNU General Public License
 // along with this file.  If not, see <http://www.gnu.org/licenses/>.
 
+<<<<<<< HEAD:source/board/package.d
 module board;
 
 import trace = stm32f42.trace;
+=======
+import trace;
+>>>>>>> 0f355d63bd7823f593ef770db1703bc2cf3454a6:source/start.d
 import stm32f42.rcc;
 import stm32f42.pwr;
 import stm32f42.flash;
@@ -116,7 +120,7 @@ extern(C) void hardwareInit()
     //----------------------------------------------------------------------
     
     // Enable clock for the power management peripheral
-    RCC.APB1ENR.PWREN.value = true;
+    RCC.APB1ENR.PWREN = true;
     
     // increase voltage from the voltage regulator to acheive a 
     // greater clock speed at the expense of power consumption

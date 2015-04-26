@@ -456,6 +456,11 @@ mixin template BitFieldMutation(Mutability mutability, ValueType_)
                 //*(cast(shared Word*)address) = (*(cast(shared Word*)address) & ~bitMask) | ((cast(Word)value_) << leastSignificantBitIndex);
             }
         }
+        
+        static void opAssign(ValueType value_)
+        {
+            value = value_;
+        }
     }
 }
 

@@ -37,6 +37,7 @@ void main(string[] args)
     // anything greater than -01 breaks things.  Still trying to figure out why
     cmd = "arm-none-eabi-gdc -c -O3 -nophoboslib -nostdinc -nodefaultlibs -nostdlib -fno-emit-moduleinfo"
           ~ " -mthumb -mcpu=cortex-m4"
+          ~ " -Iruntime -Immio"
           ~ " -S"
           ~ " -Isource/runtime" // to import runtime automatically
           
