@@ -15,7 +15,8 @@ Bad
 * No HAL.  Program directly manipulates MMIO registers
 * No enums on MMIO registers.  (HSE vs HSI is a bool (true|false))
 * memset and memcpy are not written in optimized assembly
-
+* Bug 12496:  Can't enforce bitfield belongs to a register when using setValue
+* Really long build times
 
 Ugly
 * TypeInfo Faking
