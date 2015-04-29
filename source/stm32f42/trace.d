@@ -159,11 +159,11 @@ void writeLine(ubyte value)
 /************************************************************************************
 * Print signed integer with a new line
 */
-void writeLine(int value, uint base = 10)
-{
-    write(value, base);
-    write("\r\n");
-}
+//void writeLine(int value, uint base = 10)
+//{
+//    write(value, base);
+//    write("\r\n");
+//}
 
 /************************************************************************************
 * Print string of charactes

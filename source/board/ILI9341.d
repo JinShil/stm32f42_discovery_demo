@@ -1,9 +1,25 @@
+// Copyright © 2015 Michael V. Franklin
+//      
+// This file is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// This file is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this file.  If not, see <http://www.gnu.org/licenses/>.
+
 module board.ILI9341;
 
 import stm32f42.gpio;
 import stm32f42.rcc;
 
 import spi5 = board.spi5;
+import trace = stm32f42.trace;
 
 private void csLow()
 {
@@ -115,281 +131,8 @@ private void write(ubyte command, ubyte arg0, ubyte arg1, ubyte arg2, ubyte arg3
 	writeData(arg4);
 }
 
-private void gpioConfig()
-{
-	RCC.APB2ENR.LTDCEN.value = true;
-	
-	// A3  = B5
-	// A4  = VSYNC
-	// A6  = G2
-	// A11 = R4
-	// A12 = R5
-	RCC.AHB1ENR.GPIOAEN.value = true;
-	
-	with(GPIOA.OSPEEDR)
-	{
-		setValue
-		!(
-			  OSPEEDR3,  0b11
-			, OSPEEDR4,  0b11
-			, OSPEEDR6,  0b11
-			, OSPEEDR11, 0b11
-			, OSPEEDR12, 0b11
-		);
-	}
-	
-	with(GPIOA.MODER)
-	{
-		setValue
-		!(
-			  MODER3,  0b11  // Alternate function mode
-			, MODER4,  0b11
-			, MODER6,  0b11
-			, MODER11, 0b11
-			, MODER12, 0b11
-		);
-	}
-	
-	with(GPIOA.PUPDR)
-	{
-		setValue
-		!(
-			  PUPDR3,  0b00  // No pull
-			, PUPDR4,  0b00
-			, PUPDR6,  0b00
-			, PUPDR11, 0b00
-			, PUPDR12, 0b00
-		);
-	}
-	
-	with(GPIOA.OTYPER)
-	{
-		setValue
-		!(
-			  OT3,  0  // push-pull
-			, OT4,  0
-			, OT6,  0
-			, OT11, 0
-			, OT12, 0
-		);
-	}
-	
-	// B0  = R3
-	// B1  = R6
-	// B8  = B6
-	// B9  = B7
-	// B10 = G4
-	// B11 = G5
-	RCC.AHB1ENR.GPIOBEN.value = true;
-	
-	with(GPIOB.OSPEEDR)
-	{
-		setValue
-		!(
-			  OSPEEDR0,  0b11
-			, OSPEEDR1,  0b11
-			, OSPEEDR8,  0b11
-			, OSPEEDR9,  0b11
-			, OSPEEDR10, 0b11
-			, OSPEEDR11, 0b11
-		);
-	}
-	
-	with(GPIOB.MODER)
-	{
-		setValue
-		!(
-			  MODER0,  0b11  // Alternate function mode
-			, MODER1,  0b11
-			, MODER8,  0b11
-			, MODER9,  0b11
-			, MODER10, 0b11
-			, MODER11, 0b11
-		);
-	}
-	
-	with(GPIOB.PUPDR)
-	{
-		setValue
-		!(
-			  PUPDR0,  0b00  // No pull
-			, PUPDR1,  0b00
-			, PUPDR8,  0b00
-			, PUPDR9,  0b00
-			, PUPDR10, 0b00
-			, PUPDR11, 0b00
-		);
-	}
-	
-	with(GPIOB.OTYPER)
-	{
-		setValue
-		!(
-			  OT0,  0  // push-pull
-			, OT1,  0
-			, OT8,  0
-			, OT9,  0
-			, OT10, 0
-			, OT11, 0
-		);
-	}
-	
-	// C6  = HSYNC
-	// C7  = G6
-	// C10 = R2
-	RCC.AHB1ENR.GPIOCEN.value = true;
-	
-	with(GPIOC.OSPEEDR)
-	{
-		setValue
-		!(
-			  OSPEEDR6,  0b11
-			, OSPEEDR7,  0b11
-			, OSPEEDR10, 0b11
-		);
-	}
-	
-	with(GPIOC.MODER)
-	{
-		setValue
-		!(
-			  MODER6,  0b11  // Alternate function mode
-			, MODER7,  0b11
-			, MODER10, 0b11
-		);
-	}
-	
-	with(GPIOC.PUPDR)
-	{
-		setValue
-		!(
-			  PUPDR6,  0b00  // No pull
-			, PUPDR7,  0b00
-			, PUPDR10, 0b00
-		);
-	}
-	
-	with(GPIOC.OTYPER)
-	{
-		setValue
-		!(
-			  OT6,  0  // push-pull
-			, OT7,  0
-			, OT10, 0
-		);
-	}
-	
-	// D3  = G7
-	// D6  = B2
-	RCC.AHB1ENR.GPIODEN.value = true;
-	
-	with(GPIOD.OSPEEDR)
-	{
-		setValue
-		!(
-			  OSPEEDR3,  0b11
-			, OSPEEDR6,  0b11
-		);
-	}
-	
-	with(GPIOD.MODER)
-	{
-		setValue
-		!(
-			  MODER3,  0b11  // Alternate function mode
-			, MODER6,  0b11
-		);
-	}
-	
-	with(GPIOD.PUPDR)
-	{
-		setValue
-		!(
-			  PUPDR3,  0b00  // No pull
-			, PUPDR6,  0b00
-		);
-	}
-	
-	with(GPIOD.OTYPER)
-	{
-		setValue
-		!(
-			  OT3,  0  // push-pull
-			, OT6,  0
-		);
-	}
-	
-	RCC.AHB1ENR.GPIOFEN.value = true;
-	
-	// F10 = Enable
-	GPIOF.OSPEEDR.OSPEEDR10.value = 0b11;
-	GPIOF.MODER.MODER10.value = 0b11;
-	GPIOF.PUPDR.PUPDR10.value = 0b00;
-	GPIOF.OTYPER.OT10.value = 0;
-	
-	// G6  = R7
-	// G7  = DOTCLK
-	// G10 = G3
-	// G11 = B3
-	// G12 = B4
-	RCC.AHB1ENR.GPIOGEN.value = true;
-	
-	with(GPIOG.OSPEEDR)
-	{
-		setValue
-		!(
-			  OSPEEDR6,  0b11
-			, OSPEEDR7,  0b11
-			, OSPEEDR10, 0b11
-			, OSPEEDR11, 0b11
-			, OSPEEDR12, 0b11
-		);
-	}
-	
-	with(GPIOG.MODER)
-	{
-		setValue
-		!(
-			  MODER6,  0b11  // Alternate function mode
-			, MODER7,  0b11
-			, MODER10, 0b11
-			, MODER11, 0b11
-			, MODER12, 0b11
-		);
-	}
-	
-	with(GPIOG.PUPDR)
-	{
-		setValue
-		!(
-			  PUPDR6,  0b00  // No pull
-			, PUPDR7,  0b00
-			, PUPDR10, 0b00
-			, PUPDR11, 0b00
-			, PUPDR12, 0b00
-		);
-	}
-	
-	with(GPIOG.OTYPER)
-	{
-		setValue
-		!(
-			  OT6,  0  // push-pull
-			, OT7,  0
-			, OT10, 0
-			, OT11, 0
-			, OT12, 0
-		);
-	}
-	
-	//TODO: Need to set alternate functions
-	
-}
-
-public void init()
-{
-	gpioConfig();
-	
+package void init()
+{	
 	wrxInit();
 	rdxInit();
 	csInit();
@@ -461,6 +204,7 @@ public void init()
 	//GRAM
 	writeCommand(0x2C);
 	//Delay 1000000
+	trace.writeLine("Delay");
 	
 	//GAMMA
 	write(0x26, 0x01);
@@ -504,10 +248,21 @@ public void init()
 	//Sleep out
 	writeCommand(0x11);
 	//Delay 1000000;
+	trace.writeLine("Delay");
 	
 	//Display On
 	writeCommand(0x29);
 	
 	//GRAM
 	writeCommand(0x2C);
+}
+
+public void on()
+{
+	writeCommand(0x29);
+}
+
+public void off()
+{
+	writeCommand(0x28);
 }

@@ -1,10 +1,27 @@
+// Copyright © 2015 Michael V. Franklin
+//      
+// This file is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// This file is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this file.  If not, see <http://www.gnu.org/licenses/>.
+
 module board.spi5;
 
 import stm32f42.rcc;
 import stm32f42.gpio;
 import stm32f42.spi;
 
-public void init()
+import trace = stm32f42.trace;
+
+package void init()
 {
 	RCC.APB2ENR.SPI5EN.value = true;
 	RCC.AHB1ENR.GPIOFEN.value = true;
@@ -53,7 +70,18 @@ public void init()
 		);
 	}
 	
-	//TODO: Need to set alternate function
+	// alternate function SPI5
+	GPIOF.AFRL.AFRL7.value = 0x05;  
+	
+	with(GPIOF.AFRH)
+	{
+		setValue
+		!(
+			  AFRH8, 0x05   
+			, AFRH9, 0x05
+		);
+	}
+	
 	
 	// disable before configuring
 	SPI5.CR1.SPE.value = false;
@@ -61,7 +89,6 @@ public void init()
 	/* SPI baudrate is set to 5.6 MHz (PCLK2/SPI_BaudRatePrescaler = 90/16 = 5.625 MHz) 
        to verify these constraints:
        - ILI9341 LCD SPI interface max baudrate is 10MHz for write and 6.66MHz for read
-       - l3gd20 SPI interface max baudrate is 10MHz for write/read
        - PCLK2 frequency is set to 90 MHz 
     */  
 	with(SPI5.CR1)
@@ -76,17 +103,28 @@ public void init()
 			, LSBFIRST, 0       // MSB first
 			, SSM,      true    // Software slave management
 			, MSTR,     1       // master mode
+			, CRCEN,    false   // disable CRC
 		);
 	}
 	
-	SPI5.CR2.FRF.value = 0;     // Motorola mode
+	SPI5.CRCPR.CRCPOLY.value = 7;
+	SPI5.I2SCFGR.I2SMOD.value = 0;  //SPI mode
+	
+	with(SPI5.CR2)
+	{
+		setValue
+		!(
+			  SSOE, 1      
+			, FRF,  0   // Motorola mode
+		);
+	}
 	
 	//enable
 	SPI5.CR1.SPE.value = true;
 }
 
 void transmit(ubyte value)
-{
+{	
 	//wait until TX register is empty
 	while(!SPI5.SR.TXE.value) {}
 	

@@ -68,10 +68,10 @@ void main(string[] args)
     cmd = `sed -e 's/^\(\.LC[0-9]*\)\(\:\)/\.section .rodata\1\n\1\2/g' ` ~ assemblyFile1 ~ " >" ~ assemblyFile2;
     //cmd = "cp " ~ assemblyFile1 ~ " " ~ assemblyFile2;
     writeln(cmd);
-    system(cmd);
+    //system(cmd);
     
     // compile new assembly file
-    cmd = "arm-none-eabi-as " ~ assemblyFile2 ~ " -o " ~ objectFile;
+    cmd = "arm-none-eabi-as " ~ assemblyFile1 ~ " -o " ~ objectFile;
     writeln(cmd);
     system(cmd);
     

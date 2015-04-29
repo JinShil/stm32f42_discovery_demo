@@ -13,29 +13,18 @@
 // You should have received a copy of the GNU General Public License
 // along with this file.  If not, see <http://www.gnu.org/licenses/>.
 
-module main;
+module board.lcd;
 
-import stm32f42.rcc;
-import stm32f42.gpio;
+import ILI9341 = board.ILI9341;
+import ltdc = board.ltdc;
 
-import lcd = board.lcd;
-import trace = stm32f42.trace;
+package void init()
+{
+	ILI9341.init();
+	ltdc.init();
+}
 
-void main()
-{        
-     // blinky
-    RCC.AHB1ENR.GPIOGEN.value     = true;
-    GPIOG.OSPEEDR.OSPEEDR13.value = 0b11;
-    GPIOG.MODER.MODER13.value     = 0b01;
-    GPIOG.OTYPER.OT13.value       = 0b00;
-    GPIOG.PUPDR.PUPDR13.value     = 0b00;
-
-	ushort i = 0;
-    while(true)
-    {
-    	lcd.fill(i);
-    	i++;
-        GPIOG.ODR.ODR13.value = !GPIOG.ODR.ODR13.value;
-        trace.writeLine("x"); //mostly for delay
-    }
+public void fill(ushort color)
+{
+	ltdc.fill(color);
 }

@@ -23,7 +23,7 @@ import stm32f42.flash;
 import stm32f42.gpio;
 // import nvic;
 
-import ILI9341 = board.ILI9341;
+import lcd = board.lcd;
 import trace = stm32f42.trace;
 
 extern void main();
@@ -111,12 +111,12 @@ extern(C) void hardwareInit()
     memcpy(&__data_start__, &__text_end__, &__data_end__ - &__data_start__);
     
     // zero out variables initialized to void
-    memset(&__bss_start__, 0, &__bss_end__ - &__bss_start__);
+    //memset(&__bss_start__, 0, &__bss_end__ - &__bss_start__);
     
     //----------------------------------------------------------------------
     // Power configuration
     //----------------------------------------------------------------------
-    
+
     // Enable clock for the power management peripheral
     RCC.APB1ENR.PWREN.value = true;
     
@@ -210,10 +210,10 @@ extern(C) void hardwareInit()
         setValue
         !(
               PLLSRC, false  //HSI
-            , PLLQ,   6
-            , PLLP,   0
-            , PLLN,   192
-            , PLLM,   16
+            , PLLQ,   7
+            , PLLP,   2
+            , PLLN,   360
+            , PLLM,   8
         )();
     }
     
@@ -223,8 +223,8 @@ extern(C) void hardwareInit()
         setValue
         !(
               HPRE,  0b000 // AHB  = HCLK divided by 1
-            , PPRE2, 0b100 // APB1 = HCLK divided by 2
-            , PPRE1, 0b101 // APB2 = HCLK divide by 4
+            , PPRE2, 0b100 // APB2 = HCLK divided by 2
+            , PPRE1, 0b101 // APB1 = HCLK divide by 4
         )();
     }
     
@@ -232,7 +232,6 @@ extern(C) void hardwareInit()
     RCC.CR.HSEON.value = true;
     while(!RCC.CR.HSERDY.value) { }
     
- 
     // Turn off and configure PLL
     RCC.CR.PLLON.value = false;
     with(RCC.PLLCFGR)
@@ -256,7 +255,7 @@ extern(C) void hardwareInit()
     while(RCC.CFGR.SWS.value != RCC.CFGR.SW.value) { }
     
     //Initialize the LCD
-    ILI9341.init();
+	lcd.init();
     
     main();
 }
