@@ -23,30 +23,7 @@ import trace = stm32f42.trace;
 
 package void init()
 {
-	RCC.APB2ENR.SPI5EN.value = true;
 	RCC.AHB1ENR.GPIOFEN.value = true;
-	
-	//Pins F7,F8,F9 Alternate Function Mode
-	with(GPIOF.MODER)
-	{
-		setValue
-		!(
-			  MODER7, 0b11
-			, MODER8, 0b11
-			, MODER9, 0b11
-		);
-	}
-	
-	//Pins F7,F8,F9 Pull Down
-	with(GPIOF.PUPDR)
-	{
-		setValue
-		!(
-			  PUPDR7, 0b10
-			, PUPDR8, 0b10
-			, PUPDR9, 0b10
-		);
-	}
 	
 	//Pins F7,F8,F9 speed
 	with(GPIOF.OSPEEDR)
@@ -54,8 +31,27 @@ package void init()
 		setValue
 		!(
 			  OSPEEDR7, 0b11
-			, OSPEEDR8, 0b11
 			, OSPEEDR9, 0b11
+		);
+	}
+	
+	//Pins F7,F8,F9 Alternate Function Mode
+	with(GPIOF.MODER)
+	{
+		setValue
+		!(
+			  MODER7, 0b10
+			, MODER9, 0b10
+		);
+	}
+	
+	//Pins F7,F8,F9 no pull
+	with(GPIOF.PUPDR)
+	{
+		setValue
+		!(
+			  PUPDR7, 0b00
+			, PUPDR9, 0b00
 		);
 	}
     
@@ -65,49 +61,19 @@ package void init()
 		setValue
 		!(
 			  OT7, 0b00
-			, OT8, 0b00
 			, OT9, 0b00
 		);
 	}
 	
 	// alternate function SPI5
 	GPIOF.AFRL.AFRL7.value = 0x05;  
-	
-	with(GPIOF.AFRH)
-	{
-		setValue
-		!(
-			  AFRH8, 0x05   
-			, AFRH9, 0x05
-		);
-	}
-	
+	GPIOF.AFRH.AFRH9.value = 0x05;
+		
+	RCC.APB2ENR.SPI5EN.value = true;
 	
 	// disable before configuring
 	SPI5.CR1.SPE.value = false;
 	
-	/* SPI baudrate is set to 5.6 MHz (PCLK2/SPI_BaudRatePrescaler = 90/16 = 5.625 MHz) 
-       to verify these constraints:
-       - ILI9341 LCD SPI interface max baudrate is 10MHz for write and 6.66MHz for read
-       - PCLK2 frequency is set to 90 MHz 
-    */  
-	with(SPI5.CR1)
-	{
-		setValue
-		!(
-			  BIDIMODE, 0       // two-line unidirectional
-			, BR,       0b011   // fPCLK/16
-			, CPHA,     0       // clock phase first edge
-			, CPOL,     0       // clock polarity low
-			, DFF,      0       // 8-bit data frame format
-			, LSBFIRST, 0       // MSB first
-			, SSM,      true    // Software slave management
-			, MSTR,     1       // master mode
-			, CRCEN,    false   // disable CRC
-		);
-	}
-	
-	SPI5.CRCPR.CRCPOLY.value = 7;
 	SPI5.I2SCFGR.I2SMOD.value = 0;  //SPI mode
 	
 	with(SPI5.CR2)
@@ -119,11 +85,27 @@ package void init()
 		);
 	}
 	
+	with(SPI5.CR1)
+	{
+		setValue
+		!(
+			  BIDIMODE, 0       // two-line unidirectional
+			, BR,       0b001   // fPCLK/16
+			, CPHA,     0       // clock phase first edge
+			, CPOL,     0       // clock polarity low
+			, DFF,      0       // 8-bit data frame format
+			, LSBFIRST, 0       // MSB first
+			, SSM,      false   // Software slave management
+			, MSTR,     1       // master mode
+			, CRCEN,    false   // disable CRC
+		);
+	}
+
 	//enable
 	SPI5.CR1.SPE.value = true;
 }
 
-void transmit(ubyte value)
+package void transmit(ubyte value)
 {	
 	//wait until TX register is empty
 	while(!SPI5.SR.TXE.value) {}

@@ -21,7 +21,7 @@ import stm32f42.bus;
 /****************************************************************************************
  Chrom-Art Accelerator controller
 */
-final abstract class DMA2D : Peripheral!(AHB1, 0x00009000)
+final abstract class DMA2D : Peripheral!(AHB1, 0x0000B000)
 {
     /************************************************************************************
      DMA2D control register

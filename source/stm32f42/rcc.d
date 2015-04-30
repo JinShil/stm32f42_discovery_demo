@@ -21,7 +21,7 @@ import stm32f42.bus;
 /****************************************************************************************
  Reset and clock control
 */
-final abstract class RCC : Peripheral!(AHB1, 0x00003800)
+final abstract class RCC : Peripheral!(AHB1, 0x3800)
 {
     /************************************************************************************
      RCC clock control register

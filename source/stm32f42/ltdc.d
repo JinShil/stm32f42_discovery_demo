@@ -21,7 +21,7 @@ import stm32f42.bus;
 /****************************************************************************************
  LCD-TFT Controller
 */
-final abstract class LTDC : Peripheral!(APB1, 0x00000040)
+final abstract class LTDC : Peripheral!(APB2, 0x00006800)
 {
     /************************************************************************************
      LTDC Synchronization Size Configuration Register

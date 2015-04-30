@@ -15,6 +15,8 @@
 
 module board;
 
+import gcc.attribute;
+
 import stm32f42.rcc;
 import stm32f42.pwr;
 import stm32f42.flash;
@@ -25,14 +27,9 @@ import stm32f42.gpio;
 
 import lcd = board.lcd;
 import trace = stm32f42.trace;
+import statusLED = board.statusLED;
 
 extern void main();
-
-version (GNU) 
-{
-  static import gcc.attribute;
-  enum naked = gcc.attribute.attribute("naked");
-}
 
 // These are marked extern(C) to avoid name mangling, so we can refer to them in our linker script
 alias ISR = void function(); // Alias Interrupt Service Routine function pointers
@@ -124,11 +121,12 @@ extern(C) void hardwareInit()
     // greater clock speed at the expense of power consumption
     PWR.CR.VOS.value = 0b11;
     
-    
     // Enable the Over-drive to extend the clock frequency to 180 Mhz
     PWR.CR.ODEN.value = true;
     while(!PWR.CSR.ODRDY.value) { }
     
+    PWR.CR.ODSWEN.value = true;
+    while(!PWR.CSR.ODSWRDY.value) {}
     
     //----------------------------------------------------------------------
     // Flash configuration
@@ -150,21 +148,21 @@ extern(C) void hardwareInit()
     //----------------------------------------------------------------------
     // Clock configuration
     //----------------------------------------------------------------------
-    
-    // put RCC in default state
     with (RCC.CR)
     {
         setValue
         !(
-              HSION,  true
-            , HSEON,  false
-            , CSSON,  false
-            , PLLON,  false
-            , HSEBYP, false
-        )();
+              HSION,     true      //Default to HSI on
+            , HSEON,     false
+            , CSSON,     false
+            , PLLON,     false
+            , PLLISAION, false
+            , PLLI2SON,  false
+        );
     }
-    while(RCC.CR.HSERDY.value) { }
+    while(!RCC.CR.HSIRDY.value) { }
     
+    RCC.CR.HSEBYP.value = false;
     
     with(RCC.CFGR)
     {
@@ -176,55 +174,10 @@ extern(C) void hardwareInit()
             , I2SSRC,  0
             , MCO1,    0
             , RTCPRE,  0
-            , PPRE2,   0
-            , PPRE1,   0
-            , HPRE,    0
-            , SW,      0
-        )();
-    }
-    
-    with(RCC.CIR)
-    {
-        setValue
-        !(
-              CSSC,        false
-            , PLLSAIRDYC,  false
-            , PLLI2SRDYC,  false
-            , PLLRDYC,     false
-            , HSERDYC,     false
-            , HSIRDYC,     false
-            , LSERDYC,     false
-            , LSIRDYC,     false
-            , PLLSAIRDYIE, false
-            , PLLI2SRDYIE, false
-            , PLLRDYIE,    false
-            , HSERDYIE,    false
-            , HSIRDYIE,    false
-            , LSERDYIE,    false
-            , LSIRDYIE,    false
-        )();
-    }
-    
-    with(RCC.PLLCFGR)
-    {
-        setValue
-        !(
-              PLLSRC, false  //HSI
-            , PLLQ,   7
-            , PLLP,   2
-            , PLLN,   360
-            , PLLM,   8
-        )();
-    }
-    
-    // Clock prescalers
-    with(RCC.CFGR)
-    {
-        setValue
-        !(
-              HPRE,  0b000 // AHB  = HCLK divided by 1
-            , PPRE2, 0b100 // APB2 = HCLK divided by 2
-            , PPRE1, 0b101 // APB1 = HCLK divide by 4
+            , HPRE,    0b000 // AHB  = HCLK divided by 1
+            , PPRE2,   0b100 // APB2 = HCLK divided by 2
+            , PPRE1,   0b101 // APB1 = HCLK divide by 4
+            , SW,      0     // HSI is system clock
         )();
     }
     
@@ -232,8 +185,7 @@ extern(C) void hardwareInit()
     RCC.CR.HSEON.value = true;
     while(!RCC.CR.HSERDY.value) { }
     
-    // Turn off and configure PLL
-    RCC.CR.PLLON.value = false;
+    // Configure PLL
     with(RCC.PLLCFGR)
     {
         setValue
@@ -245,7 +197,7 @@ extern(C) void hardwareInit()
             , PLLQ,   7
         )();
     }
-
+    
     // Turn on PLL
     RCC.CR.PLLON.value = true;
     while(!RCC.CR.PLLRDY.value){ }
@@ -253,6 +205,9 @@ extern(C) void hardwareInit()
     // Select the main PLL as system clock source
     RCC.CFGR.SW.value = 0b10; // PLL
     while(RCC.CFGR.SWS.value != RCC.CFGR.SW.value) { }
+    
+    // status LED
+    statusLED.init();
     
     //Initialize the LCD
 	lcd.init();

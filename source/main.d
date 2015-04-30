@@ -15,27 +15,23 @@
 
 module main;
 
-import stm32f42.rcc;
-import stm32f42.gpio;
-
 import lcd = board.lcd;
 import trace = stm32f42.trace;
+import statusLED = board.statusLED;
 
 void main()
 {        
-     // blinky
-    RCC.AHB1ENR.GPIOGEN.value     = true;
-    GPIOG.OSPEEDR.OSPEEDR13.value = 0b11;
-    GPIOG.MODER.MODER13.value     = 0b01;
-    GPIOG.OTYPER.OT13.value       = 0b00;
-    GPIOG.PUPDR.PUPDR13.value     = 0b00;
-
-	ushort i = 0;
     while(true)
     {
-    	lcd.fill(i);
-    	i++;
-        GPIOG.ODR.ODR13.value = !GPIOG.ODR.ODR13.value;
-        trace.writeLine("x"); //mostly for delay
+    	lcd.fill(0x07E0);
+    	statusLED.toggle();
+    	lcd.fill(0xF81F);
+    	statusLED.toggle();
+        //statusLED.on();
+        //trace.writeLine("On"); //mostly for delay
+
+		//lcd.fill(0x07E0);
+        //statusLED.off();
+        //trace.writeLine("Off");
     }
 }

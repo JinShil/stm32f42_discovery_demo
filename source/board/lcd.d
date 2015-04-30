@@ -28,3 +28,13 @@ public void fill(ushort color)
 {
 	ltdc.fill(color);
 }
+
+public void on()
+{
+	ILI9341.on();
+}
+
+public void off()
+{
+	ILI9341.off();
+}

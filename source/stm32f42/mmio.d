@@ -70,16 +70,12 @@ final abstract class MyPeripheral : Peripheral!(0x2000_1000)
 */
 module stm32f42.mmio;
 
+import gcc.attribute;
+
 private alias Address    = uint;
 private alias BitIndex   = uint;
 private alias HalfWord   = ushort;
 private alias Word       = uint;
-
-version (GNU) 
-{
-  static import gcc.attribute;
-  enum inline = gcc.attribute.attribute("forceinline");
-}
 
 // These are the bit band address that can be translated to bit-band addresses
 // that can address a single bit
@@ -352,7 +348,7 @@ mixin template BitFieldMutation(Mutability mutability, ValueType_)
         /***********************************************************************
             Get this BitField's value
         */
-        static @property ValueType value()
+        @inline static @property ValueType value()
         {
             // If only a single bit, use bit banding
             static if (numberOfBits == 1 && isBitBandable)
@@ -394,7 +390,7 @@ mixin template BitFieldMutation(Mutability mutability, ValueType_)
                 /***********************************************************************
                     Clears bit by writing a '0'
                 */
-                static void clear()
+                @inline static void clear()
                 {
                     value = false;
                 }
@@ -404,7 +400,7 @@ mixin template BitFieldMutation(Mutability mutability, ValueType_)
                 /***********************************************************************
                     Clears bit by writing a '1'
                 */
-                static void clear()
+                @inline static void clear()
                 {
                     value = true;
                 }
@@ -414,7 +410,7 @@ mixin template BitFieldMutation(Mutability mutability, ValueType_)
                 /***********************************************************************
                     Sets bit by writing a '1'
                 */
-                static void set()
+                @inline static void set()
                 {
                     value = true;
                 }
@@ -427,7 +423,7 @@ mixin template BitFieldMutation(Mutability mutability, ValueType_)
         /***********************************************************************
             Set this BitField's value
         */
-        static @property void value(ValueType value_)
+        @inline static @property void value(ValueType value_)
         {             
             // If only a single bit, use bit banding
             static if (numberOfBits == 1 && isBitBandable)
@@ -533,7 +529,7 @@ abstract class Peripheral(Bus, Address peripheralOffset)
           Whether or not the address has a bit-banded alias
         */
         private static @property auto isBitBandable()
-        {                
+        {               
             return (address >= PeripheralRegionStart && address <= PeripheralRegionEnd)
                 || (address >= SRAMRegionStart && address <= SRAMRegionEnd);
         }
@@ -613,7 +609,7 @@ abstract class Peripheral(Bus, Address peripheralOffset)
         */
         //TODO: add a function for clearing or setting bits simultaneously
         //TODO: this doesn't seem to work.  Need to investigate
-        static void setValue(T...)()
+        @inline static void setValue(T...)()
         {                   
             // number of arguments must be even
             static assert(!(T.length & 1), "Wrong number of arguments");
