@@ -23,6 +23,7 @@ import trace = stm32f42.trace;
 
 package void init()
 {
+	RCC.APB2ENR.SPI5EN.value = true;
 	RCC.AHB1ENR.GPIOFEN.value = true;
 	
 	//Pins F7,F8,F9 speed
@@ -31,6 +32,7 @@ package void init()
 		setValue
 		!(
 			  OSPEEDR7, 0b11
+			, OSPEEDR8, 0b11  
 			, OSPEEDR9, 0b11
 		);
 	}
@@ -41,6 +43,7 @@ package void init()
 		setValue
 		!(
 			  MODER7, 0b10
+			, MODER8, 0b10
 			, MODER9, 0b10
 		);
 	}
@@ -51,6 +54,7 @@ package void init()
 		setValue
 		!(
 			  PUPDR7, 0b00
+			, PUPDR8, 0b00
 			, PUPDR9, 0b00
 		);
 	}
@@ -61,45 +65,35 @@ package void init()
 		setValue
 		!(
 			  OT7, 0b00
+			, OT8, 0b00
 			, OT9, 0b00
 		);
 	}
 	
 	// alternate function SPI5
 	GPIOF.AFRL.AFRL7.value = 0x05;  
+	GPIOF.AFRH.AFRH8.value = 0x05; 
 	GPIOF.AFRH.AFRH9.value = 0x05;
 		
-	RCC.APB2ENR.SPI5EN.value = true;
+	
 	
 	// disable before configuring
 	SPI5.CR1.SPE.value = false;
-	
-	SPI5.I2SCFGR.I2SMOD.value = 0;  //SPI mode
-	
-	with(SPI5.CR2)
-	{
-		setValue
-		!(
-			  SSOE, 1      
-			, FRF,  0   // Motorola mode
-		);
-	}
+		
 	
 	with(SPI5.CR1)
 	{
 		setValue
 		!(
-			  BIDIMODE, 0       // two-line unidirectional
-			, BR,       0b001   // fPCLK/16
-			, CPHA,     0       // clock phase first edge
-			, CPOL,     0       // clock polarity low
-			, DFF,      0       // 8-bit data frame format
-			, LSBFIRST, 0       // MSB first
-			, SSM,      false   // Software slave management
+			  BIDIMODE, 0       // two-line unidirectional 
+			, BR,       0b100   // fPCLK/32
+			, SSM,      1       // Software slave management
 			, MSTR,     1       // master mode
-			, CRCEN,    false   // disable CRC
 		);
 	}
+	
+	// Needed because of SSM
+	SPI5.CR2.SSOE.value = true;
 
 	//enable
 	SPI5.CR1.SPE.value = true;
@@ -108,7 +102,7 @@ package void init()
 package void transmit(ubyte value)
 {	
 	//wait until TX register is empty
-	while(!SPI5.SR.TXE.value) {}
+	while(!SPI5.SR.TXE.value || SPI5.SR.BSY.value) {}
 	
 	// transmit a new byte
 	SPI5.DR.DR.value = value;

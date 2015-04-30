@@ -21,12 +21,13 @@ import ltdc = board.ltdc;
 package void init()
 {
 	ILI9341.init();
-	ltdc.init();
+	//ltdc.init();
 }
 
 public void fill(ushort color)
 {
-	ltdc.fill(color);
+	ILI9341.fill(color);
+	//ltdc.fill(color);
 }
 
 public void on()

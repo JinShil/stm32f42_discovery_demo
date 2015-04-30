@@ -289,7 +289,7 @@ package void init()
 	
 	RCC.AHB1ENR.GPIOFEN.value = true;
 	
-	// F10 = Enable
+	// F10 = Data Enable
 	GPIOF.OSPEEDR.OSPEEDR10.value = 0b10;
 	GPIOF.MODER.MODER10.value = 0b10;
 	GPIOF.PUPDR.PUPDR10.value = 0b00;
@@ -380,12 +380,12 @@ package void init()
 		setValue
 		!(
 			  PLLSAIN, 192 
-			, PLLSAIQ, 7  
+			//, PLLSAIQ, 7  
 			, PLLSAIR, 4  
 		);
 	}
 	
-	RCC.DCKCFGR.PLLSAIDIVR.value = 0b01; //divide by 4
+	RCC.DCKCFGR.PLLSAIDIVR.value = 0b10; //divide by 4
 	
 	RCC.CR.PLLISAION.value = true; 
 	while(!RCC.CR.PLLSAIRDY.value) { }
@@ -451,13 +451,13 @@ package void init()
 	{
 		setValue
 		!(
-			  BCRED,   0  
+			  BCRED,   0xFF 
 			, BCGREEN, 0  
 			, BCBLUE,  0  
 		);
 	}
 	
-	//Layer configuration
+	//Layer1 configuration
 	with(LTDC.L1WHPCR)
 	{
 		setValue
@@ -490,6 +490,7 @@ package void init()
 	
 	LTDC.L1CFBAR.CFBADD.value = cast(uint)(frameBuffer.ptr);
 	
+	
 	/* the length of one line of pixels in bytes + 3 then :
     Line Length = Active high width x number of bytes per pixel + 3 
     Active high width         = LCD_PIXEL_WIDTH 
@@ -510,9 +511,8 @@ package void init()
 	LTDC.GCR.DEN.value = true;      //enable dithering
 	
 	LTDC.L1CR.LEN.value = true;     //enable layer 1
-	LTDC.L2CR.LEN.value = false;    //disable layer 2
 	
-	LTDC.SRCR.IMR.value = 1;        //reload configuration
+	LTDC.SRCR.IMR.value = true;        //reload configuration
 	
 	LTDC.GCR.LTDCEN.value = true;   //enable controller
 }
