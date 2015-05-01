@@ -11,6 +11,21 @@ A simple demonstration of using D to bare-metal program an [STM32F29I Discovery 
 * [Compile-time enforcement of register/bitfield mutability] (https://github.com/JinShil/stm32f42_discovery_demo/blob/master/source/stm32f42/mmio.d#L346-L456)
 * [Compile-time optimization of MMIO register access](https://github.com/JinShil/stm32f42_discovery_demo/blob/master/source/stm32f42/mmio.d#L346-L456) by turning byte- and half-word-aligned accesses into single, atomic reads/writes. Single-bit bitfields are optimized at compile time to use ARM's bitbanding feature for atomic access.  This increases performance, reduces code size, and is all abstracted from the user.
 * [Setting multiple bit fields in a register with a single read-modify-write] (https://github.com/JinShil/stm32f42_discovery_demo/blob/master/source/stm32f42/mmio.d#L610-L616)
+
+```
+with(GPIOA.MODER)
+{
+	setValue
+	!(
+		  MODER3,  0b10  // Alternate function mode
+		, MODER4,  0b10
+		, MODER6,  0b10
+		, MODER11, 0b10
+		, MODER12, 0b10
+	);
+}
+```
+
 * Seems to be pretty fast, but I still need to verify the generated code to ensure optimizations are being performed properly
 * Small Code Size (6k).  The data in the BSS segment is my LCD's frame buffer, so that really doesn't count.
 
