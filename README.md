@@ -1,13 +1,17 @@
 # stm32f42_discovery_demo
 A simple demonstration of using D to bare-metal program an [STM32F29I Discovery Board](http://www.st.com/web/catalog/tools/FM116/SC959/SS1532/PF259090)
 
+![](https://raw.githubusercontent.com/JinShil/stm32f42_discovery_demo/master/images/teaser.jpg)
+
+[Download Video](https://raw.githubusercontent.com/JinShil/stm32f42_discovery_demo/master/images/teaser.mp4)
+
 ## The Good
 * It works!
 * No CRT startup files, libgcc, libc, or vendor's C peripheral libraries were used.  EVERYTHING is in D. 
 * [Compile-time enforcement of register/bitfield mutability] (https://github.com/JinShil/stm32f42_discovery_demo/blob/master/source/stm32f42/mmio.d#L346-L456)
 * [Compile-time optimization of MMIO register access](https://github.com/JinShil/stm32f42_discovery_demo/blob/master/source/stm32f42/mmio.d#L346-L456) by turning byte- and half-word-aligned accesses into single, atomic reads/writes. Single-bit bitfields are optimized at compile time to use ARM's bitbanding feature for atomic access.  This increases performance, reduces code size, and is all abstracted from the user.
 * [Setting multiple bit fields in a register with a single read-modify-write] (https://github.com/JinShil/stm32f42_discovery_demo/blob/master/source/stm32f42/mmio.d#L610-L616)
-* Seems to be pretty fast, but I still need to verify the generated code to ensure optimizations are being performed properlly
+* Seems to be pretty fast, but I still need to verify the generated code to ensure optimizations are being performed properly
 * Small Code Size (6k).  The data in the BSS segment is my LCD's frame buffer, so that really doesn't count.
 
 ```
@@ -15,8 +19,9 @@ text       data     bss     dec      hex   filename
 6200       0        153600  159800   27038 binary/firmware
 ```
 * The code resembles the register descriptions in the STM32 reference manual for easy cross-referenceing.
-(side-by-side image of datasheet with IDE)
-* Create compatibility with tooling (Show DDOC and Register Outline in IDE)
+![](https://raw.githubusercontent.com/JinShil/stm32f42_discovery_demo/master/images/cross-referencing.png)
+* Good integration with tooling.  e.g Register descriptions in DDoc popups, and register layout in outline and code completion windows.  The code is my datasheet.
+![](https://raw.githubusercontent.com/JinShil/stm32f42_discovery_demo/master/images/tooling.png)
 
 
 ## The Bad
