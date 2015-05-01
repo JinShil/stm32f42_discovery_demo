@@ -18,20 +18,27 @@ module main;
 import lcd = board.lcd;
 import trace = stm32f42.trace;
 import statusLED = board.statusLED;
+import random = board.random;
 
 void main()
 {        
+	lcd.fillRect(0, 0, lcd.getWidth(), lcd.getHeight(), 0x07E0);
+	
     while(true)
     {
-    	lcd.fill(0x07E0);
+    	uint r = random.get();
+    	ushort color = cast(ushort)(r & 0xFFFF);
+    	
+    	r = random.get();
+    	int x = cast(int)((r >> 16) % lcd.getWidth());
+    	int y = cast(int)(r % lcd.getHeight());
+    	
+    	r = random.get();
+    	uint width = (r >> 16) % lcd.getWidth();
+    	uint height = r % lcd.getHeight();
+    	
+    	lcd.fillRect(x, y, width, height, color);
     	statusLED.toggle();
-    	lcd.fill(0xF81F);
-    	statusLED.toggle();
-        //statusLED.on();
-        //trace.writeLine("On"); //mostly for delay
-
-		//lcd.fill(0x07E0);
-        //statusLED.off();
-        //trace.writeLine("Off");
+    	
     }
 }

@@ -15,6 +15,8 @@
 
 module board.ltdc;
 
+import gcc.attribute;
+
 import stm32f42.gpio;
 import stm32f42.rcc;
 import stm32f42.ltdc;
@@ -25,6 +27,16 @@ private enum width  = 240;
 private enum height = 320;
 
 __gshared ushort frameBuffer[width * height] = void;
+
+@inline package uint getWidth()
+{
+	return width;
+}
+
+@inline package uint getHeight()
+{
+	return height;
+}
 
 package void init()
 {	
@@ -517,10 +529,11 @@ package void init()
 	LTDC.GCR.LTDCEN.value = true;   //enable controller
 }
 
-package void fill(ushort color)
+package void fillSpan(int x, int y, uint spanWidth, ushort color)
 {
-	for(int i = 0; i < (width * height); i++)
+	int start = y * width + x;
+	for(int i = 0; i < spanWidth; i++)
 	{
-		frameBuffer[i] = color;
+		frameBuffer[start + i] = color;
 	}
 }

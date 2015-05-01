@@ -289,7 +289,6 @@ package void init()
 	wrxLow();
 	
 	
-	
 	//Sleep out
 	write(0x11);
 	//Delay 1000000;
@@ -300,33 +299,4 @@ package void init()
 
 	//GRAM
 	//write(0x2C);
-}
-
-public void on()
-{
-	write(0x29);
-}
-
-public void off()
-{
-	write(0x28);
-}
-
-public void fill(ushort color)
-{
-	//Column address
-	write(0x2A, 0x00, 0x00, (240 >> 8) & 0xFF, 240 & 0xFF);
-	
-	//Page address
-	write(0x2B, 0x00, 0x00, (320 >> 8) & 0xFF, 320 & 0xFF);
-	
-	writeCommand(0x2C);
-	wrxHigh();  // high to send data
-	for(int i = 0; i < (240 * 320); i++)
-	{
-		spi5.transmit(color >> 8);
-		spi5.transmit(color & 0xFF);
-	}
-	csHigh();
-	wrxLow();
 }

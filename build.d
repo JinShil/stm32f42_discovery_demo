@@ -40,6 +40,7 @@ void main(string[] args)
           ~ " -Iruntime -Immio"
           ~ " -S"
           ~ " -Isource/runtime" // to import runtime automatically
+          ~ " -fno-bounds-check -fno-invariants -fno-in -fno-out" // -fno-assert gives me a broken binary
           
           // section anchors with -fdata-sections and --gc-sections causes problems
           // http://forum.dlang.org/post/yjhogkcbegpsrxjkrfmh@forum.dlang.org
@@ -68,10 +69,10 @@ void main(string[] args)
     cmd = `sed -e 's/^\(\.LC[0-9]*\)\(\:\)/\.section .rodata\1\n\1\2/g' ` ~ assemblyFile1 ~ " >" ~ assemblyFile2;
     //cmd = "cp " ~ assemblyFile1 ~ " " ~ assemblyFile2;
     writeln(cmd);
-    //system(cmd);
+    system(cmd);
     
     // compile new assembly file
-    cmd = "arm-none-eabi-as " ~ assemblyFile1 ~ " -o " ~ objectFile;
+    cmd = "arm-none-eabi-as " ~ assemblyFile2 ~ " -o " ~ objectFile;
     writeln(cmd);
     system(cmd);
     

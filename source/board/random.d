@@ -13,55 +13,26 @@
 // You should have received a copy of the GNU General Public License
 // along with this file.  If not, see <http://www.gnu.org/licenses/>.
 
-module board.lcd;
+module board.random;
 
-import gcc.attribute;
+import stm32f42.rcc;
+import stm32f42.rng;
 
-import ILI9341 = board.ILI9341;
-import ltdc = board.ltdc;
 import trace = stm32f42.trace;
 
 package void init()
 {
-	ILI9341.init();
-	ltdc.init();
+	RCC.AHB2ENR.RNGEN.value = true;
+	RNG.CR.RNGEN.value = true;
 }
 
-@inline public uint getWidth()
+public uint get()
 {
-	return ltdc.getWidth();
-}
-
-@inline public uint getHeight()
-{
-	return ltdc.getHeight();
-}
-
-private int clamp(int value, int min, int max)
-{
-	if (value < min)
+	if (RNG.SR.CECS.value || RNG.SR.SECS.value)
 	{
-		return min;
+		trace.writeLine("RNG Error");
+		while(true) { }
 	}
-	else if (value > max)
-	{
-		return max;
-	}
-	
-	return value;
-}
-
-public void fillRect(int x, int y, uint width, uint height, ushort color)
-{
-	int x2 = x + width;
-	int y2 = y + height;
-	x = clamp(x, 0, getWidth() - 1);
-	y = clamp(y, 0, getHeight() - 1);
-	x2 = clamp(x2, 0, getWidth() - 1);
-	y2 = clamp(y2, 0, getHeight() - 1);
-	width = x2 - x + 1;
-	for(int _y = y; _y <= y2; _y++)
-	{
-		ltdc.fillSpan(x, _y, width, color);
-	}
+	while(!RNG.SR.DRDY.value) { }
+	return RNG.DR.RNDATA.value;
 }

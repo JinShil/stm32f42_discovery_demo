@@ -101,9 +101,9 @@ package void init()
 
 package void transmit(ubyte value)
 {	
-	//wait until TX register is empty
-	while(!SPI5.SR.TXE.value || SPI5.SR.BSY.value) {}
-	
 	// transmit a new byte
 	SPI5.DR.DR.value = value;
+	
+	//wait until TX register is empty
+	while(!SPI5.SR.TXE.value || SPI5.SR.BSY.value) {}
 }

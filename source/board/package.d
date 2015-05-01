@@ -28,6 +28,7 @@ import stm32f42.gpio;
 import lcd = board.lcd;
 import trace = stm32f42.trace;
 import statusLED = board.statusLED;
+import random = board.random;
 
 extern void main();
 
@@ -205,6 +206,9 @@ extern(C) void hardwareInit()
     // Select the main PLL as system clock source
     RCC.CFGR.SW.value = 0b10; // PLL
     while(RCC.CFGR.SWS.value != RCC.CFGR.SW.value) { }
+    
+    // random number generator
+    random.init();
     
     // status LED
     statusLED.init();
