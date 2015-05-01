@@ -607,8 +607,6 @@ abstract class Peripheral(Bus, Address peripheralOffset)
         /***********************************************************************
           Sets multiple bit fields simultaneously
         */
-        //TODO: add a function for clearing or setting bits simultaneously
-        //TODO: this doesn't seem to work.  Need to investigate
         @inline static void setValue(T...)()
         {                   
             // number of arguments must be even
