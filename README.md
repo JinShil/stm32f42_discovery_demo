@@ -33,7 +33,7 @@ with(GPIOA.MODER)
 text       data     bss     dec      hex   filename
 6200       0        153600  159800   27038 binary/firmware
 ```
-* The code resembles the register descriptions in the STM32 reference manual for easy cross-referenceing.
+* The code resembles the register descriptions in the STM32 reference manual for easy cross-referencing.
 ![](https://raw.githubusercontent.com/JinShil/stm32f42_discovery_demo/master/images/cross-referencing.png)
 * Good integration with tooling.  e.g Register descriptions in DDoc popups, and register layout in outline and code completion windows.  The code is my datasheet.
 ![](https://raw.githubusercontent.com/JinShil/stm32f42_discovery_demo/master/images/tooling.png)
