@@ -41,7 +41,7 @@ text       data     bss     dec      hex   filename
 
 ## The Bad
 * [The implementation of D runtime](https://github.com/JinShil/stm32f42_discovery_demo/tree/master/source/runtime) is minimal, and therefore very incomplete.  Many features of D are not usable.
-* volatileLoad/volatileStore were added in 2.067.0, but that has not yet been merged into GDC.  For now, I'm misusing [GDC's `shared` bug](https://github.com/JinShil/stm32f42_discovery_demo/tree/master/source/runtime) as a feature. [See code](https://github.com/JinShil/stm32f42_discovery_demo/blob/master/source/stm32f42/mmio.d#L92-L103).
+* `volatileLoad`/`volatileStore` were added in 2.067.0, but that has not yet been merged into GDC.  For now, I'm misusing [GDC's `shared` bug](https://github.com/JinShil/stm32f42_discovery_demo/tree/master/source/runtime) as a feature. [See code](https://github.com/JinShil/stm32f42_discovery_demo/blob/master/source/stm32f42/mmio.d#L92-L103).
 * Due to [bug 12496](https://issues.dlang.org/show_bug.cgi?id=12496), I can't enforce that a `Bitfield` belongs to a `Register` when using the `setValue` template.
 * Really long build times (Nearly 2 minutes to generate a 6k binary!).  I suspect that is due to my liberal use of D's metaprogramming and compile-time features.
 
