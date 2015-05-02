@@ -40,13 +40,13 @@ text       data     bss     dec      hex   filename
 
 
 ## The Bad
-* I didn't put much diligence and care into some of the code, because I was anxious to just get something to appear on the LCD screen.  There are a lot of magic numbers that should be enums, and there is no hardware abstraction layer - the program directly manipulates the memory-mapped IO registers.
 * [The implementation of D runtime](https://github.com/JinShil/stm32f42_discovery_demo/tree/master/source/runtime) is minimal, and therefore very incomplete.  Many features of D are not usable.
 * volatileLoad/volatileStore were added in 2.067.0, but that has not yet been merged into GDC.  For now, I'm misusing [GDC's `shared` bug](https://github.com/JinShil/stm32f42_discovery_demo/tree/master/source/runtime) as a feature. [See code](https://github.com/JinShil/stm32f42_discovery_demo/blob/master/source/stm32f42/mmio.d#L92-L103).
 * Due to [bug 12496](https://issues.dlang.org/show_bug.cgi?id=12496), I can't enforce that a `Bitfield` belongs to a `Register` when using the `setValue` template.
 * Really long build times (Nearly 2 minutes to generate a 6k binary!).  I suspect that is due to my liberal use of D's metaprogramming and compile-time features.
 
 ## The Ugly
+* I didn't put much diligence and care into some of the code, because I was anxious to just get something to appear on the LCD screen.  There are a lot of magic numbers that should be enums, and there is no hardware abstraction layer - the program directly manipulates the memory-mapped IO registers.
 * [TypeInfo faking](https://youtu.be/o5m0m_ZG9e8?t=2513).  [Potential solution](https://issues.dlang.org/show_bug.cgi?id=12270)
 * The compiler generates a `TypeInfo.name` string for each and every bitfield in my code, and puts it in the `rodata` segment.  Due to [GCC bug 192](https://gcc.gnu.org/bugzilla/show_bug.cgi?id=192), `-fdata-sections` doesn't put this data in its own section, so my binary becomes more than 400k.  [See this discussion for details](http://forum.dlang.org/post/quemhwpgijwmqtpxukiv@forum.dlang.org).  So, I added a [sed hack](https://github.com/JinShil/stm32f42_discovery_demo/blob/master/build.d#L69) to my build script put these strings in their own sections, and that brings my binary down to around 5-6k.  But it's not perfect and sometimes results in removing strings that are needed.
 * Using an unimplemented druntime feature will result in a linker error, at best, instead of a compiler error.  [Potential solution](http://forum.dlang.org/post/psssnzurlzeqeneagora@forum.dlang.org).
