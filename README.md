@@ -35,7 +35,7 @@ text       data     bss     dec      hex   filename
 ```
 * The code resembles the register descriptions in the STM32 reference manual for easy cross-referencing.
 ![](https://raw.githubusercontent.com/JinShil/stm32f42_discovery_demo/master/images/cross-referencing.png)
-* Good integration with tooling.  e.g Register descriptions in DDoc popups, and register layout in outline and code completion windows.  The code is my datasheet.
+* Good integration with tooling.  e.g Register descriptions in DDoc popups, and register layout in outline and code completion windows.  In other words, the code *is* the datasheet.
 ![](https://raw.githubusercontent.com/JinShil/stm32f42_discovery_demo/master/images/tooling.png)
 
 
