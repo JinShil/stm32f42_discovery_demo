@@ -9,7 +9,6 @@ alias string = immutable(char)[];
 class Object
 { }
 
-
 class TypeInfo
 { }
 
