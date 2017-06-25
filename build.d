@@ -9,6 +9,7 @@ import std.stdio;
 
 void run(string cmd)
 {
+    writeln(cmd);
     auto result = executeShell(cmd);
     writeln(result.output);
 }
@@ -66,24 +67,19 @@ void main(string[] args)
           ~ " " ~ sourceFiles
           
           ~ " -o " ~ assemblyFile1;                  
-            
-    writeln(cmd);
     run(cmd);
     
     // compensate for GCC bug 192: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=192
     cmd = `sed -e 's/^\(\.LC[0-9]*\)\(\:\)/\.section .rodata\1\n\1\2/g' ` ~ assemblyFile1 ~ " >" ~ assemblyFile2;
     //cmd = "cp " ~ assemblyFile1 ~ " " ~ assemblyFile2;
-    writeln(cmd);
     run(cmd);
     
     // compile new assembly file
     cmd = "arm-none-eabi-as " ~ assemblyFile2 ~ " -o " ~ objectFile;
-    writeln(cmd);
     run(cmd);
     
     // link, creating executable
     cmd = "arm-none-eabi-ld " ~ objectFile ~ " -Tlinker/linker.ld --gc-sections -o " ~ outputFile;
-    writeln(cmd);
     run(cmd);
     
     // display the size
