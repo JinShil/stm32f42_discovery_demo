@@ -7,6 +7,12 @@ import std.path;
 import std.process;
 import std.stdio;
 
+void run(string cmd)
+{
+    auto result = executeShell(cmd);
+    writeln(result.output);
+}
+
 void main(string[] args)
 {
     auto sourceDir = "source";
@@ -24,7 +30,7 @@ void main(string[] args)
     
     // remove any intermediate files
     string cmd = "rm -f " ~ binaryDir ~ "/*";
-    system(cmd);
+    run(cmd);
 
 	string sourceFiles = sourceDir
 		.dirEntries("*.d", SpanMode.depth)
@@ -34,7 +40,6 @@ void main(string[] args)
 
 	
     // compile to temporary assembly file
-    // anything greater than -01 breaks things.  Still trying to figure out why
     cmd = "arm-none-eabi-gdc -c -O3 -nophoboslib -nostdinc -nodefaultlibs -nostdlib -fno-emit-moduleinfo"
           ~ " -mthumb -mcpu=cortex-m4"
           ~ " -Iruntime -Immio"
@@ -63,24 +68,24 @@ void main(string[] args)
           ~ " -o " ~ assemblyFile1;                  
             
     writeln(cmd);
-    system(cmd);
+    run(cmd);
     
     // compensate for GCC bug 192: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=192
     cmd = `sed -e 's/^\(\.LC[0-9]*\)\(\:\)/\.section .rodata\1\n\1\2/g' ` ~ assemblyFile1 ~ " >" ~ assemblyFile2;
     //cmd = "cp " ~ assemblyFile1 ~ " " ~ assemblyFile2;
     writeln(cmd);
-    system(cmd);
+    run(cmd);
     
     // compile new assembly file
     cmd = "arm-none-eabi-as " ~ assemblyFile2 ~ " -o " ~ objectFile;
     writeln(cmd);
-    system(cmd);
+    run(cmd);
     
     // link, creating executable
     cmd = "arm-none-eabi-ld " ~ objectFile ~ " -Tlinker/linker.ld --gc-sections -o " ~ outputFile;
     writeln(cmd);
-    system(cmd);
+    run(cmd);
     
     // display the size
-    system("arm-none-eabi-size " ~ outputFile);
+    run("arm-none-eabi-size " ~ outputFile);
 }
