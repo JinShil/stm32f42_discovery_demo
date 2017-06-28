@@ -54,16 +54,7 @@ void OnHardFault()
     // Enable Core-coupled memory for stack
     RCC.AHB1ENR.CCMDATARAMEN.value = true;
     
-    // call main
-    version(GNU)
-    {
-      asm
-      {
-          " ldr r2, handler_address
-          bx r2
-          handler_address: .word hardwareInit";
-      };
-    }
+    hardwareInit();
 }
 
 // defined in the linker

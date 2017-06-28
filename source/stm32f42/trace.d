@@ -20,22 +20,7 @@ module stm32f42.trace;
 */
 private void semihostingInvoke(in int command, in void* message)
 {
-  // LDC and GDC use slightly different inline assembly syntax, so we have to
-  // differentiate them with D's conditional compilation feature, version.
-  version(LDC)
-  {
-    __asm
-    (
-      "mov r0, $0;
-       mov r1, $1;
-       bkpt #0xAB",
-      "r,r,~{r0},~{r1}",
-      command, message
-    );
-  }
-  else version(GNU)
-  {
-    asm
+    /*asm
     {
         "mov r0, %[cmd];
          mov r1, %[msg];
@@ -43,8 +28,7 @@ private void semihostingInvoke(in int command, in void* message)
         :
         : [cmd] "r" command, [msg] "r" message
         : "r0", "r1", "memory";
-    };
-  }
+    };*/
 }
 
 /************************************************************************************

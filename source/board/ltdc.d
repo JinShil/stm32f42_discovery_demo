@@ -26,7 +26,7 @@ import trace = stm32f42.trace;
 private enum width  = 240;
 private enum height = 320;
 
-__gshared ushort frameBuffer[width * height] = void;
+__gshared ushort[width * height] frameBuffer = void;
 
 @inline package uint getWidth()
 {

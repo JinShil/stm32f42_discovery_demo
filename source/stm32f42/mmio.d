@@ -89,7 +89,7 @@ private immutable size_t  SRAMRegionSize               = 0x000F_FFFFu;
 private immutable Address SRAMRegionEnd                = SRAMRegionStart + SRAMRegionSize - 1;
 private immutable Address SRAMBitBandRegionStart       = 0x2200_0000u;
 
-@inline T volatileLoad(T)(T* a) 
+/*@inline T volatileLoad(T)(T* a) 
 {
     asm { "" ::: "memory"; };
     return *cast(shared T*)a;
@@ -99,8 +99,44 @@ private immutable Address SRAMBitBandRegionStart       = 0x2200_0000u;
 {
     asm { "" ::: "memory"; };
     *cast(shared T*)a = v;
+}*/
 
+
+
+T volatileLoad(T)(T* a)
+{
+    import core.bitop;
+    static if (T.sizeof == 1)
+    {
+        return cast(T)volatileLoad(cast(ubyte*)a);
+    }
+    else static if (T.sizeof == 2)
+    {
+        return cast(T)volatileLoad(cast(ushort*)a);
+    }
+    else
+    {
+        return cast(T)volatileLoad(cast(uint*)a);
+    }
 }
+
+void volatileStore(T)(T*a, in T v)
+{
+    import core.bitop;
+    static if (T.sizeof == 1)
+    {
+        volatileStore(cast(ubyte*)a, cast(ubyte)v);
+    }
+    else static if (T.sizeof == 2)
+    {
+        volatileStore(cast(ushort*)a, cast(ushort)v);
+    }
+    else
+    {
+        volatileStore(cast(uint*)a, cast(uint)v);
+    }
+}
+
 
 enum Access
 {    
