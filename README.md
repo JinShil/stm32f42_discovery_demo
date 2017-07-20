@@ -35,7 +35,7 @@ with(GPIOA.MODER)
 ```
 
 * Seems to be pretty fast, but I still need to verify the generated code to ensure optimizations are being performed properly
-* Small Code Size (6k).  The data in the BSS segment is my LCD's frame buffer, so that really doesn't count.
+* Small Code Size (3k).  The data in the BSS segment is my LCD's frame buffer, so that really doesn't count.
 
 ```
 text       data     bss     dec      hex   filename
