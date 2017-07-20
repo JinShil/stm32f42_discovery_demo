@@ -10,7 +10,7 @@ Simply run `rdmd build.d`.
 
 You need to install dmd, dtools, arm-none-eabi-gcc (for arm-none-eabi-gdb), and openocd from your Linux distribution's package manager.
 
-You will also need a [GDC arm cross compiler](https://github.com/JinShil/arm-none-eabi-gdc).
+You will also need a [GDC ARM cross compiler](https://github.com/JinShil/arm-none-eabi-gdc).
 
 ## The Good
 * It works!
