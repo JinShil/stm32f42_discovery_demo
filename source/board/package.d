@@ -112,24 +112,6 @@ extern(C) void hardwareInit()
     //memset(&__bss_start__, 0, &__bss_end__ - &__bss_start__);
     
     //----------------------------------------------------------------------
-    // Power configuration
-    //----------------------------------------------------------------------
-
-    // Enable clock for the power management peripheral
-    RCC.APB1ENR.PWREN.value = true;
-    
-    // increase voltage from the voltage regulator to acheive a 
-    // greater clock speed at the expense of power consumption
-    PWR.CR.VOS.value = 0b11;
-    
-    // Enable the Over-drive to extend the clock frequency to 180 Mhz
-    PWR.CR.ODEN.value = true;
-    while(!PWR.CSR.ODRDY.value) { }
-    
-    PWR.CR.ODSWEN.value = true;
-    while(!PWR.CSR.ODSWRDY.value) {}
-    
-    //----------------------------------------------------------------------
     // Flash configuration
     //----------------------------------------------------------------------
     
@@ -144,7 +126,6 @@ extern(C) void hardwareInit()
             , LATENCY, 5     // 5 wait states. No choice if we increase
         )();                 //   the clock speed, which we intend to do  
     }
-    
  
     //----------------------------------------------------------------------
     // Clock configuration
@@ -181,7 +162,29 @@ extern(C) void hardwareInit()
             , SW,      0     // HSI is system clock
         )();
     }
+
+    //----------------------------------------------------------------------
+    // Power configuration
+    //----------------------------------------------------------------------
+
+    // Enable clock for the power management peripheral
+    RCC.APB1ENR.PWREN.value = true;
     
+    // increase voltage from the voltage regulator to acheive a 
+    // greater clock speed at the expense of power consumption
+    PWR.CR.VOS.value = 0b11;
+    
+    // Enable the Over-drive to extend the clock frequency to 180 Mhz
+    PWR.CR.ODEN.value = true;
+    while(!PWR.CSR.ODRDY.value) { }
+    
+    PWR.CR.ODSWEN.value = true;
+    while(!PWR.CSR.ODSWRDY.value) {}
+    
+    //----------------------------------------------------------------------
+    // External Clock configuration
+    //----------------------------------------------------------------------
+
     // Turn on high speed external clock
     RCC.CR.HSEON.value = true;
     while(!RCC.CR.HSERDY.value) { }
@@ -206,7 +209,7 @@ extern(C) void hardwareInit()
     // Select the main PLL as system clock source
     RCC.CFGR.SW.value = 0b10; // PLL
     while(RCC.CFGR.SWS.value != RCC.CFGR.SW.value) { }
-    
+
     // random number generator
     random.init();
     

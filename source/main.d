@@ -23,7 +23,7 @@ import random = board.random;
 void main()
 {        
 	lcd.fillRect(0, 0, lcd.getWidth(), lcd.getHeight(), 0x07E0);
-	
+
     while(true)
     {
     	uint r = random.get();

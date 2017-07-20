@@ -241,7 +241,7 @@ package void init()
 	
 	//GRAM
 	write(0x2C);
-	trace.writeLine("GRAM");
+	//trace.writeLine("GRAM");
 	
 	//GAMMA
 	write(0x26, 0x01);
@@ -292,7 +292,7 @@ package void init()
 	//Sleep out
 	write(0x11);
 	//Delay 1000000;
-	trace.writeLine("Delay");
+	//trace.writeLine("Delay");
 	
 	//Display On
 	write(0x29);

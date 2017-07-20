@@ -75,8 +75,6 @@ package void init()
 	GPIOF.AFRH.AFRH8.value = 0x05; 
 	GPIOF.AFRH.AFRH9.value = 0x05;
 		
-	
-	
 	// disable before configuring
 	SPI5.CR1.SPE.value = false;
 		

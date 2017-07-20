@@ -39,7 +39,7 @@ void main(string[] args)
 
 	
     // compile to temporary assembly file
-    cmd = "arm-none-eabi-gdc -c -O3 -nophoboslib -nostdinc -nodefaultlibs -nostdlib -fno-emit-moduleinfo"
+    cmd = "arm-none-eabi-gdc -c -Os -nophoboslib -nostdinc -nodefaultlibs -nostdlib -fno-emit-moduleinfo"
           ~ " -mthumb -mcpu=cortex-m4"
           ~ " -Isource/runtime" // to import runtime automatically
           ~ " -fno-bounds-check -fno-invariants -fno-in -fno-out" // -fno-assert gives me a broken binary
