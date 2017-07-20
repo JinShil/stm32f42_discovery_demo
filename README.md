@@ -5,6 +5,13 @@ A simple demonstration of using D to bare-metal program an [STM32F29I Discovery 
 
 [Download Video](https://raw.githubusercontent.com/JinShil/stm32f42_discovery_demo/master/images/teaser.mp4)
 
+## Build
+Simply run `rdmd build.d`.
+
+You need to install dmd, dtools, arm-none-eabi-gcc (for arm-none-eabi-gdb), and openocd from your Linux distribution's package manager.
+
+You will also need a [GDC arm cross compiler](https://github.com/JinShil/arm-none-eabi-gdc).
+
 ## The Good
 * It works!
 * No CRT startup files, libgcc, libc, or vendor's C peripheral libraries were used.  EVERYTHING is in D. 
