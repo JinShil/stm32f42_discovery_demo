@@ -561,8 +561,8 @@ abstract class Peripheral(Bus, Address peripheralOffset)
           privately to prevent circumventing the access mutability.
         */
         private static @property auto value()
-        {        
-            return *(cast(shared Word*)address);
+        {
+            return volatileLoad(cast(Word*)address);
         }
 
         /***********************************************************************
@@ -570,8 +570,8 @@ abstract class Peripheral(Bus, Address peripheralOffset)
           privately to prevent circumventing the access mutability.
         */
         private static @property void value(Word value)
-        {        
-            *(cast(shared Word*)address) = value;
+        {
+            volatileStore(cast(Word*)address, value);
         }
         
         /***********************************************************************

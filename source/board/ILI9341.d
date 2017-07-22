@@ -171,8 +171,8 @@ package void init()
 	rdxHigh();
 	
 	//Reset
-//	write(0x01);
-//	trace.writeLine("Reset");
+    //write(0x01);
+	//trace.writeLine("Reset");
 	
 	write(0xCA, 0xC3, 0x08, 0x50);
 	

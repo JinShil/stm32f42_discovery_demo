@@ -40,14 +40,9 @@ void main(string[] args)
 	
     // compile to temporary assembly file
     cmd = "arm-none-eabi-gdc -c -Os -nophoboslib -nostdinc -nodefaultlibs -nostdlib -fno-emit-moduleinfo"
-          ~ " -mthumb -mcpu=cortex-m4"
+          ~ " -mthumb -mcpu=cortex-m4 -mtune=cortex-m4"
           ~ " -Isource/runtime" // to import runtime automatically
-          ~ " -fno-bounds-check -fno-invariants -fno-in -fno-out" // -fno-assert gives me a broken binary
-          
-          // section anchors with -fdata-sections and --gc-sections causes problems
-          // http://forum.dlang.org/post/yjhogkcbegpsrxjkrfmh@forum.dlang.org
-          //~ " -fno-section-anchors"           
-          
+          ~ " -fno-bounds-check -fno-invariants -fno-in -fno-out" // -fno-assert gives me a broken binary          
           ~ " -ffunction-sections"
           ~ " -fdata-sections" 
           
