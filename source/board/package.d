@@ -107,7 +107,7 @@ extern(C) void hardwareInit()
     memcpy(&__data_start__, &__text_end__, &__data_end__ - &__data_start__);
     
     // zero out variables initialized to void
-    //memset(&__bss_start__, 0, &__bss_end__ - &__bss_start__);
+    memset(&__bss_start__, 0, &__bss_end__ - &__bss_start__);
     
     //----------------------------------------------------------------------
     // Flash configuration
