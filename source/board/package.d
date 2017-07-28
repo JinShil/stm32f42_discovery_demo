@@ -20,22 +20,20 @@ import gcc.attribute;
 import stm32f42.rcc;
 import stm32f42.pwr;
 import stm32f42.flash;
-// import dma2d;
-// import ltdc;
 import stm32f42.gpio;
-// import nvic;
 
 import lcd = board.lcd;
 import trace = stm32f42.trace;
 import statusLED = board.statusLED;
 import random = board.random;
 
-extern void main();
-
 // These are marked extern(C) to avoid name mangling, so we can refer to them in our linker script
 alias ISR = void function(); // Alias Interrupt Service Routine function pointers
 extern(C) immutable ISR ResetHandler = &OnReset; // Pointer to entry point, OnReset
 extern(C) immutable ISR HardFaultHandler = &OnHardFault; // Pointer to hard fault handler, OnHardFault
+
+// Program's main function
+extern void main();
 
 // Handle any hard faults here
 void OnHardFault()
@@ -59,7 +57,7 @@ void OnHardFault()
     {
       asm
       {
-          " ldr r2, handler_address
+          "ldr r2, handler_address
           bx r2
           handler_address: .word hardwareInit";
       };
@@ -101,7 +99,7 @@ extern(C) void* memcpy(void* dest, void* src, size_t num)
     }
     
     return dest;
-} 
+}
 
 extern(C) void hardwareInit()
 {
@@ -219,5 +217,7 @@ extern(C) void hardwareInit()
     //Initialize the LCD
 	lcd.init();
     
+    // Call C-main
     main();
 }
+
