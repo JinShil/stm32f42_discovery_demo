@@ -593,8 +593,8 @@ abstract class Peripheral(Bus, Address peripheralOffset)
                 // Currently doesn't work due to https://issues.dlang.org/show_bug.cgi?id=12496
                 //static assert(__traits(isSame, __traits(parent, T[0]), __traits(parent, value)), "Bitfield is not part of this register");
             
-                // ensure value assignment is legal
-                //TODO: doesn't compile right now.  Fix later
+                //Ensure value assignment is legal
+                // Need to wrap assignment expression in parentheses due to https://issues.dlang.org/show_bug.cgi?id=17703
                 static assert(__traits(compiles, (T[0].value = T[1])), "Invalid assignment");
             
                 // merge all specified bitFields into a single Word value and assign to this 
