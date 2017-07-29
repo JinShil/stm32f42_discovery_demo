@@ -89,6 +89,10 @@ private immutable size_t  SRAMRegionSize               = 0x000F_FFFFu;
 private immutable Address SRAMRegionEnd                = SRAMRegionStart + SRAMRegionSize - 1;
 private immutable Address SRAMBitBandRegionStart       = 0x2200_0000u;
 
+/****************************************************************************
+   Template wrapping volatileLoad intrinsic casting to basic type based on
+   size.
+*/
 private T volatileLoad(T)(T* a)
 {
     static import core.bitop;
@@ -106,6 +110,10 @@ private T volatileLoad(T)(T* a)
     }
 }
 
+/****************************************************************************
+   Template wrapping volatileStore intrinsic casting to basic type based on
+   size.
+*/
 private void volatileStore(T)(T* a, in T v)
 {
     static import core.bitop;
@@ -123,6 +131,10 @@ private void volatileStore(T)(T* a, in T v)
     }
 }
 
+/****************************************************************************
+   Defines the byte alignment for access to a register.  For example, some 
+   registers can only be accessed by 32-bit words.
+*/
 enum Access
 {    
     /****************************************************************************
@@ -149,7 +161,7 @@ enum Access
 
 /****************************************************************************
    Mutability (Read/Write policy) as specified in the datasheet
-   see pp. 57 of the reference manual
+   see pp. 57 of the STM32 reference manual
 */
 enum Mutability
 {
