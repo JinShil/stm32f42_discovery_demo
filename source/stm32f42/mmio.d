@@ -320,7 +320,7 @@ mixin template BitFieldDimensions(BitIndex bitIndex0, BitIndex bitIndex1)
     */
     private static @property Address byteAlignedAddress() pure
     {
-        return address + (leastSignificantBitIndex / 8);
+        return address + (leastSignificantBitIndex / 8u);
     }
     
     /***********************************************************************
@@ -328,23 +328,27 @@ mixin template BitFieldDimensions(BitIndex bitIndex0, BitIndex bitIndex1)
     */
     private static @property Address halfWordAlignedAddress() pure
     {
-        return address + (leastSignificantBitIndex / 16);
+        return address + (leastSignificantBitIndex / 16u);
     }
     
-    private static @property Address bitBandAddress() pure
+    // The bitBandAddress property should only be generated if the address
+    // of this register is aliased to a bit-banded region
+    static if(isBitBandable)
     {
-        static if (address >= PeripheralRegionStart && address <= PeripheralRegionEnd)
+        private static @property Address bitBandAddress() pure
         {
-            return PeripheralBitBandRegionStart + ((address - PeripheralRegionStart) * 32u) + (leastSignificantBitIndex * 4);
-        }
-        else static if (address >= SRAMRegionStart && address <= SRAMRegionEnd)
-        {
-            return SRAMBitBandRegionStart + ((address - SRAMRegionStart) * 32u) + (leastSignificantBitIndex * 4);
-        }
-        else
-        {
-            return address; //TODO: I need to fix this for SCB
-            //static assert(0, "Not a valid bit band address");
+            static if (address >= PeripheralRegionStart && address <= PeripheralRegionEnd)
+            {
+                return PeripheralBitBandRegionStart + ((address - PeripheralRegionStart) * 32u) + (leastSignificantBitIndex * 4u);
+            }
+            else static if (address >= SRAMRegionStart && address <= SRAMRegionEnd)
+            {
+                return SRAMBitBandRegionStart + ((address - SRAMRegionStart) * 32u) + (leastSignificantBitIndex * 4u);
+            }
+            else
+            {
+                static assert(false, "Address not aliased to bit-banded region");
+            }
         }
     }
 }
@@ -520,7 +524,10 @@ abstract class Peripheral(Bus, Address peripheralOffset)
     // this alias is used by some of the child mixins
     private static immutable Address peripheralAddress = Bus.address + peripheralOffset;
     
-    static @property Address address()
+    /***********************************************************************
+        Gets this peripheral's address as specified in the datasheet
+    */
+    static @property auto address()
     {
         return peripheralAddress;
     }
@@ -583,11 +590,12 @@ abstract class Peripheral(Bus, Address peripheralOffset)
             static if (T.length > 0)
             {
                 //TODO: ensure T[0] is a child of this register
-                //static assert(false, __traits(parent, T[0]).access);
+                // Currently doesn't work due to https://issues.dlang.org/show_bug.cgi?id=12496
+                //static assert(__traits(isSame, __traits(parent, T[0]), __traits(parent, value)), "Bitfield is not part of this register");
             
                 // ensure value assignment is legal
                 //TODO: doesn't compile right now.  Fix later
-                //static assert(__traits(compiles, T[0].value = T[1]), "Invalid assignment");
+                static assert(__traits(compiles, (T[0].value = T[1])), "Invalid assignment");
             
                 // merge all specified bitFields into a single Word value and assign to this 
                 // register's value
