@@ -132,7 +132,7 @@ private void volatileStore(T)(T* a, in T v)
 }
 
 /****************************************************************************
-   Defines the byte alignment for access to a register.  For example, some 
+   Defines the width of access to the fields of a register.  For example, some 
    registers can only be accessed by 32-bit words.
 */
 enum Access
@@ -212,6 +212,27 @@ enum Mutability
     rt_w
 }
 
+/****************************************************************************
+    Defines how the bitfield is aligned within a register
+*/
+private enum Alignment
+{
+    /****************************************************************************
+     Bitfield is not aligned on any bondary
+    */
+    None = 0,
+
+    /****************************************************************************
+     Bitfield is aligned on an 8-bit byte boundary
+    */
+    Byte = 1,
+
+    /****************************************************************************
+     Bitfield is aligned on a 16-bit boundary
+    */
+    HalfWord = 2
+}
+
 /***********************************************************************
     Whether or not the mutability policy allows for reading the bit/
     bitfield's value
@@ -263,26 +284,17 @@ mixin template BitFieldDimensions(BitIndex bitIndex0, BitIndex bitIndex1)
     /***************************************************************
         Index of this BitField's most significant Bit
     */
-    static @property auto mostSignificantBitIndex() pure
-    {
-        return bitIndex0 >= bitIndex1 ? bitIndex0 : bitIndex1;
-    }
+    static immutable auto mostSignificantBitIndex = bitIndex0 >= bitIndex1 ? bitIndex0 : bitIndex1;
 
     /***********************************************************************
         Index of this BitField's least significant Bit
     */
-    static @property auto leastSignificantBitIndex() pure
-    {
-        return bitIndex0 <= bitIndex1 ? bitIndex0 : bitIndex1;
-    }
+    static immutable auto leastSignificantBitIndex = bitIndex0 <= bitIndex1 ? bitIndex0 : bitIndex1;
 
     /***********************************************************************
         Total number of bits in this BitField
     */
-    static @property auto numberOfBits() pure
-    {
-        return mostSignificantBitIndex - leastSignificantBitIndex + 1;
-    }
+    static immutable auto numberOfBits = mostSignificantBitIndex - leastSignificantBitIndex + 1;
 
     /***************************************************************
       Determines if bitIndex is a valid index for this register
@@ -298,11 +310,14 @@ mixin template BitFieldDimensions(BitIndex bitIndex0, BitIndex bitIndex1)
         Gets a bit-mask for this bit field for masking just this BitField out
         of the register.
     */
-    static @property auto bitMask() pure
-    {
-        return ((1 << numberOfBits) - 1) << leastSignificantBitIndex;
-    }
+    private static immutable auto bitMask = numberOfBits >= 32 
+        ? uint.max  // if numberOfBits >=32, the left shift below will fail to compile
+        : ((1 << numberOfBits) - 1) << leastSignificantBitIndex;
     
+    /***********************************************************************
+      Takes a value and moves its bits to align with this bitfields position
+      in the register.
+    */
     private static Word maskValue(T)(T value) pure
     {
         return (value << leastSignificantBitIndex) & bitMask;
@@ -311,38 +326,41 @@ mixin template BitFieldDimensions(BitIndex bitIndex0, BitIndex bitIndex1)
     /***********************************************************************
       Whether or not this bitfield is aligned to an even multiple of bytes
     */
-    private static @property auto isByteAligned() pure
+    private static @property Alignment alignment()
     {
-        return ((mostSignificantBitIndex + 1) % 8) == 0 
-            && (leastSignificantBitIndex % 8) == 0;
+        // If half-word aligned
+        static if (((mostSignificantBitIndex + 1) % 16) == 0 && (leastSignificantBitIndex % 16) == 0)
+        {
+            return Alignment.HalfWord;
+        }
+        // If byte aligned
+        else if (((mostSignificantBitIndex + 1) % 8) == 0 && (leastSignificantBitIndex % 8) == 0)
+        {
+            return Alignment.Byte;
+        }
+        // if not aligned
+        else
+        {
+            return Alignment.None;
+        }
+    }
+            
+    static if (alignment == Alignment.Byte)
+    {
+        /***********************************************************************
+          Gets the address of this bitfield at its aligned byte's location
+        */
+        private static immutable Address byteAlignedAddress = address + (leastSignificantBitIndex / 8u);
     }
     
-    /***********************************************************************
-      Whether or not this bitfield is aligned to an even multiple 16-Bit
-      half-words
-    */
-    private static @property auto isHalfWordAligned() pure
+    static if (alignment == Alignment.HalfWord)
     {
-        return ((mostSignificantBitIndex + 1) % 16) == 0 
-            && (leastSignificantBitIndex % 16) == 0;
+        /***********************************************************************
+          Gets the address of this bitfield at its aligned half-word's location
+        */
+        private static immutable Address halfWordAlignedAddress = address + (leastSignificantBitIndex / 16u);
     }
-    
-    /***********************************************************************
-      Gets the address of this bitfield at its aligned byte's location
-    */
-    private static @property Address byteAlignedAddress() pure
-    {
-        return address + (leastSignificantBitIndex / 8u);
-    }
-    
-    /***********************************************************************
-      Gets the address of this bitfield at its aligned half-word's location
-    */
-    private static @property Address halfWordAlignedAddress() pure
-    {
-        return address + (leastSignificantBitIndex / 16u);
-    }
-    
+
     // The bitBandAddress property should only be generated if the address
     // of this register is aliased to a bit-banded region
     static if(isBitBandable)
@@ -393,13 +411,13 @@ mixin template BitFieldMutation(Mutability mutability, ValueType_)
                 return volatileLoad(cast(ValueType*)bitBandAddress);
             }
             // if can access data with perfect halfword alignment
-            else static if (isHalfWordAligned 
+            else static if (alignment == Alignment.HalfWord  
                 && (access == Access.Byte_HalfWord_Word || access == Access.HalfWord_Word))
             {
                 return volatileLoad(cast(ValueType*)halfWordAlignedAddress);
             }
             // if can access data with perfect byte alignment
-            else static if (isByteAligned 
+            else static if (alignment == Alignment.Byte 
                 && (access == Access.Byte_HalfWord_Word || access == Access.Byte_Word))
             {
                 return volatileLoad(cast(ValueType*)byteAlignedAddress);
@@ -464,13 +482,13 @@ mixin template BitFieldMutation(Mutability mutability, ValueType_)
                 volatileStore(cast(ValueType*)bitBandAddress, value_);
             }
             // if can access data with perfect halfword alignment
-            else static if (isHalfWordAligned 
+            else static if (alignment == Alignment.HalfWord 
                 && (access == Access.Byte_HalfWord_Word || access == Access.HalfWord_Word))
             {
                 volatileStore(cast(ValueType*)halfWordAlignedAddress, value_);
             }
             // if can access data with perfect byte alignment
-            else static if (isByteAligned 
+            else static if (alignment == Alignment.Byte 
                 && (access == Access.Byte_HalfWord_Word || access == Access.Byte_Word))
             {
                 volatileStore(cast(ValueType*)byteAlignedAddress, value_);
@@ -534,15 +552,13 @@ mixin template BitFieldImplementation(BitIndex bitIndex0, BitIndex bitIndex1, Mu
 abstract class Peripheral(Bus, Address peripheralOffset)
 {
     // this alias is used by some of the child mixins
+    // May be able to use __traits(parent) in children if https://issues.dlang.org/show_bug.cgi?id=12496 is ever fixed.
     private static immutable Address peripheralAddress = Bus.address + peripheralOffset;
     
     /***********************************************************************
         Gets this peripheral's address as specified in the datasheet
     */
-    static @property auto address()
-    {
-        return peripheralAddress;
-    }
+    static immutable auto address = Bus.address + peripheralOffset;
     
     /***********************************************************************
       A register for this peripheral
@@ -552,28 +568,21 @@ abstract class Peripheral(Bus, Address peripheralOffset)
         /***********************************************************************
           Gets this register's address as specified in the datasheet
         */
-        static @property auto address() pure
-        {
-            return peripheralAddress + addressOffset;
-        }
+        static immutable auto address = peripheralAddress + addressOffset;
         
         /***********************************************************************
           Whether or not the address has a bit-banded alias
         */
-        private static @property auto isBitBandable()
-        {
-            return (address >= PeripheralRegionStart && address <= PeripheralRegionEnd)
-                || (address >= SRAMRegionStart && address <= SRAMRegionEnd);
-        }
+        static immutable auto isBitBandable = 
+            (address >= PeripheralRegionStart && address <= PeripheralRegionEnd)
+            || (address >= SRAMRegionStart && address <= SRAMRegionEnd);
+
         
         /***********************************************************************
           Gets the data width(byte, half-word, word) access policy for this
           register.
         */
-        static @property auto access() pure
-        {
-            return access_;
-        }
+        static immutable auto access = access_;
         
         /***********************************************************************
           Gets all bits in the register as a single value.  It's only exposed
@@ -597,7 +606,7 @@ abstract class Peripheral(Bus, Address peripheralOffset)
           Recursive template to combine values of each bitfield passed to the 
           setValue function
         */
-        private static Word combineValues(T...)()
+        @inline private static Word combineValues(T...)()
         {    
             static if (T.length > 0)
             {
@@ -624,7 +633,7 @@ abstract class Peripheral(Bus, Address peripheralOffset)
           Recursive template to combine masks of each bitfield passed to the 
           setValue function
         */
-        private static Word combineMasks(T...)()
+        @inline private static Word combineMasks(T...)()
         {
             static if (T.length > 0)
             {        
