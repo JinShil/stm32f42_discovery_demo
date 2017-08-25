@@ -45,7 +45,7 @@ package void init()
 	// A6  = G2
 	// A11 = R4
 	// A12 = R5
-	RCC.AHB1ENR.GPIOAEN.value = true;
+	RCC.AHB1ENR.GPIOAEN = true;
 	
 	with(GPIOA.OSPEEDR)
 	{
@@ -120,7 +120,7 @@ package void init()
 	// B9  = B7
 	// B10 = G4
 	// B11 = G5
-	RCC.AHB1ENR.GPIOBEN.value = true;
+	RCC.AHB1ENR.GPIOBEN = true;
 	
 	with(GPIOB.OSPEEDR)
 	{
@@ -197,7 +197,7 @@ package void init()
 	// C6  = HSYNC
 	// C7  = G6
 	// C10 = R2
-	RCC.AHB1ENR.GPIOCEN.value = true;
+	RCC.AHB1ENR.GPIOCEN = true;
 	
 	with(GPIOC.OSPEEDR)
 	{
@@ -248,11 +248,11 @@ package void init()
 		);
 	}
 	
-	GPIOC.AFRH.AFRH10.value = 0x0E;
+	GPIOC.AFRH.AFRH10 = 0x0E;
 	
 	// D3  = G7
 	// D6  = B2
-	RCC.AHB1ENR.GPIODEN.value = true;
+	RCC.AHB1ENR.GPIODEN = true;
 	
 	with(GPIOD.OSPEEDR)
 	{
@@ -299,21 +299,21 @@ package void init()
 		);
 	}
 	
-	RCC.AHB1ENR.GPIOFEN.value = true;
+	RCC.AHB1ENR.GPIOFEN = true;
 	
 	// F10 = Data Enable
-	GPIOF.OSPEEDR.OSPEEDR10.value = 0b10;
-	GPIOF.MODER.MODER10.value = 0b10;
-	GPIOF.PUPDR.PUPDR10.value = 0b00;
-	GPIOF.OTYPER.OT10.value = 0;
-	GPIOF.AFRH.AFRH10.value = 0x0E;
+	GPIOF.OSPEEDR.OSPEEDR10 = 0b10;
+	GPIOF.MODER.MODER10 = 0b10;
+	GPIOF.PUPDR.PUPDR10 = 0b00;
+	GPIOF.OTYPER.OT10 = 0;
+	GPIOF.AFRH.AFRH10 = 0x0E;
 	
 	// G6  = R7
 	// G7  = DOTCLK
 	// G10 = G3
 	// G11 = B3
 	// G12 = B4
-	RCC.AHB1ENR.GPIOGEN.value = true;
+	RCC.AHB1ENR.GPIOGEN = true;
 	
 	with(GPIOG.OSPEEDR)
 	{
@@ -397,12 +397,12 @@ package void init()
 		);
 	}
 	
-	RCC.DCKCFGR.PLLSAIDIVR.value = 0b10; //divide by 4
+	RCC.DCKCFGR.PLLSAIDIVR = 0b10; //divide by 4
 	
-	RCC.CR.PLLISAION.value = true; 
+	RCC.CR.PLLISAION = true; 
 	while(!RCC.CR.PLLSAIRDY.value) { }
 	
-	RCC.APB2ENR.LTDCEN.value = true;
+	RCC.APB2ENR.LTDCEN = true;
 	
 	enum hsync  = 10;
 	enum hbp    = 20;
@@ -488,8 +488,8 @@ package void init()
 		);
 	}
 	
-	LTDC.L1PFCR.PF.value = 0b010;      //RGB565
-	LTDC.L1CACR.CONSTA.value = 0xFF;
+	LTDC.L1PFCR.PF = 0b010;      //RGB565
+	LTDC.L1CACR.CONSTA = 0xFF;
 	
 	with(LTDC.L1BFCR)
 	{
@@ -500,7 +500,7 @@ package void init()
 		);
 	}
 	
-	LTDC.L1CFBAR.CFBADD.value = cast(uint)(frameBuffer.ptr);
+	LTDC.L1CFBAR.CFBADD = cast(uint)(frameBuffer.ptr);
 	
 	
 	/* the length of one line of pixels in bytes + 3 then :
@@ -517,16 +517,16 @@ package void init()
 		);
 	}
 	
-	LTDC.L1CFBLNR.CFBLNBR.value = height;
+	LTDC.L1CFBLNR.CFBLNBR = height;
 		
 
-	LTDC.GCR.DEN.value = true;      //enable dithering
+	LTDC.GCR.DEN = true;      //enable dithering
 	
-	LTDC.L1CR.LEN.value = true;     //enable layer 1
+	LTDC.L1CR.LEN = true;     //enable layer 1
 	
-	LTDC.SRCR.IMR.value = true;        //reload configuration
+	LTDC.SRCR.IMR = true;        //reload configuration
 	
-	LTDC.GCR.LTDCEN.value = true;   //enable controller
+	LTDC.GCR.LTDCEN = true;   //enable controller
 }
 
 package void fillSpan(int x, int y, uint spanWidth, ushort color)

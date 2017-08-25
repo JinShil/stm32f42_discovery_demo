@@ -22,8 +22,8 @@ import trace = stm32f42.trace;
 
 package void init()
 {
-	RCC.AHB2ENR.RNGEN.value = true;
-	RNG.CR.RNGEN.value = true;
+	RCC.AHB2ENR.RNGEN = true;
+	RNG.CR.RNGEN = true;
 }
 
 public uint get()

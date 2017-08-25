@@ -23,8 +23,8 @@ import trace = stm32f42.trace;
 
 package void init()
 {
-	RCC.APB2ENR.SPI5EN.value = true;
-	RCC.AHB1ENR.GPIOFEN.value = true;
+	RCC.APB2ENR.SPI5EN = true;
+	RCC.AHB1ENR.GPIOFEN = true;
 	
 	//Pins F7,F8,F9 speed
 	with(GPIOF.OSPEEDR)
@@ -71,12 +71,12 @@ package void init()
 	}
 	
 	// alternate function SPI5
-	GPIOF.AFRL.AFRL7.value = 0x05;  
-	GPIOF.AFRH.AFRH8.value = 0x05; 
-	GPIOF.AFRH.AFRH9.value = 0x05;
+	GPIOF.AFRL.AFRL7 = 0x05;  
+	GPIOF.AFRH.AFRH8 = 0x05; 
+	GPIOF.AFRH.AFRH9 = 0x05;
 		
 	// disable before configuring
-	SPI5.CR1.SPE.value = false;
+	SPI5.CR1.SPE = false;
 		
 	
 	with(SPI5.CR1)
@@ -91,16 +91,16 @@ package void init()
 	}
 	
 	// Needed because of SSM
-	SPI5.CR2.SSOE.value = true;
+	SPI5.CR2.SSOE = true;
 
 	//enable
-	SPI5.CR1.SPE.value = true;
+	SPI5.CR1.SPE = true;
 }
 
 package void transmit(ubyte value)
 {	
 	// transmit a new byte
-	SPI5.DR.DR.value = value;
+	SPI5.DR.DR = value;
 	
 	//wait until TX register is empty
 	while(!SPI5.SR.TXE.value || SPI5.SR.BSY.value) {}

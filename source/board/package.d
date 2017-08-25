@@ -50,7 +50,7 @@ void OnHardFault()
 @naked void OnReset()
 {
     // Enable Core-coupled memory for stack
-    RCC.AHB1ENR.CCMDATARAMEN.value = true;
+    RCC.AHB1ENR.CCMDATARAMEN = true;
     
     // call main
     version(GNU)
@@ -142,7 +142,7 @@ extern(C) void hardwareInit()
     }
     while(!RCC.CR.HSIRDY.value) { }
     
-    RCC.CR.HSEBYP.value = false;
+    RCC.CR.HSEBYP = false;
     
     with(RCC.CFGR)
     {
@@ -166,17 +166,17 @@ extern(C) void hardwareInit()
     //----------------------------------------------------------------------
 
     // Enable clock for the power management peripheral
-    RCC.APB1ENR.PWREN.value = true;
+    RCC.APB1ENR.PWREN = true;
     
     // increase voltage from the voltage regulator to acheive a 
     // greater clock speed at the expense of power consumption
-    PWR.CR.VOS.value = 0b11;
+    PWR.CR.VOS = 0b11;
     
     // Enable the Over-drive to extend the clock frequency to 180 Mhz
-    PWR.CR.ODEN.value = true;
+    PWR.CR.ODEN = true;
     while(!PWR.CSR.ODRDY.value) { }
     
-    PWR.CR.ODSWEN.value = true;
+    PWR.CR.ODSWEN = true;
     while(!PWR.CSR.ODSWRDY.value) {}
     
     //----------------------------------------------------------------------
@@ -184,7 +184,7 @@ extern(C) void hardwareInit()
     //----------------------------------------------------------------------
 
     // Turn on high speed external clock
-    RCC.CR.HSEON.value = true;
+    RCC.CR.HSEON = true;
     while(!RCC.CR.HSERDY.value) { }
     
     // Configure PLL
@@ -201,11 +201,11 @@ extern(C) void hardwareInit()
     }
     
     // Turn on PLL
-    RCC.CR.PLLON.value = true;
+    RCC.CR.PLLON = true;
     while(!RCC.CR.PLLRDY.value){ }
     
     // Select the main PLL as system clock source
-    RCC.CFGR.SW.value = 0b10; // PLL
+    RCC.CFGR.SW = 0b10; // PLL
     while(RCC.CFGR.SWS.value != RCC.CFGR.SW.value) { }
 
     // random number generator

@@ -24,62 +24,62 @@ import statusLED = board.statusLED;
 
 private void csLow()
 {
-	GPIOC.ODR.ODR2.value = 0;
+	GPIOC.ODR.ODR2 = 0;
 }
 
 private void csHigh()
 {
-	GPIOC.ODR.ODR2.value = 1;
+	GPIOC.ODR.ODR2 = 1;
 }
 
 private void csInit()
 {
-	RCC.AHB1ENR.GPIOCEN.value = true;
+	RCC.AHB1ENR.GPIOCEN = true;
 	
-	GPIOC.MODER.MODER2.value = 0b01;      // output
-	GPIOC.PUPDR.PUPDR2.value = 0b00;      // no pull
-	GPIOC.OSPEEDR.OSPEEDR2.value = 0b11;
-	GPIOC.OTYPER.OT2.value = 0b00;        // push-pull
+	GPIOC.MODER.MODER2 = 0b01;      // output
+	GPIOC.PUPDR.PUPDR2 = 0b00;      // no pull
+	GPIOC.OSPEEDR.OSPEEDR2 = 0b11;
+	GPIOC.OTYPER.OT2 = 0b00;        // push-pull
 }
 
 private void wrxLow()
 {
-	GPIOD.ODR.ODR13.value = 0;
+	GPIOD.ODR.ODR13 = 0;
 }
 
 private void wrxHigh()
 {
-	GPIOD.ODR.ODR13.value = 1;
+	GPIOD.ODR.ODR13 = 1;
 }
 
 private void wrxInit()
 {
-	RCC.AHB1ENR.GPIODEN.value = true;
+	RCC.AHB1ENR.GPIODEN = true;
 	
-	GPIOD.MODER.MODER13.value = 0b01;      // output
-	GPIOD.PUPDR.PUPDR13.value = 0b00;      // no pull
-	GPIOD.OSPEEDR.OSPEEDR13.value = 0b11;
-	GPIOD.OTYPER.OT13.value = 0b00;        // push-pull
+	GPIOD.MODER.MODER13 = 0b01;      // output
+	GPIOD.PUPDR.PUPDR13 = 0b00;      // no pull
+	GPIOD.OSPEEDR.OSPEEDR13 = 0b11;
+	GPIOD.OTYPER.OT13 = 0b00;        // push-pull
 }
 
 private void rdxLow()
 {
-	GPIOD.ODR.ODR12.value = 0;
+	GPIOD.ODR.ODR12 = 0;
 }
 
 private void rdxHigh()
 {
-	GPIOD.ODR.ODR12.value = 1;
+	GPIOD.ODR.ODR12 = 1;
 }
 
 private void rdxInit()
 {
-	RCC.AHB1ENR.GPIODEN.value = true;
+	RCC.AHB1ENR.GPIODEN = true;
 	
-	GPIOD.MODER.MODER12.value = 0b01;      // output
-	GPIOD.PUPDR.PUPDR12.value = 0b00;      // no pull
-	GPIOD.OSPEEDR.OSPEEDR12.value = 0b11;
-	GPIOD.OTYPER.OT12.value = 0b00;        // push-pull
+	GPIOD.MODER.MODER12 = 0b01;      // output
+	GPIOD.PUPDR.PUPDR12 = 0b00;      // no pull
+	GPIOD.OSPEEDR.OSPEEDR12 = 0b11;
+	GPIOD.OTYPER.OT12 = 0b00;        // push-pull
 }
 
 private void writeCommand(ubyte value)
