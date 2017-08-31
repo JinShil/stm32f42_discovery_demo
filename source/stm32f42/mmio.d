@@ -104,9 +104,13 @@ private T volatileLoad(T)(T* a) @trusted nothrow
     {
         return cast(T)core.bitop.volatileLoad(cast(ushort*)a);
     }
-    else
+    else static if (T.sizeof == 4)
     {
         return cast(T)core.bitop.volatileLoad(cast(uint*)a);
+    }
+    else
+    {
+        static assert(false, "Size not supported.");
     }
 }
 
@@ -125,9 +129,13 @@ private void volatileStore(T)(T* a, in T v) @trusted nothrow
     {
         core.bitop.volatileStore(cast(ushort*)a, cast(ushort)v);
     }
-    else
+    else static if (T.sizeof == 4)
     {
         core.bitop.volatileStore(cast(uint*)a, cast(uint)v);
+    }
+    else
+    {
+        static assert(false, "Size not supported");
     }
 }
 
