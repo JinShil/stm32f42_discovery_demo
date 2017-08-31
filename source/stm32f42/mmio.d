@@ -93,7 +93,7 @@ private immutable Address SRAMBitBandRegionStart       = 0x2200_0000u;
    Template wrapping volatileLoad intrinsic casting to basic type based on
    size.
 */
-private T volatileLoad(T)(T* a)
+private T volatileLoad(T)(T* a) @trusted
 {
     static import core.bitop;
     static if (T.sizeof == 1)
@@ -114,7 +114,7 @@ private T volatileLoad(T)(T* a)
    Template wrapping volatileStore intrinsic casting to basic type based on
    size.
 */
-private void volatileStore(T)(T* a, in T v)
+private void volatileStore(T)(T* a, in T v) @trusted
 {
     static import core.bitop;
     static if (T.sizeof == 1)
@@ -237,7 +237,7 @@ private enum Alignment
     Whether or not the mutability policy allows for reading the bit/
     bitfield's value
 */
-static auto canRead(Mutability m)
+static auto canRead(immutable Mutability m) @safe pure
 {
     return m == Mutability.r     || m == Mutability.rw   
         || m == Mutability.rt_w  || m == Mutability.rs 
@@ -249,7 +249,7 @@ static auto canRead(Mutability m)
     Whether or not the mutability policy allows for writing the bit/
     bitfield's value
 */
-static auto canWrite(Mutability m)
+static auto canWrite(immutable Mutability m) @safe pure
 {
     return m == Mutability.w     || m == Mutability.rw 
         || m == Mutability.rc_w0 || m == Mutability.rc_w1
@@ -260,7 +260,7 @@ static auto canWrite(Mutability m)
     Whether or not the mutability policy allows for only setting or
     clearing a bit
 */
-static auto canOnlySetOrClear(Mutability m)
+static auto canOnlySetOrClear(immutable Mutability m) @safe pure
 {
     return m == Mutability.rc_w0 || m == Mutability.rc_w1 
         || m == Mutability.rs;
@@ -269,7 +269,7 @@ static auto canOnlySetOrClear(Mutability m)
  /***********************************************************************
     Whether or not the mutability policy applies only to single bits
 */
-static auto isForBitsOnly(Mutability m)
+static auto isForBitsOnly(immutable Mutability m) @safe pure
 {
     return m == Mutability.rc_w0 || m == Mutability.rc_w1 
         || m == Mutability.rs    || m == Mutability.rc_r
@@ -301,7 +301,7 @@ mixin template BitFieldDimensions(BitIndex bitIndex0, BitIndex bitIndex1)
       
       Returns: true if the bitIndex is valid, false if not
     */
-    private static auto isValidBitIndex(BitIndex bitIndex) pure
+    private static auto isValidBitIndex(immutable BitIndex bitIndex) @safe pure
     {
         return bitIndex >= 0 && bitIndex < (Word.sizeof * 8);
     }
@@ -318,7 +318,7 @@ mixin template BitFieldDimensions(BitIndex bitIndex0, BitIndex bitIndex1)
       Takes a value and moves its bits to align with this bitfields position
       in the register.
     */
-    private static Word maskValue(T)(T value) pure
+    private static Word maskValue(T)(T value) @safe pure
     {
         return (value << leastSignificantBitIndex) & bitMask;
     }
@@ -326,7 +326,7 @@ mixin template BitFieldDimensions(BitIndex bitIndex0, BitIndex bitIndex1)
     /***********************************************************************
       Whether or not this bitfield is aligned to an even multiple of bytes
     */
-    private static @property Alignment alignment()
+    private static Alignment alignment() @property @safe pure
     {
         // If half-word aligned
         static if (((mostSignificantBitIndex + 1) % 16) == 0 && (leastSignificantBitIndex % 16) == 0)
@@ -365,7 +365,7 @@ mixin template BitFieldDimensions(BitIndex bitIndex0, BitIndex bitIndex1)
     // of this register is aliased to a bit-banded region
     static if(isBitBandable)
     {
-        private static @property Address bitBandAddress() pure
+        private static Address bitBandAddress() @property @safe pure
         {
             static if (address >= PeripheralRegionStart && address <= PeripheralRegionEnd)
             {
@@ -403,7 +403,7 @@ mixin template BitFieldMutation(Mutability mutability, ValueType_)
         /***********************************************************************
             Get this BitField's value
         */
-        @inline static @property ValueType value()
+        @inline static ValueType value() @property @trusted
         {
             // If only a single bit, use bit banding
             static if (numberOfBits == 1 && isBitBandable)
@@ -441,7 +441,7 @@ mixin template BitFieldMutation(Mutability mutability, ValueType_)
                 /***********************************************************************
                     Clears bit by writing a '0'
                 */
-                @inline static void clear()
+                @inline static void clear() @safe
                 {
                     value = false;
                 }
@@ -451,7 +451,7 @@ mixin template BitFieldMutation(Mutability mutability, ValueType_)
                 /***********************************************************************
                     Clears bit by writing a '1'
                 */
-                @inline static void clear()
+                @inline static void clear() @safe
                 {
                     value = true;
                 }
@@ -461,7 +461,7 @@ mixin template BitFieldMutation(Mutability mutability, ValueType_)
                 /***********************************************************************
                     Sets bit by writing a '1'
                 */
-                @inline static void set()
+                @inline static void set() @safe
                 {
                     value = true;
                 }
@@ -474,7 +474,7 @@ mixin template BitFieldMutation(Mutability mutability, ValueType_)
         /***********************************************************************
             Set this BitField's value
         */
-        @inline static @property void value(ValueType value_)
+        @inline static void value(immutable ValueType value_) @property @trusted
         {             
             // If only a single bit, use bit banding
             static if (numberOfBits == 1 && isBitBandable)
@@ -592,7 +592,7 @@ abstract class Peripheral(Bus, Address peripheralOffset)
           Gets all bits in the register as a single value.  It's only exposed
           privately to prevent circumventing the access mutability.
         */
-        private static @property auto value()
+        private static auto value() @property 
         {
             return volatileLoad(cast(Word*)address);
         }
@@ -601,7 +601,7 @@ abstract class Peripheral(Bus, Address peripheralOffset)
           Sets all bits in the register as a single value.  It's only exposed
           privately to prevent circumventing the access mutability.
         */
-        private static @property void value(Word value)
+        private static void value(immutable Word value) @property 
         {
             volatileStore(cast(Word*)address, value);
         }
