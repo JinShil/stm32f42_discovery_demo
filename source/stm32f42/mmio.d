@@ -555,7 +555,7 @@ mixin template BitFieldImplementation(BitIndex bitIndex0, BitIndex bitIndex1, Mu
 mixin template BitFieldImplementation(BitIndex bitIndex0, BitIndex bitIndex1, Mutability mutability, ValueType)
 {    
     mixin BitFieldDimensions!(bitIndex0, bitIndex1);
-    mixin BitFieldImplementation!(mutability, ValueType);
+    mixin BitFieldMutation!(mutability, ValueType);
 }
 
 /***********************************************************************
