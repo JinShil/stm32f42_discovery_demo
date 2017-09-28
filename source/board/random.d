@@ -28,11 +28,11 @@ package void init()
 
 public uint get()
 {
-	if (RNG.SR.CECS.value || RNG.SR.SECS.value)
+	if (RNG.SR.CECS || RNG.SR.SECS)
 	{
 		trace.writeLine("RNG Error");
 		while(true) { }
 	}
-	while(!RNG.SR.DRDY.value) { }
-	return RNG.DR.RNDATA.value;
+	while(!RNG.SR.DRDY) { }
+	return RNG.DR.RNDATA;
 }

@@ -140,7 +140,7 @@ extern(C) void hardwareInit()
             , PLLI2SON,  false
         );
     }
-    while(!RCC.CR.HSIRDY.value) { }
+    while(!RCC.CR.HSIRDY) { }
     
     RCC.CR.HSEBYP = false;
     
@@ -174,10 +174,10 @@ extern(C) void hardwareInit()
     
     // Enable the Over-drive to extend the clock frequency to 180 Mhz
     PWR.CR.ODEN = true;
-    while(!PWR.CSR.ODRDY.value) { }
+    while(!PWR.CSR.ODRDY) { }
     
     PWR.CR.ODSWEN = true;
-    while(!PWR.CSR.ODSWRDY.value) {}
+    while(!PWR.CSR.ODSWRDY) {}
     
     //----------------------------------------------------------------------
     // External Clock configuration
@@ -185,7 +185,7 @@ extern(C) void hardwareInit()
 
     // Turn on high speed external clock
     RCC.CR.HSEON = true;
-    while(!RCC.CR.HSERDY.value) { }
+    while(!RCC.CR.HSERDY) { }
     
     // Configure PLL
     with(RCC.PLLCFGR)
@@ -202,11 +202,11 @@ extern(C) void hardwareInit()
     
     // Turn on PLL
     RCC.CR.PLLON = true;
-    while(!RCC.CR.PLLRDY.value){ }
+    while(!RCC.CR.PLLRDY){ }
     
     // Select the main PLL as system clock source
     RCC.CFGR.SW = 0b10; // PLL
-    while(RCC.CFGR.SWS.value != RCC.CFGR.SW.value) { }
+    while(RCC.CFGR.SWS != RCC.CFGR.SW) { }
 
     // random number generator
     random.init();

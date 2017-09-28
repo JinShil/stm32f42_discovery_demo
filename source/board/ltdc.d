@@ -400,7 +400,7 @@ package void init()
 	RCC.DCKCFGR.PLLSAIDIVR = 0b10; //divide by 4
 	
 	RCC.CR.PLLISAION = true; 
-	while(!RCC.CR.PLLSAIRDY.value) { }
+	while(!RCC.CR.PLLSAIRDY) { }
 	
 	RCC.APB2ENR.LTDCEN = true;
 	

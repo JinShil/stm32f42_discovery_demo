@@ -26,5 +26,5 @@ public @inline void off()
 
 public @inline void toggle()
 {
-	GPIOG.ODR.ODR13.value = !GPIOG.ODR.ODR13.value;
+	GPIOG.ODR.ODR13 = !GPIOG.ODR.ODR13;
 }

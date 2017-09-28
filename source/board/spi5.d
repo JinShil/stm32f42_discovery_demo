@@ -103,5 +103,5 @@ package void transmit(ubyte value)
 	SPI5.DR.DR = value;
 	
 	//wait until TX register is empty
-	while(!SPI5.SR.TXE.value || SPI5.SR.BSY.value) {}
+	while(!SPI5.SR.TXE || SPI5.SR.BSY) {}
 }
