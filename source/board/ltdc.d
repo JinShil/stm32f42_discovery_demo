@@ -39,14 +39,14 @@ __gshared ushort[width * height] frameBuffer = void;
 }
 
 package void init()
-{	
+{
 	// A3  = B5
 	// A4  = VSYNC
 	// A6  = G2
 	// A11 = R4
 	// A12 = R5
 	RCC.AHB1ENR.GPIOAEN = true;
-	
+
 	with(GPIOA.OSPEEDR)
 	{
 		setValue
@@ -58,7 +58,7 @@ package void init()
 			, OSPEEDR12, 0b11
 		);
 	}
-	
+
 	with(GPIOA.MODER)
 	{
 		setValue
@@ -70,7 +70,7 @@ package void init()
 			, MODER12, 0b10
 		);
 	}
-	
+
 	with(GPIOA.PUPDR)
 	{
 		setValue
@@ -82,7 +82,7 @@ package void init()
 			, PUPDR12, 0b00
 		);
 	}
-	
+
 	with(GPIOA.OTYPER)
 	{
 		setValue
@@ -94,26 +94,26 @@ package void init()
 			, OT12, 0
 		);
 	}
-	
+
 	with(GPIOA.AFRL)
 	{
 		setValue
 		!(
 			  AFRL3,  0x0E  // Alternate function LTDC
-			, AFRL4,  0x0E 
-			, AFRL6,  0x0E 
+			, AFRL4,  0x0E
+			, AFRL6,  0x0E
 		);
 	}
-	
+
 	with(GPIOA.AFRH)
 	{
 		setValue
 		!(
 			  AFRH11,  0x0E  // Alternate function LTDC
-			, AFRH12,  0x0E 
+			, AFRH12,  0x0E
 		);
 	}
-	
+
 	// B0  = R3
 	// B1  = R6
 	// B8  = B6
@@ -121,7 +121,7 @@ package void init()
 	// B10 = G4
 	// B11 = G5
 	RCC.AHB1ENR.GPIOBEN = true;
-	
+
 	with(GPIOB.OSPEEDR)
 	{
 		setValue
@@ -134,7 +134,7 @@ package void init()
 			, OSPEEDR11, 0b11
 		);
 	}
-	
+
 	with(GPIOB.MODER)
 	{
 		setValue
@@ -147,7 +147,7 @@ package void init()
 			, MODER11, 0b10
 		);
 	}
-	
+
 	with(GPIOB.PUPDR)
 	{
 		setValue
@@ -160,7 +160,7 @@ package void init()
 			, PUPDR11, 0b00
 		);
 	}
-	
+
 	with(GPIOB.OTYPER)
 	{
 		setValue
@@ -173,32 +173,32 @@ package void init()
 			, OT11, 0
 		);
 	}
-	
+
 	with(GPIOB.AFRL)
 	{
 		setValue
 		!(
 			  AFRL0,  0x09  // Alternate function LTDC
-			, AFRL1,  0x09 
+			, AFRL1,  0x09
 		);
 	}
-	
+
 	with(GPIOB.AFRH)
 	{
 		setValue
 		!(
 			  AFRH8,  0x0E  // Alternate function LTDC
-			, AFRH9,  0x0E 
-			, AFRH10, 0x0E 
-			, AFRH11, 0x0E 
+			, AFRH9,  0x0E
+			, AFRH10, 0x0E
+			, AFRH11, 0x0E
 		);
 	}
-	
+
 	// C6  = HSYNC
 	// C7  = G6
 	// C10 = R2
 	RCC.AHB1ENR.GPIOCEN = true;
-	
+
 	with(GPIOC.OSPEEDR)
 	{
 		setValue
@@ -208,7 +208,7 @@ package void init()
 			, OSPEEDR10, 0b11
 		);
 	}
-	
+
 	with(GPIOC.MODER)
 	{
 		setValue
@@ -218,7 +218,7 @@ package void init()
 			, MODER10, 0b10
 		);
 	}
-	
+
 	with(GPIOC.PUPDR)
 	{
 		setValue
@@ -228,7 +228,7 @@ package void init()
 			, PUPDR10, 0b00
 		);
 	}
-	
+
 	with(GPIOC.OTYPER)
 	{
 		setValue
@@ -238,22 +238,22 @@ package void init()
 			, OT10, 0
 		);
 	}
-	
+
 	with(GPIOC.AFRL)
 	{
 		setValue
 		!(
 			  AFRL6,  0x0E  // Alternate function LTDC
-			, AFRL7,  0x0E 
+			, AFRL7,  0x0E
 		);
 	}
-	
+
 	GPIOC.AFRH.AFRH10 = 0x0E;
-	
+
 	// D3  = G7
 	// D6  = B2
 	RCC.AHB1ENR.GPIODEN = true;
-	
+
 	with(GPIOD.OSPEEDR)
 	{
 		setValue
@@ -262,7 +262,7 @@ package void init()
 			, OSPEEDR6,  0b11
 		);
 	}
-	
+
 	with(GPIOD.MODER)
 	{
 		setValue
@@ -271,7 +271,7 @@ package void init()
 			, MODER6,  0b10
 		);
 	}
-	
+
 	with(GPIOD.PUPDR)
 	{
 		setValue
@@ -280,7 +280,7 @@ package void init()
 			, PUPDR6,  0b00
 		);
 	}
-	
+
 	with(GPIOD.OTYPER)
 	{
 		setValue
@@ -289,32 +289,32 @@ package void init()
 			, OT6,  0
 		);
 	}
-	
+
 	with(GPIOD.AFRL)
 	{
 		setValue
 		!(
 			  AFRL3,  0x0E  // Alternate function LTDC
-			, AFRL6,  0x0E 
+			, AFRL6,  0x0E
 		);
 	}
-	
+
 	RCC.AHB1ENR.GPIOFEN = true;
-	
+
 	// F10 = Data Enable
 	GPIOF.OSPEEDR.OSPEEDR10 = 0b10;
 	GPIOF.MODER.MODER10 = 0b10;
 	GPIOF.PUPDR.PUPDR10 = 0b00;
 	GPIOF.OTYPER.OT10 = 0;
 	GPIOF.AFRH.AFRH10 = 0x0E;
-	
+
 	// G6  = R7
 	// G7  = DOTCLK
 	// G10 = G3
 	// G11 = B3
 	// G12 = B4
 	RCC.AHB1ENR.GPIOGEN = true;
-	
+
 	with(GPIOG.OSPEEDR)
 	{
 		setValue
@@ -326,7 +326,7 @@ package void init()
 			, OSPEEDR12, 0b11
 		);
 	}
-	
+
 	with(GPIOG.MODER)
 	{
 		setValue
@@ -338,7 +338,7 @@ package void init()
 			, MODER12, 0b10
 		);
 	}
-	
+
 	with(GPIOG.PUPDR)
 	{
 		setValue
@@ -350,7 +350,7 @@ package void init()
 			, PUPDR12, 0b00
 		);
 	}
-	
+
 	with(GPIOG.OTYPER)
 	{
 		setValue
@@ -362,26 +362,26 @@ package void init()
 			, OT12, 0
 		);
 	}
-	
+
 	with(GPIOG.AFRL)
 	{
 		setValue
 		!(
 			  AFRL6,  0x0E  // Alternate function LTDC
-			, AFRL7,  0x0E 
+			, AFRL7,  0x0E
 		);
 	}
-	
+
 	with(GPIOG.AFRH)
 	{
 		setValue
 		!(
 			  AFRH10, 0x09  // Alternate function LTDC
-			, AFRH11, 0x0E 
-			, AFRH12, 0x09 
+			, AFRH11, 0x0E
+			, AFRH12, 0x09
 		);
 	}
-	
+
 	/* Enable Pixel Clock */
 	/* PLLSAI_VCO Input = HSE_VALUE/PLL_M = 1 Mhz */
 	/* PLLSAI_VCO Output = PLLSAI_VCO Input * PLLSAI_N = 192 Mhz */
@@ -391,27 +391,27 @@ package void init()
 	{
 		setValue
 		!(
-			  PLLSAIN, 192 
-			//, PLLSAIQ, 7  
-			, PLLSAIR, 4  
+			  PLLSAIN, 192
+			//, PLLSAIQ, 7
+			, PLLSAIR, 4
 		);
 	}
-	
+
 	RCC.DCKCFGR.PLLSAIDIVR = 0b10; //divide by 4
-	
-	RCC.CR.PLLISAION = true; 
+
+	RCC.CR.PLLISAION = true;
 	while(!RCC.CR.PLLSAIRDY) { }
-	
+
 	RCC.APB2ENR.LTDCEN = true;
-	
+
 	enum hsync  = 10;
 	enum hbp    = 20;
 	enum hfp    = 20;
-	
+
 	enum vsync  = 2;
 	enum vbp    = 2;
 	enum vfp    = 4;
-	
+
 	with(LTDC.SSCR)
 	{
 		setValue
@@ -420,13 +420,13 @@ package void init()
 			, VSH, vsync - 1
 		);
 	}
-	
+
 	with(LTDC.BPCR)
 	{
 		setValue
 		!(
-			  AHBP, hsync + hbp - 1 
-			, AVBP, vsync + vbp - 1  
+			  AHBP, hsync + hbp - 1
+			, AVBP, vsync + vbp - 1
 		);
 	}
 
@@ -434,8 +434,8 @@ package void init()
 	{
 		setValue
 		!(
-			  AAW, hsync + hbp + width - 1 
-			, AAH, vsync + vbp + height - 1  
+			  AAW, hsync + hbp + width - 1
+			, AAH, vsync + vbp + height - 1
 		);
 	}
 
@@ -443,11 +443,11 @@ package void init()
 	{
 		setValue
 		!(
-			  TOTALW, hsync + hbp + width + hfp - 1 
-			, TOTALH, vsync + vbp + height + vfp - 1  
+			  TOTALW, hsync + hbp + width + hfp - 1
+			, TOTALH, vsync + vbp + height + vfp - 1
 		);
-	}	
-	
+	}
+
 	with(LTDC.GCR)
 	{
 		setValue
@@ -458,39 +458,39 @@ package void init()
 			, PCPOL, 1  // active high
 		);
 	}
-	
+
 	with(LTDC.BCCR)
 	{
 		setValue
 		!(
-			  BCRED,   0xFF 
-			, BCGREEN, 0  
-			, BCBLUE,  0  
+			  BCRED,   0xFF
+			, BCGREEN, 0
+			, BCBLUE,  0
 		);
 	}
-	
+
 	//Layer1 configuration
 	with(LTDC.L1WHPCR)
 	{
 		setValue
 		!(
-			  WHSTPOS, hsync + hbp 
-			, WHSPPOS, hsync + hbp + width - 1  
+			  WHSTPOS, hsync + hbp
+			, WHSPPOS, hsync + hbp + width - 1
 		);
 	}
-	
+
 	with(LTDC.L1WVPCR)
 	{
 		setValue
 		!(
-			  WVSTPOS, vsync + vbp 
-			, WVSPPOS, vsync + vbp + height - 1  
+			  WVSTPOS, vsync + vbp
+			, WVSPPOS, vsync + vbp + height - 1
 		);
 	}
-	
+
 	LTDC.L1PFCR.PF = 0b010;      //RGB565
 	LTDC.L1CACR.CONSTA = 0xFF;
-	
+
 	with(LTDC.L1BFCR)
 	{
 		setValue
@@ -499,33 +499,32 @@ package void init()
 			, BF2, 0b100  // constant alpha
 		);
 	}
-	
+
 	LTDC.L1CFBAR.CFBADD = cast(uint)(frameBuffer.ptr);
-	
-	
+
+
 	/* the length of one line of pixels in bytes + 3 then :
-    Line Length = Active high width x number of bytes per pixel + 3 
-    Active high width         = LCD_PIXEL_WIDTH 
-    number of bytes per pixel = 2    (pixel_format : RGB565) 
+    Line Length = Active high width x number of bytes per pixel + 3
+    Active high width         = LCD_PIXEL_WIDTH
+    number of bytes per pixel = 2    (pixel_format : RGB565)
     */
 	with(LTDC.L1CFBLR)
 	{
 		setValue
 		!(
-			  CFBLL, width * 2 + 3  
+			  CFBLL, width * 2 + 3
 			, CFBP,  width * 2
 		);
 	}
-	
+
 	LTDC.L1CFBLNR.CFBLNBR = height;
-		
 
 	LTDC.GCR.DEN = true;      //enable dithering
-	
+
 	LTDC.L1CR.LEN = true;     //enable layer 1
-	
+
 	LTDC.SRCR.IMR = true;        //reload configuration
-	
+
 	LTDC.GCR.LTDCEN = true;   //enable controller
 }
 
