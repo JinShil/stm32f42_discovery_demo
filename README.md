@@ -50,7 +50,6 @@ text       data     bss     dec      hex   filename
 ## The Bad
 * [The implementation of D runtime](https://github.com/JinShil/stm32f42_discovery_demo/tree/master/source/runtime) is minimal, and therefore very incomplete.  Many features of D are not usable.
 * Due to [bug 12496](https://issues.dlang.org/show_bug.cgi?id=12496), I can't enforce that a `Bitfield` belongs to a `Register` when using the `setValue` template.
-* Really long build times (Nearly 1 minute to generate a 3k binary!).  This seems to be a GDC issue.  See [Forum Discussion](http://forum.dlang.org/post/iqryqssxooypdnszmzmg@forum.dlang.org)
 * Currently only works for the GDC compiler.  LCD was not supported due to [Issue 781](https://github.com/ldc-developers/ldc/issues/781) and [Issue 552](https://github.com/ldc-developers/ldc/issues/552)
 
 ## The Ugly
