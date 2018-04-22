@@ -18,50 +18,50 @@
  came from a paper by Ken Smith titled "C++ Hardware Register Access Redux".
  At the time of this writing, a link to the could be found here:
  http://yogiken.files.wordpress.com/2010/02/c-register-access.pdf
- 
+
  The idea, is that all of this logic will actually be evaluated at compile
  time and each BitField access will only cost a few instructions of assembly.
- 
- Right now, this will probably only work for 32-bit platforms. I'd like to 
- modify this so it is portable to even 16, and 8 bit platforms, but one step 
+
+ Right now, this will probably only work for 32-bit platforms. I'd like to
+ modify this so it is portable to even 16, and 8 bit platforms, but one step
  at a time.
- 
- * It enforces word, half-word, and byte access policy at compile time.  
+
+ * It enforces word, half-word, and byte access policy at compile time.
    See Access.
  * It enforces mutability constraints such as read, write, readwrite, etc...
    at compile time. See Mutability.
  * It optimizes byte-aligned and half-word aligned bitfields generating atomic
    read/write operations resulting in smaller code size and faster performance.
- * It optimizes bitfieds of a single bit, via bit-banding, generating atomic 
+ * It optimizes bitfieds of a single bit, via bit-banding, generating atomic
    read/write operations resulting in smaller code size and faster performance.
  * It can combine multiple bitfield accesses within a single register into one
    read-modify-write operation resulting in smaller code size and faster
    performance.
  * It enables intuitive and obvious register modeling that directly cross-references
    back to register specifications.
- 
+
  Example:
  --------------------
  // A peripherals's register specification can be modeled as follows
  // TODO: make a more meaningful example
 final abstract class MyPeripheral : Peripheral!(0x2000_1000)
-{   
+{
     final abstract class MyRegister0 : Register!(0x0000, Access.Word)
     {
         alias EntireRegister = BitField!(31, 0, Mutability.rw);
         alias Bits31To17     = BitField!(17, 2, Mutability.rw);
         alias Bits15to8      = BitField!(15, 8, Mutability.rw);
-        alias Bits1to0       = BitField!( 1, 0, Mutability.rw); 
+        alias Bits1to0       = BitField!( 1, 0, Mutability.rw);
         alias Bit1           = Bit!(1, Mutability.rw);
         alias Bit0           = Bit!(0, Mutability.rw);
     }
-    
+
     final abstract class MyRegister1 : Register!(0x0004, Access.Word)
     {
         alias EntireRegister = BitField!(31, 0, Mutability.rw);
         alias Bits31To17     = BitField!(17, 2, Mutability.rw);
         alias Bits15to8      = BitField!(15, 8, Mutability.rw);
-        alias Bits1to0       = BitField!( 1, 0, Mutability.rw); 
+        alias Bits1to0       = BitField!( 1, 0, Mutability.rw);
         alias Bit1           = Bit!(1, Mutability.rw);
         alias Bit0           = Bit!(0, Mutability.rw);
     }
@@ -140,7 +140,7 @@ private void volatileStore(T)(T* a, in T v) @trusted nothrow
 }
 
 /****************************************************************************
-   Defines the width of access to the fields of a register.  For example, some 
+   Defines the width of access to the fields of a register.  For example, some
    registers can only be accessed by 32-bit words.
 */
 enum Access

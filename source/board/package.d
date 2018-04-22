@@ -15,7 +15,14 @@
 
 module board;
 
-import gcc.attribute;
+version(GNU)
+{
+    import gcc.attribute;
+}
+version(LDC)
+{
+    import ldc.attributes;
+}
 
 import stm32f42.rcc;
 import stm32f42.pwr;
@@ -52,15 +59,25 @@ void OnHardFault()
     // Enable Core-coupled memory for stack
     RCC.AHB1ENR.CCMDATARAMEN = true;
 
+    version(LDC)
+    {
+        __asm
+        (
+            "ldr r2, handler_address
+            bx r2
+            handler_address: .word hardwareInit"
+        );
+    }
+
     // call main
     version(GNU)
     {
-      asm
-      {
-          "ldr r2, handler_address
-          bx r2
-          handler_address: .word hardwareInit";
-      };
+        asm
+        {
+            "ldr r2, handler_address
+            bx r2
+            handler_address: .word hardwareInit";
+        };
     }
 }
 

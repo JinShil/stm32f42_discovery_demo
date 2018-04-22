@@ -6,6 +6,7 @@ import std.file;
 import std.path;
 import std.process;
 import std.stdio;
+import std.getopt;
 
 void run(string cmd)
 {
@@ -16,6 +17,24 @@ void run(string cmd)
 
 void main(string[] args)
 {
+    string compiler;
+
+    auto result = getopt
+    (
+        args,
+        "compiler|c", "The compiler to use (gdc or ldc)", &compiler
+    );
+
+    if (result.helpWanted || args.length < 1 || (compiler != "gdc" && compiler != "ldc"))
+    {
+        writefln("USAGE: -c=gdc|ldc", args[0]);
+        writeln();
+        write("options:");
+        defaultGetoptPrinter("", result.options);
+
+        return;
+    }
+
     auto sourceDir = "source";
     auto binaryDir = "binary";
     auto objectFile = buildPath(binaryDir, "firmware.o");
@@ -37,18 +56,34 @@ void main(string[] args)
 		.map!"a.name"
 		.join(" ");
 
+    if (compiler == "gdc")
+    {
+        // compile to temporary assembly file
+        cmd = "arm-none-eabi-gdc -c -Os -nophoboslib -nostdinc -nodefaultlibs -nostdlib"
+            ~ " -mthumb -mcpu=cortex-m4 -mtune=cortex-m4"
+            ~ " -Isource/runtime" // to import runtime automatically
+            ~ " -fno-bounds-check -fno-invariants" // -fno-assert gives me a broken binary
+            ~ " -ffunction-sections"
+            ~ " -fdata-sections"
+            ~ " -fno-weak"
 
-    // compile to temporary assembly file
-    cmd = "arm-none-eabi-gdc -c -Os -nophoboslib -nostdinc -nodefaultlibs -nostdlib"
-          ~ " -mthumb -mcpu=cortex-m4 -mtune=cortex-m4"
-          ~ " -Isource/runtime" // to import runtime automatically
-          ~ " -fno-bounds-check -fno-invariants" // -fno-assert gives me a broken binary
-          ~ " -ffunction-sections"
-          ~ " -fdata-sections"
-          ~ " -fno-weak"
+            ~ " " ~ sourceFiles
+            ~ " -o " ~ objectFile;
+    }
+    else if (compiler == "ldc")
+    {
+        // compile to temporary assembly file
+        cmd = "ldc2 -c -Os -mtriple=thumb-none-eabi -float-abi=hard"
+            ~ " -mcpu=cortex-m4"
+            ~ " -Isource/runtime" // to import runtime automatically
 
-          ~ " " ~ sourceFiles
-          ~ " -o " ~ objectFile;
+            ~ " " ~ sourceFiles
+            ~ " -of=" ~ objectFile;
+    }
+    else
+    {
+        assert(false);
+    }
     run(cmd);
 
     // link, creating executable
