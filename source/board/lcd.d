@@ -15,7 +15,7 @@
 
 module board.lcd;
 
-import gcc.attribute;
+import attributes;
 
 import ILI9341 = board.ILI9341;
 import ltdc = board.ltdc;

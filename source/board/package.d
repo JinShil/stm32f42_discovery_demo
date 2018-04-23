@@ -15,14 +15,7 @@
 
 module board;
 
-version(GNU)
-{
-    import gcc.attribute;
-}
-version(LDC)
-{
-    import ldc.attributes;
-}
+import attributes;
 
 import stm32f42.rcc;
 import stm32f42.pwr;

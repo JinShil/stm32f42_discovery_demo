@@ -1,15 +1,15 @@
 // Copyright © 2017 Michael V. Franklin
-// 
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -70,7 +70,7 @@ final abstract class MyPeripheral : Peripheral!(0x2000_1000)
 */
 module stm32f42.mmio;
 
-import gcc.attribute;
+import attributes;
 
 private alias Address    = uint;
 private alias BitIndex   = uint;
@@ -144,22 +144,22 @@ private void volatileStore(T)(T* a, in T v) @trusted nothrow
    registers can only be accessed by 32-bit words.
 */
 enum Access
-{    
+{
     /****************************************************************************
      Register can only be accessed as a 32-bit word
     */
     Word = 4,
-    
+
     /****************************************************************************
      Register can be accessed as individual bytes or 32-bit words
     */
     Byte_Word = 1 | Word,
-    
+
     /****************************************************************************
      Register can be accessed as 16-bit halfwords or 32-bit words
     */
     HalfWord_Word = 2 | Word,
-    
+
     /****************************************************************************
      Register can be accessed as individual bytes, 16-bit halfwords, or 32-Bit
      words
@@ -177,42 +177,42 @@ enum Mutability
      Software can read and write to these bits.
     */
     rw,
-    
+
     /****************************************************************************
       Software can only read these bits
     */
     r,
-    
+
     /****************************************************************************
      Software can only write to this bit. Reading the bit returns the reset
      value.
     */
     w,
-    
+
     /****************************************************************************
      Software can read as well as clear this bit by writing 1. Writing '0' has
      no effect on the bit value.
     */
     rc_w1,
-    
+
     /****************************************************************************
      Software can read as well as clear this bit by writing 0. Writing '1' has
      no effect on the bit value.
     */
     rc_w0,
-    
+
     /****************************************************************************
      Software can read this bit. Reading this bit automatically clears it to '0'.
      Writing '0' has no effect on the bit value
     */
     rc_r,
-    
+
     /****************************************************************************
      Software can read as well as set this bit. Writing '0' has no effect on the
      bit value.
     */
     rs,
-    
+
     /****************************************************************************
      Software can read this bit. Writing '0' or '1' triggers an event but has no
      effect on the bit value.
@@ -247,8 +247,8 @@ private enum Alignment
 */
 static auto canRead(immutable Mutability m) @safe pure nothrow
 {
-    return m == Mutability.r     || m == Mutability.rw   
-        || m == Mutability.rt_w  || m == Mutability.rs 
+    return m == Mutability.r     || m == Mutability.rw
+        || m == Mutability.rt_w  || m == Mutability.rs
         || m == Mutability.rc_r  || m == Mutability.rc_w0
         || m == Mutability.rc_w1;
 }
@@ -259,7 +259,7 @@ static auto canRead(immutable Mutability m) @safe pure nothrow
 */
 static auto canWrite(immutable Mutability m) @safe pure nothrow
 {
-    return m == Mutability.w     || m == Mutability.rw 
+    return m == Mutability.w     || m == Mutability.rw
         || m == Mutability.rc_w0 || m == Mutability.rc_w1
         || m == Mutability.rs;
 }
@@ -270,7 +270,7 @@ static auto canWrite(immutable Mutability m) @safe pure nothrow
 */
 static auto canOnlySetOrClear(immutable Mutability m) @safe pure nothrow
 {
-    return m == Mutability.rc_w0 || m == Mutability.rc_w1 
+    return m == Mutability.rc_w0 || m == Mutability.rc_w1
         || m == Mutability.rs;
 }
 
@@ -279,7 +279,7 @@ static auto canOnlySetOrClear(immutable Mutability m) @safe pure nothrow
 */
 static auto isForBitsOnly(immutable Mutability m) @safe pure nothrow
 {
-    return m == Mutability.rc_w0 || m == Mutability.rc_w1 
+    return m == Mutability.rc_w0 || m == Mutability.rc_w1
         || m == Mutability.rs    || m == Mutability.rc_r
         || m == Mutability.rt_w;
 }
@@ -306,7 +306,7 @@ mixin template BitFieldDimensions(BitIndex bitIndex0, BitIndex bitIndex1)
 
     /***************************************************************
       Determines if bitIndex is a valid index for this register
-      
+
       Returns: true if the bitIndex is valid, false if not
     */
     private static auto isValidBitIndex(immutable BitIndex bitIndex) @safe pure
@@ -321,7 +321,7 @@ mixin template BitFieldDimensions(BitIndex bitIndex0, BitIndex bitIndex1)
     private static immutable auto bitMask = numberOfBits >= 32 
         ? uint.max  // if numberOfBits >=32, the left shift below will fail to compile
         : ((1 << numberOfBits) - 1) << leastSignificantBitIndex;
-    
+
     /***********************************************************************
       Takes a value and moves its bits to align with this bitfields position
       in the register.
@@ -330,7 +330,7 @@ mixin template BitFieldDimensions(BitIndex bitIndex0, BitIndex bitIndex1)
     {
         return (value << leastSignificantBitIndex) & bitMask;
     }
-    
+
     /***********************************************************************
       Whether or not this bitfield is aligned to an even multiple of bytes
     */
@@ -352,7 +352,7 @@ mixin template BitFieldDimensions(BitIndex bitIndex0, BitIndex bitIndex1)
             return Alignment.None;
         }
     }
-            
+
     static if (alignment == Alignment.Byte)
     {
         /***********************************************************************
@@ -360,7 +360,7 @@ mixin template BitFieldDimensions(BitIndex bitIndex0, BitIndex bitIndex1)
         */
         private static immutable Address byteAlignedAddress = address + (leastSignificantBitIndex / 8u);
     }
-    
+
     static if (alignment == Alignment.HalfWord)
     {
         /***********************************************************************
@@ -415,17 +415,17 @@ mixin template BitFieldMutation(Mutability mutability, ValueType_)
         {
             // If only a single bit, use bit banding
             static if (numberOfBits == 1 && isBitBandable)
-            {   
+            {
                 return volatileLoad(cast(ValueType*)bitBandAddress);
             }
             // if can access data with perfect halfword alignment
-            else static if (alignment == Alignment.HalfWord  
+            else static if (alignment == Alignment.HalfWord
                 && (access == Access.Byte_HalfWord_Word || access == Access.HalfWord_Word))
             {
                 return volatileLoad(cast(ValueType*)halfWordAlignedAddress);
             }
             // if can access data with perfect byte alignment
-            else static if (alignment == Alignment.Byte 
+            else static if (alignment == Alignment.Byte
                 && (access == Access.Byte_HalfWord_Word || access == Access.Byte_Word))
             {
                 return volatileLoad(cast(ValueType*)byteAlignedAddress);
@@ -474,16 +474,16 @@ mixin template BitFieldMutation(Mutability mutability, ValueType_)
                     value = true;
                 }
             }
-        
+
             // 'value' is private as it is enpsulated by the clear/set methods above
             private:
         }
-        
+
         /***********************************************************************
             Set this BitField's value
         */
         @inline static void value(immutable ValueType value_) @property @trusted nothrow
-        {             
+        {
             // If only a single bit, use bit banding
             static if (numberOfBits == 1 && isBitBandable)
             {
@@ -520,13 +520,13 @@ mixin template BitFieldMutation(Mutability mutability, ValueType_)
  of the bitfield.
 */
 mixin template BitFieldImplementation(BitIndex bitIndex0, BitIndex bitIndex1, Mutability mutability)
-{    
+{
     mixin BitFieldDimensions!(bitIndex0, bitIndex1);
-    
+
     //TODO: do a test to determine if limiting return type to something less
     // than the natural word size results in slower code.  Perhaps it's better
     // to simply make everything default to Word
-    
+
     // determine the return type based on the number of bits
     static if (numberOfBits <= 1)
     {
@@ -544,16 +544,16 @@ mixin template BitFieldImplementation(BitIndex bitIndex0, BitIndex bitIndex1, Mu
     {
         alias ValueType = Word;
     }
-    
+
     mixin BitFieldMutation!(mutability, ValueType);
 }
 
 /***********************************************************************
- Provides access to a limited range of bits in a register. User 
+ Provides access to a limited range of bits in a register. User
  must specify the return type.
 */
 mixin template BitFieldImplementation(BitIndex bitIndex0, BitIndex bitIndex1, Mutability mutability, ValueType)
-{    
+{
     mixin BitFieldDimensions!(bitIndex0, bitIndex1);
     mixin BitFieldMutation!(mutability, ValueType);
 }
@@ -566,12 +566,12 @@ abstract class Peripheral(Bus, Address peripheralOffset)
     // this alias is used by some of the child mixins
     // May be able to use __traits(parent) in children if https://issues.dlang.org/show_bug.cgi?id=12496 is ever fixed.
     private static immutable Address peripheralAddress = Bus.address + peripheralOffset;
-    
+
     /***********************************************************************
         Gets this peripheral's address as specified in the datasheet
     */
     static immutable auto address = Bus.address + peripheralOffset;
-    
+
     /***********************************************************************
       A register for this peripheral
     */
@@ -581,21 +581,21 @@ abstract class Peripheral(Bus, Address peripheralOffset)
           Gets this register's address as specified in the datasheet
         */
         static immutable auto address = peripheralAddress + addressOffset;
-        
+
         /***********************************************************************
           Whether or not the address has a bit-banded alias
         */
-        static immutable auto isBitBandable = 
+        static immutable auto isBitBandable =
             (address >= PeripheralRegionStart && address <= PeripheralRegionEnd)
             || (address >= SRAMRegionStart && address <= SRAMRegionEnd);
 
-        
+
         /***********************************************************************
           Gets the data width(byte, half-word, word) access policy for this
           register.
         */
         static immutable auto access = access_;
-        
+
         /***********************************************************************
           Gets all bits in the register as a single value.  It's only exposed
           privately to prevent circumventing the access mutability.
@@ -613,24 +613,24 @@ abstract class Peripheral(Bus, Address peripheralOffset)
         {
             volatileStore(cast(Word*)address, value);
         }
-        
+
         /***********************************************************************
-          Recursive template to combine values of each bitfield passed to the 
+          Recursive template to combine values of each bitfield passed to the
           setValue function
         */
         @inline private static Word combineValues(T...)() @safe nothrow
-        {    
+        {
             static if (T.length > 0)
             {
                 //TODO: ensure T[0] is a child of this register
                 // Currently doesn't work due to https://issues.dlang.org/show_bug.cgi?id=12496
                 //static assert(__traits(isSame, __traits(parent, T[0]), __traits(parent, value)), "Bitfield is not part of this register");
-            
+
                 //Ensure value assignment is legal
                 // Need to wrap assignment expression in parentheses due to https://issues.dlang.org/show_bug.cgi?id=17703
                 static assert(__traits(compiles, (T[0].value = T[1])), "Invalid assignment");
-            
-                // merge all specified bitFields into a single Word value and assign to this 
+
+                // merge all specified bitFields into a single Word value and assign to this
                 // register's value
                 return T[0].maskValue(T[1]) | combineValues!(T[2..$])();
             }
@@ -640,15 +640,15 @@ abstract class Peripheral(Bus, Address peripheralOffset)
                 return 0;
             }
         }
-        
+
         /***********************************************************************
-          Recursive template to combine masks of each bitfield passed to the 
+          Recursive template to combine masks of each bitfield passed to the
           setValue function
         */
         @inline private static Word combineMasks(T...)() @safe nothrow
         {
             static if (T.length > 0)
-            {        
+            {
                 // merge all specified bitFields and assign to this register's value
                 return T[0].bitMask | combineMasks!(T[2..$])();
             }
@@ -658,15 +658,15 @@ abstract class Peripheral(Bus, Address peripheralOffset)
                 return 0;
             }
         }
-        
+
         /***********************************************************************
           Sets multiple bit fields simultaneously
         */
         @inline static void setValue(T...)() @safe nothrow
-        {                   
+        {
             // number of arguments must be even
             static assert(!(T.length & 1), "Wrong number of arguments");
-            
+
             value = (value & ~combineMasks!(T)()) | combineValues!(T)();
         }
 
@@ -678,7 +678,7 @@ abstract class Peripheral(Bus, Address peripheralOffset)
         {
             mixin BitFieldImplementation!(bitIndex0, bitIndex1, mutability);
         }
-        
+
         /***********************************************************************
           A range of bits in the this register.  User must specify the return
           type.
@@ -687,7 +687,7 @@ abstract class Peripheral(Bus, Address peripheralOffset)
         {
             mixin BitFieldImplementation!(bitIndex0, bitIndex1, mutability, ValueType);
         }
-        
+
         /***********************************************************************
           A special case of BitField (a single bit).   Return type is automatically
           determined.
@@ -696,7 +696,7 @@ abstract class Peripheral(Bus, Address peripheralOffset)
         {
             mixin BitFieldImplementation!(bitIndex, bitIndex, mutability);
         }
-        
+
         /***********************************************************************
           A special case of BitField (a single bit). User must specify the return
           type.
@@ -706,5 +706,4 @@ abstract class Peripheral(Bus, Address peripheralOffset)
             mixin BitFieldImplementation!(bitIndex, bitIndex, mutability, ValueType);
         }
     }
-} 
-
+}
