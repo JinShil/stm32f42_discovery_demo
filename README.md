@@ -14,11 +14,11 @@ You will also need a [GDC ARM cross compiler](https://github.com/JinShil/arm-non
 
 ## The Good
 * It works!
-* No CRT startup files, libgcc, libc, or vendor's C peripheral libraries were used.  EVERYTHING is in D. 
+* No CRT startup files, libgcc, libc, or vendor's C peripheral libraries were used.  EVERYTHING is in D.
 * No Stinking `-betterC`.  If you don't want the overhead of a certain feature of D, don't use it. `-betterC` is just a synonymn for `-worseD`.
-* [Compile-time enforcement of register/bitfield mutability](https://github.com/JinShil/stm32f42_discovery_demo/blob/master/source/stm32f42/mmio.d#L219-L234)
-* [Compile-time optimization of MMIO register access](https://github.com/JinShil/stm32f42_discovery_demo/blob/master/source/stm32f42/mmio.d#L374-L395) by turning byte- and half-word-aligned accesses into single, atomic reads/writes. Single-bit bitfields are optimized at compile time to use ARM's bitbanding feature for atomic access.  This increases performance, reduces code size, and is all abstracted from the user.
-* [Setting multiple bit fields in a register with a single read-modify-write](https://github.com/JinShil/stm32f42_discovery_demo/blob/master/source/stm32f42/mmio.d#L624-L630)
+* [Compile-time enforcement of register/bitfield mutability](https://github.com/JinShil/stm32f42_discovery_demo/blob/c324bbf861cf258a819478481521528fca88dcb3/source/stm32f42/mmio.d#L244-L275)
+* [Compile-time optimization of MMIO register access](https://github.com/JinShil/stm32f42_discovery_demo/blob/c324bbf861cf258a819478481521528fca88dcb3/source/stm32f42/mmio.d#L417-L437) by turning byte- and half-word-aligned accesses into single, atomic reads/writes. Single-bit bitfields are optimized at compile time to use ARM's bitbanding feature for atomic access.  This increases performance, reduces code size, and is all abstracted from the user.
+* [Setting multiple bit fields in a register with a single read-modify-write](https://github.com/JinShil/stm32f42_discovery_demo/blob/c324bbf861cf258a819478481521528fca88dcb3/source/stm32f42/mmio.d#L665-L671)
 
 ```
 with(GPIOA.MODER)
