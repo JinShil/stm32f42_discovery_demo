@@ -24,6 +24,7 @@ extern(C) void main(string[] args)
 {
 	lcd.fillRect(0, 0, lcd.getWidth(), lcd.getHeight(), 0x07E0);
 
+	uint i = 0;
     while(true)
     {
     	uint r = random.get();
@@ -38,7 +39,9 @@ extern(C) void main(string[] args)
     	uint height = r % lcd.getHeight();
 
     	lcd.fillRect(x, y, width, height, color);
-    	statusLED.toggle();
-
+		if ((i % 100) == 0)
+    	{
+			statusLED.toggle();
+		}
     }
 }

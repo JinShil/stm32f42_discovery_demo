@@ -73,7 +73,7 @@ void main(string[] args)
     else if (compiler == "ldc")
     {
         // compile to temporary assembly file
-        cmd = "ldc2 -conf= -c -Os -boundscheck=off -mtriple=thumb-none-eabi -float-abi=hard"
+        cmd = "ldc2 -conf= -disable-simplify-libcalls -c -Os -boundscheck=off -mtriple=thumb-none-eabi -float-abi=hard"
             ~ " -mcpu=cortex-m4"
             ~ " -Isource/runtime" // to import runtime automatically
             ~ " -I/usr/include/dlang/ldc/"

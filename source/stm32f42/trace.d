@@ -44,7 +44,7 @@ private void semihostingInvoke(in int command, in void* message)
         :
         : [cmd] "r" command, [msg] "r" message
         : "r0", "r1", "memory";
-    };
+    }
   }
 }
 
