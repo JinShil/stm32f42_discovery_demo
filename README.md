@@ -20,12 +20,12 @@ You need to install dmd and dtools (for `rdmd`), arm-none-eabi-gcc (for `arm-non
 * [Compile-time optimization of MMIO register access](https://github.com/JinShil/stm32f42_discovery_demo/blob/c324bbf861cf258a819478481521528fca88dcb3/source/stm32f42/mmio.d#L417-L437) by turning byte- and half-word-aligned accesses into single, atomic reads/writes. Single-bit bitfields are optimized at compile time to use ARM's bitbanding feature for atomic access.  This increases performance, reduces code size, and is all abstracted from the user.
 * [Setting multiple bit fields in a register with a single read-modify-write](https://github.com/JinShil/stm32f42_discovery_demo/blob/c324bbf861cf258a819478481521528fca88dcb3/source/stm32f42/mmio.d#L665-L671)
 
-```
+```D
 with(GPIOA.MODER)
 {
 	setValue
 	!(
-		  MODER3,  0b10  // Alternate function mode
+	      MODER3,  0b10  // Alternate function mode
 		, MODER4,  0b10
 		, MODER6,  0b10
 		, MODER11, 0b10
