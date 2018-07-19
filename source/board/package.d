@@ -47,33 +47,12 @@ void OnHardFault()
     while(true) { }
 }
 
-@naked void OnReset()
+void OnReset()
 {
     // Enable Core-coupled memory for stack
     RCC.AHB1ENR.CCMDATARAMEN = true;
 
-    version(LDC)
-    {
-        import ldc.llvmasm;
-        __asm
-        (
-            "ldr r2, handler_address
-            bx r2
-            handler_address: .word hardwareInit"
-            , ""
-        );
-    }
-
-    // call main
-    version(GNU)
-    {
-        asm
-        {
-            "ldr r2, handler_address
-            bx r2
-            handler_address: .word hardwareInit";
-        };
-    }
+    hardwareInit();
 }
 
 // defined in the linker
@@ -83,21 +62,7 @@ extern(C) extern __gshared ubyte __data_end__;
 extern(C) extern __gshared ubyte __bss_start__;
 extern(C) extern __gshared ubyte __bss_end__;
 
-extern(C) void* memset(void* dest, int value, size_t num)
-{
-    // naive implementation for the moment.  Eventually,
-    // this should be implemented in assembly
-
-    byte* d = cast(byte*)dest;
-    for(int i = 0; i < num; i++)
-    {
-        d[i] = cast(byte)value;
-    }
-
-    return dest;
-}
-
-extern(C) void* memcpy(void* dest, void* src, size_t num)
+extern(C) pragma(inline, true) void* __aeabi_memcpy(void* dest, void* src, size_t num)
 {
     // naive implementation for the moment.  Eventually,
     // this should be implemented in assembly
@@ -113,23 +78,36 @@ extern(C) void* memcpy(void* dest, void* src, size_t num)
     return dest;
 }
 
-extern(C) pragma(inline, true) void* __aeabi_memcpy(void* dest, void* src, size_t num)
-{
-    return memcpy(dest, src, num);
-}
-
 extern(C) pragma(inline, true) void* __aeabi_memclr(void* dest, size_t num)
 {
-    return memset(dest, 0, num);
+    // naive implementation for the moment.  Eventually,
+    // this should be implemented in assembly
+
+    version(LDC)
+    {
+        // LDC seems to recognize the implementation below and rewrites it as
+        // __aeabi_memclr, causing infinite recursion.  So just ignore it for now
+        return null;
+    }
+    else
+    {
+        byte* d = cast(byte*)dest;
+        for(int i = 0; i < num; i++)
+        {
+            d[i] = cast(byte)0;
+        }
+
+        return dest;
+    }
 }
 
 extern(C) void hardwareInit()
 {
     // copy data segment out of ROM and into RAM
-    memcpy(&__data_start__, &__text_end__, &__data_end__ - &__data_start__);
+    __aeabi_memcpy(&__data_start__, &__text_end__, &__data_end__ - &__data_start__);
 
     // zero out variables initialized to void
-    memset(&__bss_start__, 0, &__bss_end__ - &__bss_start__);
+    __aeabi_memclr(&__bss_start__, &__bss_end__ - &__bss_start__);
 
     //----------------------------------------------------------------------
     // Flash configuration

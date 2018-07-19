@@ -5,26 +5,7 @@ alias ptrdiff_t = typeof(cast(void*)0 - cast(void*)0);
 
 alias string = immutable(char)[];
 
-version(GNU)
+bool _xopEquals(in void*, in void*)
 {
-    // class Object
-    // { }
-
-    // class TypeInfo
-    // { }
-
-    // class TypeInfo_Const : TypeInfo
-    // {
-    //     size_t getHash(in void *p) const nothrow { return 0; }
-    // }
-
-    // class Throwable
-    // { }
-
-    // class Error : Throwable
-    // { 
-    //     this(string x)
-    //     { }
-    // }
+    return false;
 }
-
