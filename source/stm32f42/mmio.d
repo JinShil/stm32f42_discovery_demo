@@ -411,7 +411,7 @@ mixin template BitFieldMutation(Mutability mutability, ValueType_)
         /***********************************************************************
             Get this BitField's value
         */
-        @inline static ValueType value() @property @trusted nothrow
+        @inline pragma(inline, true) static ValueType value() @property @trusted nothrow
         {
             // If only a single bit, use bit banding
             static if (numberOfBits == 1 && isBitBandable)
@@ -449,7 +449,7 @@ mixin template BitFieldMutation(Mutability mutability, ValueType_)
                 /***********************************************************************
                     Clears bit by writing a '0'
                 */
-                @inline static void clear() @safe
+                @inline pragma(inline, true) static void clear() @safe
                 {
                     value = false;
                 }
@@ -459,7 +459,7 @@ mixin template BitFieldMutation(Mutability mutability, ValueType_)
                 /***********************************************************************
                     Clears bit by writing a '1'
                 */
-                @inline static void clear() @safe
+                @inline pragma(inline, true) static void clear() @safe
                 {
                     value = true;
                 }
@@ -469,7 +469,7 @@ mixin template BitFieldMutation(Mutability mutability, ValueType_)
                 /***********************************************************************
                     Sets bit by writing a '1'
                 */
-                @inline static void set() @safe
+                @inline pragma(inline, true) static void set() @safe
                 {
                     value = true;
                 }
@@ -482,7 +482,7 @@ mixin template BitFieldMutation(Mutability mutability, ValueType_)
         /***********************************************************************
             Set this BitField's value
         */
-        @inline static void value(immutable ValueType value_) @property @trusted nothrow
+        @inline pragma(inline, true) static void value(immutable ValueType value_) @property @trusted nothrow
         {
             // If only a single bit, use bit banding
             static if (numberOfBits == 1 && isBitBandable)
@@ -618,7 +618,7 @@ abstract class Peripheral(Bus, Address peripheralOffset)
           Recursive template to combine values of each bitfield passed to the
           setValue function
         */
-        @inline private static Word combineValues(T...)() @safe nothrow
+        @inline pragma(inline, true) private static Word combineValues(T...)() @safe nothrow
         {
             static if (T.length > 0)
             {
@@ -645,7 +645,7 @@ abstract class Peripheral(Bus, Address peripheralOffset)
           Recursive template to combine masks of each bitfield passed to the
           setValue function
         */
-        @inline private static Word combineMasks(T...)() @safe nothrow
+        @inline pragma(inline, true) private static Word combineMasks(T...)() @safe nothrow
         {
             static if (T.length > 0)
             {
@@ -662,7 +662,7 @@ abstract class Peripheral(Bus, Address peripheralOffset)
         /***********************************************************************
           Sets multiple bit fields simultaneously
         */
-        @inline static void setValue(T...)() @safe nothrow
+        @inline pragma(inline, true) static void setValue(T...)() @safe nothrow
         {
             // number of arguments must be even
             static assert(!(T.length & 1), "Wrong number of arguments");

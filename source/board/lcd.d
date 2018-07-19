@@ -27,12 +27,12 @@ package void init()
 	ltdc.init();
 }
 
-@inline public uint getWidth()
+@inline pragma(inline, true) public uint getWidth()
 {
 	return ltdc.getWidth();
 }
 
-@inline public uint getHeight()
+@inline pragma(inline, true) public uint getHeight()
 {
 	return ltdc.getHeight();
 }

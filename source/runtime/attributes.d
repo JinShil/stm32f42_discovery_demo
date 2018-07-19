@@ -23,6 +23,6 @@ version(LDC)
     import ldc.attributes;
 
     public:
-    enum inline = ldc.attributes.alwaysInline;
-    enum naked = ldc.attributes.naked;
+    enum inline = "";
+    enum naked = "";
 }

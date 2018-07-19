@@ -28,12 +28,12 @@ private enum height = 320;
 
 __gshared ushort[width * height] frameBuffer = void;
 
-@inline package uint getWidth()
+@inline pragma(inline, true) package uint getWidth()
 {
 	return width;
 }
 
-@inline package uint getHeight()
+@inline pragma(inline, true) package uint getHeight()
 {
 	return height;
 }

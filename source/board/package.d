@@ -33,7 +33,7 @@ extern(C) immutable ISR ResetHandler = &OnReset; // Pointer to entry point, OnRe
 extern(C) immutable ISR HardFaultHandler = &OnHardFault; // Pointer to hard fault handler, OnHardFault
 
 // Program's main function
-extern void main();
+extern(C) void main(string[] args);
 
 // Handle any hard faults here
 void OnHardFault()
@@ -54,11 +54,13 @@ void OnHardFault()
 
     version(LDC)
     {
+        import ldc.llvmasm;
         __asm
         (
             "ldr r2, handler_address
             bx r2
             handler_address: .word hardwareInit"
+            , ""
         );
     }
 
@@ -109,6 +111,16 @@ extern(C) void* memcpy(void* dest, void* src, size_t num)
     }
 
     return dest;
+}
+
+extern(C) pragma(inline, true) void* __aeabi_memcpy(void* dest, void* src, size_t num)
+{
+    return memcpy(dest, src, num);
+}
+
+extern(C) pragma(inline, true) void* __aeabi_memclr(void* dest, size_t num)
+{
+    return memset(dest, 0, num);
 }
 
 extern(C) void hardwareInit()
@@ -228,6 +240,6 @@ extern(C) void hardwareInit()
 	lcd.init();
 
     // Call C-main
-    main();
+    main(null);
 }
 

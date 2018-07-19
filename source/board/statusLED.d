@@ -14,17 +14,17 @@ package void init()
     GPIOG.PUPDR.PUPDR13     = 0b00;
 }
 
-public @inline void on()
+public @inline pragma(inline, true) void on()
 {
 	GPIOG.ODR.ODR13 = true;
 }
 
-public @inline void off()
+public @inline pragma(inline, true) void off()
 {
 	GPIOG.ODR.ODR13 = false;
 }
 
-public @inline void toggle()
+public @inline pragma(inline, true) void toggle()
 {
 	GPIOG.ODR.ODR13 = !GPIOG.ODR.ODR13;
 }

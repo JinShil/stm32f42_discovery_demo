@@ -20,7 +20,7 @@ import trace = stm32f42.trace;
 import statusLED = board.statusLED;
 import random = board.random;
 
-void main()
+extern(C) void main(string[] args)
 {
 	lcd.fillRect(0, 0, lcd.getWidth(), lcd.getHeight(), 0x07E0);
 

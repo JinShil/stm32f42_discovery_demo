@@ -24,6 +24,7 @@ private void semihostingInvoke(in int command, in void* message)
   // differentiate them with D's conditional compilation feature, version.
   version(LDC)
   {
+    import ldc.llvmasm;
     __asm
     (
       "mov r0, $0;
