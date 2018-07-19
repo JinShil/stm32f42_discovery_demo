@@ -8,7 +8,7 @@ A simple demonstration of using D to bare-metal program an [STM32F29I Discovery 
 ## Build
 Run `rdmd build.d -c=gdc` to build with GDC.  You will need a [GDC ARM cross compiler](https://github.com/JinShil/arm-none-eabi-gdc).
 
-Run `rdmd build.d -c=ldc` to build with LDC.  You can use the *linux-armhf* download from the [LDC releases](https://github.com/ldc-developers/ldc/releases).
+Run `rdmd build.d -c=ldc` to build with LDC.  You can use one of the downloads from the [LDC releases](https://github.com/ldc-developers/ldc/releases).
 
 You need to install dmd and dtools (for `rdmd`), arm-none-eabi-gcc (for `arm-none-eabi-gdb`), and openocd from your Linux distribution's package manager.
 
