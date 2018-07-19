@@ -25,7 +25,7 @@ with(GPIOA.MODER)
 {
     setValue
     !(
-         MODER3,  0b10  // Alternate function mode
+          MODER3,  0b10  // Alternate function mode
         , MODER4,  0b10
         , MODER6,  0b10
         , MODER11, 0b10
