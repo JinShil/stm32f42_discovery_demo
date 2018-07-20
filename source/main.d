@@ -39,9 +39,11 @@ extern(C) void main(string[] args)
     	uint height = r % lcd.getHeight();
 
     	lcd.fillRect(x, y, width, height, color);
-		if ((i % 100) == 0)
+		if ((i % 1000) == 0)
     	{
 			statusLED.toggle();
 		}
+
+		i++;
     }
 }
