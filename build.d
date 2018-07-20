@@ -50,11 +50,11 @@ void main(string[] args)
     auto cmd = "rm -f " ~ binaryDir ~ "/*";
     run(cmd);
 
-	auto sourceFiles = sourceDir
-		.dirEntries("*.d", SpanMode.depth)
-		.filter!(a => !a.name.startsWith("source/runtime")) // runtime will be imported automatically
-		.map!"a.name"
-		.join(" ");
+        auto sourceFiles = sourceDir
+                .dirEntries("*.d", SpanMode.depth)
+                .filter!(a => !a.name.startsWith("source/runtime")) // runtime will be imported automatically
+                .map!"a.name"
+                .join(" ");
 
     if (compiler == "gdc")
     {
@@ -65,6 +65,7 @@ void main(string[] args)
             ~ " -ffunction-sections"
             ~ " -fdata-sections"
             ~ " -fno-weak"
+            // ~ " -S"
 
             ~ " " ~ sourceFiles
             ~ " -o " ~ objectFile;
@@ -78,6 +79,7 @@ void main(string[] args)
             ~ " -boundscheck=off"
             ~ " -I/usr/include/dlang/ldc/"
             ~ " -linkonce-templates"
+            // ~ " -output-s"
 
             ~ " " ~ sourceFiles
             ~ " -of=" ~ objectFile;
