@@ -58,11 +58,10 @@ void main(string[] args)
 
     if (compiler == "gdc")
     {
-        // compile to temporary assembly file
-        cmd = "arm-none-eabi-gdc -c -Os -nophoboslib -nostdinc -nodefaultlibs -nostdlib"
+        cmd = "arm-none-eabi-gdc -c -O2 -nophoboslib -nostdinc -nodefaultlibs -nostdlib"
             ~ " -mthumb -mcpu=cortex-m4 -mtune=cortex-m4"
             ~ " -Isource/runtime" // to import runtime automatically
-            ~ " -fno-bounds-check -fno-invariants" // -fno-assert gives me a broken binary
+            ~ " -fno-bounds-check"
             ~ " -ffunction-sections"
             ~ " -fdata-sections"
             ~ " -fno-weak"
@@ -72,11 +71,10 @@ void main(string[] args)
     }
     else if (compiler == "ldc")
     {
-        // compile to temporary assembly file
-        cmd = "ldc2 -conf= -disable-simplify-libcalls -c -Os -boundscheck=off -mtriple=thumb-none-eabi -float-abi=hard"
+        cmd = "ldc2 -conf= -disable-simplify-libcalls -c -Os  -mtriple=thumb-none-eabi -float-abi=hard"
             ~ " -mcpu=cortex-m4"
             ~ " -Isource/runtime" // to import runtime automatically
-            ~ " -I/usr/include/dlang/ldc/"
+            ~ " -boundscheck=off"
             ~ " -linkonce-templates"
 
             ~ " " ~ sourceFiles
