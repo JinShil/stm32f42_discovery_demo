@@ -20,8 +20,6 @@ version(GNU)
 
 version(LDC)
 {
-    import ldc.attributes;
-
     public:
     enum inline = "";
     enum naked = "";
