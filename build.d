@@ -58,7 +58,7 @@ void main(string[] args)
 
     if (compiler == "gdc")
     {
-        cmd = "arm-none-eabi-gdc -c -O2 -nophoboslib -nostdinc -nodefaultlibs -nostdlib"
+        cmd = "arm-none-eabi-gdc -c -Os -nophoboslib -nostdinc -nodefaultlibs -nostdlib"
             ~ " -mthumb -mcpu=cortex-m4 -mtune=cortex-m4 -mfloat-abi=hard"
             ~ " -Isource/runtime" // to import runtime automatically
             ~ " -fno-bounds-check"
