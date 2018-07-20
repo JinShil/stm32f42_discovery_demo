@@ -58,13 +58,15 @@ void main(string[] args)
 
     if (compiler == "gdc")
     {
-        cmd = "arm-none-eabi-gdc -c -Os -nophoboslib -nostdinc -nodefaultlibs -nostdlib"
+        cmd = "arm-none-eabi-gdc -c -O3 -nophoboslib -nostdinc -nodefaultlibs -nostdlib"
             ~ " -mthumb -mcpu=cortex-m4 -mtune=cortex-m4 -mfloat-abi=hard"
             ~ " -Isource/runtime" // to import runtime automatically
             ~ " -fno-bounds-check"
             ~ " -ffunction-sections"
             ~ " -fdata-sections"
             ~ " -fno-weak"
+            ~ " -fno-tree-loop-distribute-patterns"
+            ~ " -funroll-loops"
             // ~ " -S"
 
             ~ " " ~ sourceFiles
@@ -72,12 +74,11 @@ void main(string[] args)
     }
     else if (compiler == "ldc")
     {
-        cmd = "ldc2 -conf= -disable-simplify-libcalls -c -Os"
+        cmd = "ldc2 -conf= -disable-simplify-libcalls -c -O5"
             ~ " -mtriple=thumb-none-eabi -float-abi=hard"
             ~ " -mcpu=cortex-m4"
             ~ " -Isource/runtime" // to import runtime automatically
             ~ " -boundscheck=off"
-            ~ " -I/usr/include/dlang/ldc/"
             ~ " -linkonce-templates"
             // ~ " -output-s"
 

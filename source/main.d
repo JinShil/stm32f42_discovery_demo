@@ -22,8 +22,6 @@ import random = board.random;
 
 extern(C) void main(string[] args)
 {
-    lcd.fillRect(0, 0, lcd.getWidth(), lcd.getHeight(), 0x07E0);
-
     uint i = 0;
     while(true)
     {

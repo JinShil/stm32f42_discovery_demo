@@ -37,10 +37,18 @@ with(GPIOA.MODER)
 * Seems to be pretty fast, but I still need to verify the generated code to ensure optimizations are being performed properly
 * Small Code Size (3k).  The data in the BSS segment is my LCD's frame buffer, so that really doesn't count.
 
+Optimized for size
 ```
 text       data     bss     dec      hex   filename
 3124	      0	 153600	 156700	  2641c	binary/firmware
 ```
+
+Optimized for speed
+```
+text	   data	    bss	    dec	    hex	filename
+5888	      0	 153600	 159488	  26f00	binary/firmware
+```
+
 * The code resembles the register descriptions in the STM32 reference manual for easy cross-referencing.
 ![](https://raw.githubusercontent.com/JinShil/stm32f42_discovery_demo/master/images/cross-referencing.png)
 * Good integration with tooling.  e.g Register descriptions in DDoc popups, and register layout in outline and code completion windows.  In other words, the code *is* the datasheet.
