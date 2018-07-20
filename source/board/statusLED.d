@@ -7,7 +7,7 @@ import attributes;
 
 package void init()
 {
-	RCC.AHB1ENR.GPIOGEN     = true;
+    RCC.AHB1ENR.GPIOGEN     = true;
     GPIOG.OSPEEDR.OSPEEDR13 = 0b11;
     GPIOG.MODER.MODER13     = 0b01;
     GPIOG.OTYPER.OT13       = 0b00;
@@ -16,15 +16,15 @@ package void init()
 
 public @inline pragma(inline, true) void on()
 {
-	GPIOG.ODR.ODR13 = true;
+    GPIOG.ODR.ODR13 = true;
 }
 
 public @inline pragma(inline, true) void off()
 {
-	GPIOG.ODR.ODR13 = false;
+    GPIOG.ODR.ODR13 = false;
 }
 
 public @inline pragma(inline, true) void toggle()
 {
-	GPIOG.ODR.ODR13 = !GPIOG.ODR.ODR13;
+    GPIOG.ODR.ODR13 = !GPIOG.ODR.ODR13;
 }

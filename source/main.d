@@ -22,28 +22,28 @@ import random = board.random;
 
 extern(C) void main(string[] args)
 {
-	lcd.fillRect(0, 0, lcd.getWidth(), lcd.getHeight(), 0x07E0);
+    lcd.fillRect(0, 0, lcd.getWidth(), lcd.getHeight(), 0x07E0);
 
-	uint i = 0;
+    uint i = 0;
     while(true)
     {
-    	uint r = random.get();
-    	ushort color = cast(ushort)(r & 0xFFFF);
+        uint r = random.get();
+        ushort color = cast(ushort)(r & 0xFFFF);
 
-    	r = random.get();
-    	int x = cast(int)((r >> 16) % lcd.getWidth());
-    	int y = cast(int)(r % lcd.getHeight());
+        r = random.get();
+        int x = cast(int)((r >> 16) % lcd.getWidth());
+        int y = cast(int)(r % lcd.getHeight());
 
-    	r = random.get();
-    	uint width = (r >> 16) % lcd.getWidth();
-    	uint height = r % lcd.getHeight();
+        r = random.get();
+        uint width = (r >> 16) % lcd.getWidth();
+        uint height = r % lcd.getHeight();
 
-    	lcd.fillRect(x, y, width, height, color);
-		if ((i % 1000) == 0)
-    	{
-			statusLED.toggle();
-		}
+        lcd.fillRect(x, y, width, height, color);
+        if ((i % 1000) == 0)
+        {
+            statusLED.toggle();
+        }
 
-		i++;
+        i++;
     }
 }

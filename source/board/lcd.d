@@ -23,45 +23,45 @@ import trace = stm32f42.trace;
 
 package void init()
 {
-	ILI9341.init();
-	ltdc.init();
+    ILI9341.init();
+    ltdc.init();
 }
 
 @inline pragma(inline, true) public uint getWidth()
 {
-	return ltdc.getWidth();
+    return ltdc.getWidth();
 }
 
 @inline pragma(inline, true) public uint getHeight()
 {
-	return ltdc.getHeight();
+    return ltdc.getHeight();
 }
 
 private int clamp(int value, int min, int max)
 {
-	if (value < min)
-	{
-		return min;
-	}
-	else if (value > max)
-	{
-		return max;
-	}
+    if (value < min)
+    {
+        return min;
+    }
+    else if (value > max)
+    {
+        return max;
+    }
 
-	return value;
+    return value;
 }
 
 public void fillRect(int x, int y, uint width, uint height, ushort color)
 {
-	int x2 = x + width;
-	int y2 = y + height;
-	x = clamp(x, 0, getWidth() - 1);
-	y = clamp(y, 0, getHeight() - 1);
-	x2 = clamp(x2, 0, getWidth() - 1);
-	y2 = clamp(y2, 0, getHeight() - 1);
-	width = x2 - x + 1;
-	for(int _y = y; _y <= y2; _y++)
-	{
-		ltdc.fillSpan(x, _y, width, color);
-	}
+    int x2 = x + width;
+    int y2 = y + height;
+    x = clamp(x, 0, getWidth() - 1);
+    y = clamp(y, 0, getHeight() - 1);
+    x2 = clamp(x2, 0, getWidth() - 1);
+    y2 = clamp(y2, 0, getHeight() - 1);
+    width = x2 - x + 1;
+    for(int _y = y; _y <= y2; _y++)
+    {
+        ltdc.fillSpan(x, _y, width, color);
+    }
 }

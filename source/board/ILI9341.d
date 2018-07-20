@@ -24,279 +24,279 @@ import statusLED = board.statusLED;
 
 private void csLow()
 {
-	GPIOC.ODR.ODR2 = 0;
+    GPIOC.ODR.ODR2 = 0;
 }
 
 private void csHigh()
 {
-	GPIOC.ODR.ODR2 = 1;
+    GPIOC.ODR.ODR2 = 1;
 }
 
 private void csInit()
 {
-	RCC.AHB1ENR.GPIOCEN = true;
+    RCC.AHB1ENR.GPIOCEN = true;
 
-	GPIOC.MODER.MODER2 = 0b01;      // output
-	GPIOC.PUPDR.PUPDR2 = 0b00;      // no pull
-	GPIOC.OSPEEDR.OSPEEDR2 = 0b11;
-	GPIOC.OTYPER.OT2 = 0b00;        // push-pull
+    GPIOC.MODER.MODER2 = 0b01;      // output
+    GPIOC.PUPDR.PUPDR2 = 0b00;      // no pull
+    GPIOC.OSPEEDR.OSPEEDR2 = 0b11;
+    GPIOC.OTYPER.OT2 = 0b00;        // push-pull
 }
 
 private void wrxLow()
 {
-	GPIOD.ODR.ODR13 = 0;
+    GPIOD.ODR.ODR13 = 0;
 }
 
 private void wrxHigh()
 {
-	GPIOD.ODR.ODR13 = 1;
+    GPIOD.ODR.ODR13 = 1;
 }
 
 private void wrxInit()
 {
-	RCC.AHB1ENR.GPIODEN = true;
+    RCC.AHB1ENR.GPIODEN = true;
 
-	GPIOD.MODER.MODER13 = 0b01;      // output
-	GPIOD.PUPDR.PUPDR13 = 0b00;      // no pull
-	GPIOD.OSPEEDR.OSPEEDR13 = 0b11;
-	GPIOD.OTYPER.OT13 = 0b00;        // push-pull
+    GPIOD.MODER.MODER13 = 0b01;      // output
+    GPIOD.PUPDR.PUPDR13 = 0b00;      // no pull
+    GPIOD.OSPEEDR.OSPEEDR13 = 0b11;
+    GPIOD.OTYPER.OT13 = 0b00;        // push-pull
 }
 
 private void rdxLow()
 {
-	GPIOD.ODR.ODR12 = 0;
+    GPIOD.ODR.ODR12 = 0;
 }
 
 private void rdxHigh()
 {
-	GPIOD.ODR.ODR12 = 1;
+    GPIOD.ODR.ODR12 = 1;
 }
 
 private void rdxInit()
 {
-	RCC.AHB1ENR.GPIODEN = true;
+    RCC.AHB1ENR.GPIODEN = true;
 
-	GPIOD.MODER.MODER12 = 0b01;      // output
-	GPIOD.PUPDR.PUPDR12 = 0b00;      // no pull
-	GPIOD.OSPEEDR.OSPEEDR12 = 0b11;
-	GPIOD.OTYPER.OT12 = 0b00;        // push-pull
+    GPIOD.MODER.MODER12 = 0b01;      // output
+    GPIOD.PUPDR.PUPDR12 = 0b00;      // no pull
+    GPIOD.OSPEEDR.OSPEEDR12 = 0b11;
+    GPIOD.OTYPER.OT12 = 0b00;        // push-pull
 }
 
 private void writeCommand(ubyte value)
 {
-	wrxLow();  // low to send command
-	csLow();
+    wrxLow();  // low to send command
+    csLow();
 
-	spi5.transmit(value);
+    spi5.transmit(value);
 }
 
 private void write(ubyte command)
 {
-	writeCommand(command);
-	csHigh();
-	wrxLow();
+    writeCommand(command);
+    csHigh();
+    wrxLow();
 }
 
 private void write(ubyte command, ubyte arg0)
 {
-	writeCommand(command);
+    writeCommand(command);
 
-	wrxHigh();  // high to send data
-	spi5.transmit(arg0);
-	csHigh();
-	wrxLow();
+    wrxHigh();  // high to send data
+    spi5.transmit(arg0);
+    csHigh();
+    wrxLow();
 }
 
 private void write(ubyte command, ubyte arg0, ubyte arg1)
 {
-	writeCommand(command);
+    writeCommand(command);
 
-	wrxHigh();  // high to send data
-	spi5.transmit(arg0);
-	spi5.transmit(arg1);
-	csHigh();
-	wrxLow();
+    wrxHigh();  // high to send data
+    spi5.transmit(arg0);
+    spi5.transmit(arg1);
+    csHigh();
+    wrxLow();
 }
 
 private void write(ubyte command, ubyte arg0, ubyte arg1, ubyte arg2)
 {
-	writeCommand(command);
+    writeCommand(command);
 
-	wrxHigh();  // high to send data
-	spi5.transmit(arg0);
-	spi5.transmit(arg1);
-	spi5.transmit(arg2);
-	csHigh();
-	wrxLow();
+    wrxHigh();  // high to send data
+    spi5.transmit(arg0);
+    spi5.transmit(arg1);
+    spi5.transmit(arg2);
+    csHigh();
+    wrxLow();
 }
 
 private void write(ubyte command, ubyte arg0, ubyte arg1, ubyte arg2, ubyte arg3)
 {
-	writeCommand(command);
+    writeCommand(command);
 
-	wrxHigh();  // high to send data
-	spi5.transmit(arg0);
-	spi5.transmit(arg1);
-	spi5.transmit(arg2);
-	spi5.transmit(arg3);
-	csHigh();
-	wrxLow();
+    wrxHigh();  // high to send data
+    spi5.transmit(arg0);
+    spi5.transmit(arg1);
+    spi5.transmit(arg2);
+    spi5.transmit(arg3);
+    csHigh();
+    wrxLow();
 }
 
 private void write(ubyte command, ubyte arg0, ubyte arg1, ubyte arg2, ubyte arg3, ubyte arg4)
 {
-	writeCommand(command);
+    writeCommand(command);
 
-	wrxHigh();  // high to send data
-	spi5.transmit(arg0);
-	spi5.transmit(arg1);
-	spi5.transmit(arg2);
-	spi5.transmit(arg3);
-	spi5.transmit(arg4);
-	csHigh();
-	wrxLow();
+    wrxHigh();  // high to send data
+    spi5.transmit(arg0);
+    spi5.transmit(arg1);
+    spi5.transmit(arg2);
+    spi5.transmit(arg3);
+    spi5.transmit(arg4);
+    csHigh();
+    wrxLow();
 }
 
 package void init()
 {
-	wrxInit();
-	rdxInit();
-	csInit();
+    wrxInit();
+    rdxInit();
+    csInit();
 
-	csLow();
-	csHigh();
+    csLow();
+    csHigh();
 
-	spi5.init();
+    spi5.init();
 
-	rdxHigh();
+    rdxHigh();
 
-	//Reset
+    //Reset
     //write(0x01);
-	//trace.writeLine("Reset");
+    //trace.writeLine("Reset");
 
-	write(0xCA, 0xC3, 0x08, 0x50);
+    write(0xCA, 0xC3, 0x08, 0x50);
 
-	//PowerB
-	write(0xCF, 0x00, 0xC1, 0x30);
+    //PowerB
+    write(0xCF, 0x00, 0xC1, 0x30);
 
-	//Power_SEQ
-	write(0xED, 0x64, 0x03, 0x12, 0x81);
+    //Power_SEQ
+    write(0xED, 0x64, 0x03, 0x12, 0x81);
 
-	//DTCA
-	write(0xE8, 0x85, 0x00, 0x78);
+    //DTCA
+    write(0xE8, 0x85, 0x00, 0x78);
 
     //PowerA
-	write(0xCB, 0x39, 0x2C, 0x00, 0x34, 0x02);
+    write(0xCB, 0x39, 0x2C, 0x00, 0x34, 0x02);
 
-	//PRC
-	write(0xF7, 0x20);
+    //PRC
+    write(0xF7, 0x20);
 
-	//DTCB
-	write(0xEA, 0x00, 0x00);
+    //DTCB
+    write(0xEA, 0x00, 0x00);
 
-	//FRMCTR1
-	write(0xB1, 0x00, 0x1B);
+    //FRMCTR1
+    write(0xB1, 0x00, 0x1B);
 
-	//DFC
-	write(0xB6, 0x0A, 0xA2);
+    //DFC
+    write(0xB6, 0x0A, 0xA2);
 
-	//POWER1
-	write(0xC0, 0x23);
+    //POWER1
+    write(0xC0, 0x23);
 
-	//POWER2
-	write(0xC1, 0x10);
+    //POWER2
+    write(0xC1, 0x10);
 
-	//VCOM1
-	write(0xC5, 0x45, 0x15);
+    //VCOM1
+    write(0xC5, 0x45, 0x15);
 
-	//VCOM2
-	write(0xC7, 0x90);
+    //VCOM2
+    write(0xC7, 0x90);
 
-	//MAC
-	write(0x36, 0xC8);
+    //MAC
+    write(0x36, 0xC8);
 
-	//Pixel Format
-	//write(0x3A, 0x55);
+    //Pixel Format
+    //write(0x3A, 0x55);
 
-	//3GAMMA
-	write(0xF2, 0x00);
+    //3GAMMA
+    write(0xF2, 0x00);
 
-	//FRC
-	write(0xB1, 0x00, 0x18);
+    //FRC
+    write(0xB1, 0x00, 0x18);
 
-	//RGB Interface
-	write(0xB0, 0xC2);
+    //RGB Interface
+    write(0xB0, 0xC2);
 
-	//DFC
-	write(0xB6, 0x0A, 0xA7, 0x27, 0x04);
+    //DFC
+    write(0xB6, 0x0A, 0xA7, 0x27, 0x04);
 
-	//Column address
-	write(0x2A, 0x00, 0x00, 0x00, 0xEF);
+    //Column address
+    write(0x2A, 0x00, 0x00, 0x00, 0xEF);
 
-	//Page address
-	write(0x2B, 0x00, 0x00, 0x01, 0x3F);
+    //Page address
+    write(0x2B, 0x00, 0x00, 0x01, 0x3F);
 
-	//LCD interface
-	write(0xF6, 0x01, 0x00, 0x06);
+    //LCD interface
+    write(0xF6, 0x01, 0x00, 0x06);
 
-	//GRAM
-	write(0x2C);
-	//trace.writeLine("GRAM");
+    //GRAM
+    write(0x2C);
+    //trace.writeLine("GRAM");
 
-	//GAMMA
-	write(0x26, 0x01);
+    //GAMMA
+    write(0x26, 0x01);
 
-	//PGAMMA
-	writeCommand(0xE0);
-	wrxHigh();  // high to send data
-	spi5.transmit(0x0F);
-	spi5.transmit(0x29);
-	spi5.transmit(0x24);
-	spi5.transmit(0x0C);
-	spi5.transmit(0x0E);
-	spi5.transmit(0x09);
-	spi5.transmit(0x4E);
-	spi5.transmit(0x78);
-	spi5.transmit(0x3C);
-	spi5.transmit(0x09);
-	spi5.transmit(0x13);
-	spi5.transmit(0x05);
-	spi5.transmit(0x17);
-	spi5.transmit(0x11);
-	spi5.transmit(0x00);
-	csHigh();
-	wrxLow();
+    //PGAMMA
+    writeCommand(0xE0);
+    wrxHigh();  // high to send data
+    spi5.transmit(0x0F);
+    spi5.transmit(0x29);
+    spi5.transmit(0x24);
+    spi5.transmit(0x0C);
+    spi5.transmit(0x0E);
+    spi5.transmit(0x09);
+    spi5.transmit(0x4E);
+    spi5.transmit(0x78);
+    spi5.transmit(0x3C);
+    spi5.transmit(0x09);
+    spi5.transmit(0x13);
+    spi5.transmit(0x05);
+    spi5.transmit(0x17);
+    spi5.transmit(0x11);
+    spi5.transmit(0x00);
+    csHigh();
+    wrxLow();
 
-	//NGAMMA
-	writeCommand(0xE1);
-	wrxHigh();  // high to send data
-	spi5.transmit(0x00);
-	spi5.transmit(0x16);
-	spi5.transmit(0x1B);
-	spi5.transmit(0x04);
-	spi5.transmit(0x11);
-	spi5.transmit(0x07);
-	spi5.transmit(0x31);
-	spi5.transmit(0x33);
-	spi5.transmit(0x42);
-	spi5.transmit(0x05);
-	spi5.transmit(0x0C);
-	spi5.transmit(0x0A);
-	spi5.transmit(0x28);
-	spi5.transmit(0x2F);
-	spi5.transmit(0x0F);
-	csHigh();
-	wrxLow();
+    //NGAMMA
+    writeCommand(0xE1);
+    wrxHigh();  // high to send data
+    spi5.transmit(0x00);
+    spi5.transmit(0x16);
+    spi5.transmit(0x1B);
+    spi5.transmit(0x04);
+    spi5.transmit(0x11);
+    spi5.transmit(0x07);
+    spi5.transmit(0x31);
+    spi5.transmit(0x33);
+    spi5.transmit(0x42);
+    spi5.transmit(0x05);
+    spi5.transmit(0x0C);
+    spi5.transmit(0x0A);
+    spi5.transmit(0x28);
+    spi5.transmit(0x2F);
+    spi5.transmit(0x0F);
+    csHigh();
+    wrxLow();
 
 
-	//Sleep out
-	write(0x11);
-	//Delay 1000000;
-	//trace.writeLine("Delay");
+    //Sleep out
+    write(0x11);
+    //Delay 1000000;
+    //trace.writeLine("Delay");
 
-	//Display On
-	write(0x29);
+    //Display On
+    write(0x29);
 
-	//GRAM
-	//write(0x2C);
+    //GRAM
+    //write(0x2C);
 }

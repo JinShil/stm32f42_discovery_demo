@@ -206,7 +206,7 @@ extern(C) void hardwareInit()
     statusLED.init();
 
     //Initialize the LCD
-	lcd.init();
+    lcd.init();
 
     // Call C-main
     main(null);

@@ -22,17 +22,17 @@ import trace = stm32f42.trace;
 
 package void init()
 {
-	RCC.AHB2ENR.RNGEN = true;
-	RNG.CR.RNGEN = true;
+    RCC.AHB2ENR.RNGEN = true;
+    RNG.CR.RNGEN = true;
 }
 
 public uint get()
 {
-	if (RNG.SR.CECS || RNG.SR.SECS)
-	{
-		trace.writeLine("RNG Error");
-		while(true) { }
-	}
-	while(!RNG.SR.DRDY) { }
-	return RNG.DR.RNDATA;
+    if (RNG.SR.CECS || RNG.SR.SECS)
+    {
+        trace.writeLine("RNG Error");
+        while(true) { }
+    }
+    while(!RNG.SR.DRDY) { }
+    return RNG.DR.RNDATA;
 }
