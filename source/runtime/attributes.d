@@ -2,25 +2,13 @@ module attributes;
 
 version(GNU)
 {
-    private:
-    struct Attribute(A...)
-    {
-        A args;
-    }
-
-    auto attribute(A...)(A args) if(A.length > 0 && is(A[0] == string))
-    {
-        return Attribute!A(args);
-    }
-
-    public:
+    private import gcc.attribute;
     enum inline = attribute("forceinline");
-    enum naked = attribute("naked");
+    enum noinline = attribute("noinline");
 }
 
 version(LDC)
 {
-    public:
     enum inline = "";
-    enum naked = "";
+    enum noinline = "";
 }
