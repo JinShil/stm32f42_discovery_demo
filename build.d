@@ -59,7 +59,7 @@ void main(string[] args)
     if (compiler == "gdc")
     {
         cmd = "arm-none-eabi-gdc -c -O2 -nophoboslib -nostdinc -nodefaultlibs -nostdlib"
-            ~ " -mthumb -mcpu=cortex-m4 -mtune=cortex-m4"
+            ~ " -mthumb -mcpu=cortex-m4 -mtune=cortex-m4 -mfloat-abi=hard"
             ~ " -Isource/runtime" // to import runtime automatically
             ~ " -fno-bounds-check"
             ~ " -ffunction-sections"
@@ -71,7 +71,8 @@ void main(string[] args)
     }
     else if (compiler == "ldc")
     {
-        cmd = "ldc2 -conf= -disable-simplify-libcalls -c -Os  -mtriple=thumb-none-eabi -float-abi=hard"
+        cmd = "ldc2 -conf= -disable-simplify-libcalls -c -Os"
+            ~ " -mtriple=thumb-none-eabi -float-abi=hard"
             ~ " -mcpu=cortex-m4"
             ~ " -Isource/runtime" // to import runtime automatically
             ~ " -boundscheck=off"
