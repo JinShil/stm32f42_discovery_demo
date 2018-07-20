@@ -75,6 +75,7 @@ void main(string[] args)
             ~ " -mcpu=cortex-m4"
             ~ " -Isource/runtime" // to import runtime automatically
             ~ " -boundscheck=off"
+            ~ " -I/usr/include/dlang/ldc/"
             ~ " -linkonce-templates"
 
             ~ " " ~ sourceFiles
