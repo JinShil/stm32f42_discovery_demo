@@ -20,7 +20,7 @@ nothrow:
 /************************************************************************************
 * Initiate semihosting command
 */
-private void semihostingInvoke(in int command, in void* message) @trusted
+private void semihostingInvoke(int command, const scope void* message) @trusted
 {
   // LDC and GDC use slightly different inline assembly syntax, so we have to
   // differentiate them with D's conditional compilation feature, version.
@@ -54,7 +54,7 @@ private void semihostingInvoke(in int command, in void* message) @trusted
 /************************************************************************************
 * Create semihosting message and forward it to semihostingInvoke
 */
-private void semihostingWrite(in void* ptr, in uint length)
+private void semihostingWrite(const scope void* ptr, uint length)
 {
     // Create semihosting message message
     uint[3] message =

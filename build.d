@@ -67,6 +67,7 @@ void main(string[] args)
             ~ " -fno-weak"
             ~ " -fno-tree-loop-distribute-patterns"
             ~ " -funroll-loops"
+            // ~ " -dip1000"
             // ~ " -S"
 
             ~ " " ~ sourceFiles
@@ -80,6 +81,7 @@ void main(string[] args)
             ~ " -Isource/runtime" // to import runtime automatically
             ~ " -boundscheck=off"
             ~ " -linkonce-templates"
+            ~ " -dip1000"
             // ~ " -output-s"
 
             ~ " " ~ sourceFiles
