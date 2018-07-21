@@ -68,7 +68,6 @@ void main(string[] args)
             ~ " -fno-tree-loop-distribute-patterns"
             ~ " -funroll-loops"
             ~ " -ftransition=dip1000"
-            // ~ " -dip1000"
             // ~ " -S"
 
             ~ " " ~ sourceFiles
