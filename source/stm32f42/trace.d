@@ -131,7 +131,7 @@ void write(ubyte value)
 /************************************************************************************
 * Print unsigned integer with a new line
 */
-void writeLine(uint value, uint base = 10)
+void writeln(uint value, uint base = 10)
 {
     write(value, base);
     write("\r\n");
@@ -140,7 +140,7 @@ void writeLine(uint value, uint base = 10)
 /************************************************************************************
 * Print boolean with a newline
 */
-void writeLine(bool value)
+void writeln(bool value)
 {
     write(value);
     write("\r\n");
@@ -149,7 +149,7 @@ void writeLine(bool value)
 /************************************************************************************
 * Print unsigned byte with a newline
 */
-void writeLine(ubyte value)
+void writeln(ubyte value)
 {
     write(cast(uint)value);
     write("\r\n");
@@ -158,7 +158,7 @@ void writeLine(ubyte value)
 /************************************************************************************
 * Print signed integer with a new line
 */
-//void writeLine(int value, uint base = 10)
+//void writeln(int value, uint base = 10)
 //{
 //    write(value, base);
 //    write("\r\n");
@@ -189,7 +189,7 @@ void write(A...)(in A a)
 /************************************************************************************
 * Print several values at once with a new line
 */
-void writeLine(A...)(in A a)
+void writeln(A...)(in A a)
 {
     foreach(t; a)
     {

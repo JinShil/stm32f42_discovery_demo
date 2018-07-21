@@ -32,7 +32,7 @@ public uint get()
 {
     if (RNG.SR.CECS || RNG.SR.SECS)
     {
-        trace.writeLine("RNG Error");
+        trace.writeln("RNG Error");
         while(true) { }
     }
     while(!RNG.SR.DRDY) { }

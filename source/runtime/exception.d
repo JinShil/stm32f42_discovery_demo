@@ -9,7 +9,7 @@ nothrow:
 */
 extern(C) void _d_assert(string file, uint line)
 {
-    trace.writeLine(file, ":", line);
+    trace.writeln(file, ":", line);
     while(true) { }
 }
 
@@ -18,6 +18,6 @@ extern(C) void _d_assert(string file, uint line)
 */
 extern(C) void _d_assert_msg(string msg, string file, uint line)
 {
-    trace.writeLine(file, ":", line, ": ", msg);
+    trace.writeln(file, ":", line, ": ", msg);
     while(true) { }
 }

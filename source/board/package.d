@@ -37,8 +37,7 @@ extern(C) void main(string[] args);
 void OnHardFault()
 {
     // Display a message notifying us that a hard fault occurred
-    //trace.writeLine("Hard Fault");
-    trace.writeLine("hard fault");
+    trace.writeln("hard fault");
 
     // Enter an infinite loop so we can use the debugger
     // to examine registers, memory, etc...
