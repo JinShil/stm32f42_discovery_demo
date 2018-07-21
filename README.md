@@ -15,6 +15,7 @@ You need to install dmd and dtools (for `rdmd`), arm-none-eabi-gcc (for `arm-non
 ## The Good
 * It works!
 * No CRT startup files, libgcc, libc, or vendor's C peripheral libraries were used.  *EVERYTHING* is in D.
+* `@safe` and `-dip1000` compatible
 * No Stinking `-betterC`.  If you don't want the overhead of a certain feature of D, don't use it.
 * [Compile-time enforcement of register/bitfield mutability](https://github.com/JinShil/stm32f42_discovery_demo/blob/c324bbf861cf258a819478481521528fca88dcb3/source/stm32f42/mmio.d#L244-L275)
 * [Compile-time optimization of MMIO register access](https://github.com/JinShil/stm32f42_discovery_demo/blob/c324bbf861cf258a819478481521528fca88dcb3/source/stm32f42/mmio.d#L417-L437) by turning byte- and half-word-aligned accesses into single, atomic reads/writes. Single-bit bitfields are optimized at compile time to use ARM's bitbanding feature for atomic access.  This increases performance, reduces code size, and is all abstracted from the user.
