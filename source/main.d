@@ -18,8 +18,9 @@ module main;
 nothrow:
 @safe:
 
+import stm32f42.trace;
+
 import lcd = board.lcd;
-import trace = stm32f42.trace;
 import statusLED = board.statusLED;
 import random = board.random;
 

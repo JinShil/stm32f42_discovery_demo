@@ -20,8 +20,7 @@ nothrow:
 
 import stm32f42.rcc;
 import stm32f42.rng;
-
-import trace = stm32f42.trace;
+import stm32f42.trace;
 
 package void init()
 {

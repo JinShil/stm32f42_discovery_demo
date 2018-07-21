@@ -69,9 +69,9 @@ import stm32f42.rcc;
 import stm32f42.pwr;
 import stm32f42.flash;
 import stm32f42.gpio;
+import stm32f42.trace;
 
 import lcd = board.lcd;
-import trace = stm32f42.trace;
 import statusLED = board.statusLED;
 import random = board.random;
 
@@ -87,7 +87,7 @@ extern(C) void main(string[] args);
 void OnHardFault()
 {
     // Display a message notifying us that a hard fault occurred
-    trace.writeln("hard fault");
+    writeln("hard fault");
 
     // Enter an infinite loop so we can use the debugger
     // to examine registers, memory, etc...

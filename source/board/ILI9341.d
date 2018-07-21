@@ -20,9 +20,9 @@ nothrow:
 
 import stm32f42.gpio;
 import stm32f42.rcc;
+import stm32f42.trace;
 
 import spi5 = board.spi5;
-import trace = stm32f42.trace;
 import statusLED = board.statusLED;
 
 private void csLow()
