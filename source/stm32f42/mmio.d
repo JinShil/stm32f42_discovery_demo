@@ -70,6 +70,8 @@ final abstract class MyPeripheral : Peripheral!(0x2000_1000)
 */
 module stm32f42.mmio;
 
+nothrow:
+
 private alias Address    = uint;
 private alias BitIndex   = uint;
 private alias HalfWord   = ushort;

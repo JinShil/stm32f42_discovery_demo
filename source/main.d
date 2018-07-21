@@ -15,6 +15,8 @@
 
 module main;
 
+nothrow:
+
 import lcd = board.lcd;
 import trace = stm32f42.trace;
 import statusLED = board.statusLED;

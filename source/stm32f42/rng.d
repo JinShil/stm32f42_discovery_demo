@@ -1,19 +1,21 @@
 // Copyright © 2015 Michael V. Franklin
-//      
+//
 // This file is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // This file is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this file.  If not, see <http://www.gnu.org/licenses/>.
 
 module stm32f42.rng;
+
+nothrow:
 
 import stm32f42.mmio;
 import stm32f42.bus;
@@ -35,7 +37,7 @@ final abstract class RNG : Peripheral!(AHB2, 0x60800)
          CEIS=1 in the RNG_SR register.
         */
         alias IE = Bit!(3, Mutability.rw);
-        
+
         /********************************************************************************
          Random number generator enable
          0: Random number generator is disabled
@@ -43,7 +45,7 @@ final abstract class RNG : Peripheral!(AHB2, 0x60800)
         */
         alias RNGEN = Bit!(2, Mutability.rw);
     }
-    
+
     /************************************************************************************
      RNG status register
     */
@@ -58,15 +60,15 @@ final abstract class RNG : Peripheral!(AHB2, 0x60800)
          computed..
         */
         alias DRDY = Bit!(0, Mutability.r);
-        
+
         alias CECS = Bit!(1, Mutability.r);
-        
+
         alias SECS = Bit!(2, Mutability.r);
     }
-    
+
     /************************************************************************************
      RNG control register
-    
+
      The RNG_DR register is a read-only register that delivers a 32-bit random value when read.
      After being read, this register delivers a new random value after a maximum time of 40
      periods of the RNG_CLK clock. The software must check that the DRDY bit is set before

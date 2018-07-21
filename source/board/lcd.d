@@ -15,6 +15,8 @@
 
 module board.lcd;
 
+nothrow:
+
 import ILI9341 = board.ILI9341;
 import ltdc = board.ltdc;
 import trace = stm32f42.trace;

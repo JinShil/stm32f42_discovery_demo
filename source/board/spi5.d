@@ -15,6 +15,8 @@
 
 module board.spi5;
 
+nothrow:
+
 import stm32f42.rcc;
 import stm32f42.gpio;
 import stm32f42.spi;

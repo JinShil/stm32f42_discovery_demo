@@ -15,6 +15,8 @@
 
 module stm32f42.trace;
 
+nothrow:
+
 /************************************************************************************
 * Initiate semihosting command
 */
@@ -68,7 +70,7 @@ private void semihostingWrite(in void* ptr, in uint length)
 /************************************************************************************
 * Print unsigned integer
 */
-void writeu(uint value, uint base = 10)
+void write(uint value, uint base = 10)
 {
     assert(base == 10 || base == 16, "Only base 10 and base 16 are supported");
 
@@ -103,12 +105,12 @@ void write(int value, uint base = 10)
     if (value < 0)
     {
         write("-");
-        writeu(cast(uint)(value * -1), base);
+        write(cast(uint)(value * -1), base);
     }
     // if greater than or equal to 0, just treat it as an unsigned int
     else
     {
-        writeu(cast(uint)value, base);
+        write(cast(uint)value, base);
     }
 }
 

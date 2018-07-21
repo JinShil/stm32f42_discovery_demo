@@ -1,5 +1,7 @@
 module stm32f42.nvic;
 
+nothrow:
+
 import stm32f42.bus;
 import stm32f42.mmio;
 

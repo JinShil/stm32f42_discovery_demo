@@ -2,6 +2,8 @@ module exception;
 
 import trace = stm32f42.trace;
 
+nothrow:
+
 /***********************************************************************
     For assert(condition) statements
 */

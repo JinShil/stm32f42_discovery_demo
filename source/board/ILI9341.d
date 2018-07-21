@@ -15,6 +15,8 @@
 
 module board.ILI9341;
 
+nothrow:
+
 import stm32f42.gpio;
 import stm32f42.rcc;
 
