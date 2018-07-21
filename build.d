@@ -95,7 +95,11 @@ void main(string[] args)
     run(cmd);
 
     // link, creating executable
-    cmd = "arm-none-eabi-ld " ~ objectFile ~ " -Tlinker/linker.ld --gc-sections -o " ~ outputFile;
+    cmd = "arm-none-eabi-ld"
+        ~ " -Tlinker/linker.ld"
+        ~ " --gc-sections"
+        ~ " " ~ objectFile
+        ~ " -o " ~ outputFile;
     run(cmd);
 
     // display the size
