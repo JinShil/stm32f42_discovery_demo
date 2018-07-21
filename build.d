@@ -52,13 +52,13 @@ void main(string[] args)
 
         auto sourceFiles = sourceDir
                 .dirEntries("*.d", SpanMode.depth)
-                .filter!(a => !a.name.startsWith("source/runtime")) // runtime will be imported automatically
+                .filter!(a => a.name == "source/runtime/exception.d" || !a.name.startsWith("source/runtime"))
                 .map!"a.name"
                 .join(" ");
 
     if (compiler == "gdc")
     {
-        cmd = "arm-none-eabi-gdc -c -O3 -nophoboslib -nostdinc -nodefaultlibs -nostdlib"
+        cmd = "arm-none-eabi-gdc -c -O1 -nophoboslib -nostdinc -nodefaultlibs -nostdlib"
             ~ " -mthumb -mcpu=cortex-m4 -mtune=cortex-m4 -mfloat-abi=hard"
             ~ " -Isource/runtime" // to import runtime automatically
             ~ " -fno-bounds-check"
@@ -74,7 +74,7 @@ void main(string[] args)
     }
     else if (compiler == "ldc")
     {
-        cmd = "ldc2 -conf= -disable-simplify-libcalls -c -O5"
+        cmd = "ldc2 -conf= -disable-simplify-libcalls -c -Os"
             ~ " -mtriple=thumb-none-eabi -float-abi=hard"
             ~ " -mcpu=cortex-m4"
             ~ " -Isource/runtime" // to import runtime automatically

@@ -15,8 +15,6 @@
 
 module board.ltdc;
 
-import attributes;
-
 import stm32f42.gpio;
 import stm32f42.rcc;
 import stm32f42.ltdc;
@@ -502,7 +500,6 @@ package void init()
 
     LTDC.L1CFBAR.CFBADD = cast(uint)(frameBuffer.ptr);
 
-
     /* the length of one line of pixels in bytes + 3 then :
     Line Length = Active high width x number of bytes per pixel + 3
     Active high width         = LCD_PIXEL_WIDTH
@@ -523,7 +520,7 @@ package void init()
 
     LTDC.L1CR.LEN = true;     //enable layer 1
 
-    LTDC.SRCR.IMR = true;        //reload configuration
+    LTDC.SRCR.IMR = true;     //reload configuration
 
     LTDC.GCR.LTDCEN = true;   //enable controller
 }

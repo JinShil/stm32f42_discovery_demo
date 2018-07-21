@@ -3,8 +3,6 @@ module board.statusLED;
 import stm32f42.rcc;
 import stm32f42.gpio;
 
-import attributes;
-
 package void init()
 {
     RCC.AHB1ENR.GPIOGEN     = true;

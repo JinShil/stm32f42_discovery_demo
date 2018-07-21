@@ -68,9 +68,9 @@ private void semihostingWrite(in void* ptr, in uint length)
 /************************************************************************************
 * Print unsigned integer
 */
-void write(uint value, uint base = 10)
+void writeu(uint value, uint base = 10)
 {
-    assert(base >= 2 && base <= 16, "Only base 10 and base 16 are supported");
+    assert(base == 10 || base == 16, "Only base 10 and base 16 are supported");
 
     //Will use at most 10 digits, for a 32-bit base-10 number
     char[10] buffer;
@@ -103,12 +103,12 @@ void write(int value, uint base = 10)
     if (value < 0)
     {
         write("-");
-        write(cast(uint)(value * -1), base);
+        writeu(cast(uint)(value * -1), base);
     }
     // if greater than or equal to 0, just treat it as an unsigned int
     else
     {
-        write(cast(uint)value, base);
+        writeu(cast(uint)value, base);
     }
 }
 

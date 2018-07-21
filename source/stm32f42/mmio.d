@@ -70,8 +70,6 @@ final abstract class MyPeripheral : Peripheral!(0x2000_1000)
 */
 module stm32f42.mmio;
 
-import attributes;
-
 private alias Address    = uint;
 private alias BitIndex   = uint;
 private alias HalfWord   = ushort;
@@ -318,7 +316,7 @@ mixin template BitFieldDimensions(BitIndex bitIndex0, BitIndex bitIndex1)
         Gets a bit-mask for this bit field for masking just this BitField out
         of the register.
     */
-    private static immutable auto bitMask = numberOfBits >= 32 
+    private static immutable auto bitMask = numberOfBits >= 32
         ? uint.max  // if numberOfBits >=32, the left shift below will fail to compile
         : ((1 << numberOfBits) - 1) << leastSignificantBitIndex;
 
@@ -490,13 +488,13 @@ mixin template BitFieldMutation(Mutability mutability, ValueType_)
                 volatileStore(cast(ValueType*)bitBandAddress, value_);
             }
             // if can access data with perfect halfword alignment
-            else static if (alignment == Alignment.HalfWord 
+            else static if (alignment == Alignment.HalfWord
                 && (access == Access.Byte_HalfWord_Word || access == Access.HalfWord_Word))
             {
                 volatileStore(cast(ValueType*)halfWordAlignedAddress, value_);
             }
             // if can access data with perfect byte alignment
-            else static if (alignment == Alignment.Byte 
+            else static if (alignment == Alignment.Byte
                 && (access == Access.Byte_HalfWord_Word || access == Access.Byte_Word))
             {
                 volatileStore(cast(ValueType*)byteAlignedAddress, value_);
@@ -622,10 +620,6 @@ abstract class Peripheral(Bus, Address peripheralOffset)
         {
             static if (T.length > 0)
             {
-                //TODO: ensure T[0] is a child of this register
-                // Currently doesn't work due to https://issues.dlang.org/show_bug.cgi?id=12496
-                //static assert(__traits(isSame, __traits(parent, T[0]), __traits(parent, value)), "Bitfield is not part of this register");
-
                 //Ensure value assignment is legal
                 // Need to wrap assignment expression in parentheses due to https://issues.dlang.org/show_bug.cgi?id=17703
                 static assert(__traits(compiles, (T[0].value = T[1])), "Invalid assignment");
