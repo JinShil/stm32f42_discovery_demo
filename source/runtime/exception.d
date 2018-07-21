@@ -22,3 +22,9 @@ extern(C) void _d_assert_msg(string msg, string file, uint line)
     trace.writeln(file, ":", line, ": ", msg);
     while(true) { }
 }
+
+extern(C) void _d_arraybounds(string file, uint line)
+{
+    trace.writeln(file, ":", line);
+    while(true) { }
+}
