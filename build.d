@@ -67,6 +67,7 @@ void main(string[] args)
             ~ " -fno-weak"
             ~ " -fno-tree-loop-distribute-patterns"
             ~ " -funroll-loops"
+            ~ " -ftransition=dip1000"
             // ~ " -dip1000"
             // ~ " -S"
 
