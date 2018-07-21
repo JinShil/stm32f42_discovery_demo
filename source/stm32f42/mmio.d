@@ -71,30 +71,12 @@ final abstract class MyPeripheral : Peripheral!(0x2000_1000)
 module stm32f42.mmio;
 
 nothrow:
-@safe:
-
-private alias Address    = uint;
-private alias BitIndex   = uint;
-private alias HalfWord   = ushort;
-private alias Word       = uint;
-
-// These are the bit band address that can be translated to bit-band addresses
-// that can address a single bit
-private immutable Address PeripheralRegionStart        = 0x4000_0000u;
-private immutable size_t  PeripheralRegionSize         = 0x000F_FFFFu;
-private immutable Address PeripheralRegionEnd          = PeripheralRegionStart + PeripheralRegionSize - 1;
-private immutable Address PeripheralBitBandRegionStart = 0x4200_0000u;
-
-private immutable Address SRAMRegionStart              = 0x2000_0000u;
-private immutable size_t  SRAMRegionSize               = 0x000F_FFFFu;
-private immutable Address SRAMRegionEnd                = SRAMRegionStart + SRAMRegionSize - 1;
-private immutable Address SRAMBitBandRegionStart       = 0x2200_0000u;
 
 /****************************************************************************
    Template wrapping volatileLoad intrinsic casting to basic type based on
    size.
 */
-private T volatileLoad(T)(T* a) @trusted nothrow
+private T volatileLoad(T)(T* a) @trusted
 {
     static import core.bitop;
     static if (T.sizeof == 1)
@@ -119,7 +101,7 @@ private T volatileLoad(T)(T* a) @trusted nothrow
    Template wrapping volatileStore intrinsic casting to basic type based on
    size.
 */
-private void volatileStore(T)(T* a, in T v) @trusted nothrow
+private void volatileStore(T)(T* a, in T v) @trusted
 {
     static import core.bitop;
     static if (T.sizeof == 1)
@@ -139,6 +121,27 @@ private void volatileStore(T)(T* a, in T v) @trusted nothrow
         static assert(false, "Size not supported");
     }
 }
+
+@safe:
+
+private alias Address    = uint;
+private alias BitIndex   = uint;
+private alias HalfWord   = ushort;
+private alias Word       = uint;
+
+// These are the bit band address that can be translated to bit-band addresses
+// that can address a single bit
+private immutable Address PeripheralRegionStart        = 0x4000_0000u;
+private immutable size_t  PeripheralRegionSize         = 0x000F_FFFFu;
+private immutable Address PeripheralRegionEnd          = PeripheralRegionStart + PeripheralRegionSize - 1;
+private immutable Address PeripheralBitBandRegionStart = 0x4200_0000u;
+
+private immutable Address SRAMRegionStart              = 0x2000_0000u;
+private immutable size_t  SRAMRegionSize               = 0x000F_FFFFu;
+private immutable Address SRAMRegionEnd                = SRAMRegionStart + SRAMRegionSize - 1;
+private immutable Address SRAMBitBandRegionStart       = 0x2200_0000u;
+
+
 
 /****************************************************************************
    Defines the width of access to the fields of a register.  For example, some
