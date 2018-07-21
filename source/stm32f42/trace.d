@@ -20,7 +20,7 @@ nothrow:
 /************************************************************************************
 * Initiate semihosting command
 */
-private void semihostingInvoke(in int command, in void* message)
+private void semihostingInvoke(in int command, in void* message) @trusted
 {
   // LDC and GDC use slightly different inline assembly syntax, so we have to
   // differentiate them with D's conditional compilation feature, version.
@@ -49,6 +49,8 @@ private void semihostingInvoke(in int command, in void* message)
   }
 }
 
+ @safe:
+
 /************************************************************************************
 * Create semihosting message and forward it to semihostingInvoke
 */
@@ -57,14 +59,14 @@ private void semihostingWrite(in void* ptr, in uint length)
     // Create semihosting message message
     uint[3] message =
     [
-        2, // stderr
+        2,             // stderr
         cast(uint)ptr, // ptr to string
-        length // size of string
+        length         // size of string
     ];
 
     // Send semihosting command
     // 0x05 = Write
-    semihostingInvoke(0x05, &message);
+    semihostingInvoke(0x05, &message[0]);
 }
 
 /************************************************************************************
@@ -77,23 +79,19 @@ void write(uint value, uint base = 10)
     //Will use at most 10 digits, for a 32-bit base-10 number
     char[10] buffer;
 
-    //the end of the buffer. Used to compute length of string
-    char* end = buffer.ptr + buffer.length;
-
     //Print digit to the end of the buffer starting with the
     //least significant bit first.
-    char* p = end;
+    auto i = buffer.length;
     do
     {
         uint index = value % base;
-        p--;
-        *p = cast(char)(index <= 9 ? '0' + index : 'A' + (index - 10));
+        buffer[--i] = cast(char)(index <= 9 ? '0' + index : 'A' + (index - 10));
         value /= base;
     } while(value);
 
-    //p = pointer to most significant digit
-    //end - p = length of string
-    semihostingWrite(p, end - p);
+    // &buffer[i] == pointer to most significant digit
+    // buffer.length - i == length of string
+    semihostingWrite(&buffer[i], buffer.length - i);
 }
 
 /************************************************************************************
@@ -171,7 +169,10 @@ void writeLine(ubyte value)
 */
 void write(in string text)
 {
-    semihostingWrite(text.ptr, text.length);
+    if (text.length > 0)
+    {
+        semihostingWrite(&text[0], text.length);
+    }
 }
 
 /************************************************************************************
