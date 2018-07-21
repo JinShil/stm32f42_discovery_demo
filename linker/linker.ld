@@ -32,13 +32,13 @@ SECTIONS
         *(.ARM.extab*)
         *(.ARM.exidx*)
     }
-    
+
     /* Appears to be just meta-data, so discard it */
     /DISCARD/ :
     {
         *(.ARM.attributes*)
         *(.comment)
-    }    
+    }
 
     /* Code */
     .text :
@@ -48,9 +48,9 @@ SECTIONS
         LONG(0)                            /* Pointer to non-maskable interrupt handler (ignore for now) */
         KEEP(*(*.HardFaultHandler))        /* Pointer to hard fault handler */
         *(.text)                           /* Our executable code */
-        *(.text*) 
+        *(.text*)
     } > FLASH
-    
+
     /*************************************************************************************
      * immutable variables initialized by the user
      * Examples:
@@ -62,9 +62,9 @@ SECTIONS
         *(.rodata)
         *(.rodata*)
     } > FLASH
-    
+
     __text_end__ = .;
-    
+
     /*************************************************************************************
      * __gshared variables initialized by either the user or the compiler go here.
      * Also __gshared immutables initialized by the user.
@@ -79,9 +79,9 @@ SECTIONS
          __data_start__ = .;
         *(.data)
         *(.data.*)
-        __data_end__ = .;           
+        __data_end__ = .;
     } > SRAM
-    
+
     /*************************************************************************************
      * __gshared variables initialized with void or uninitialized __gshared variables
      * with C linkage go here
@@ -94,6 +94,6 @@ SECTIONS
          __bss_start__ = .;
         *(.bss)
         *(.bss.*)
-        __bss_end__ = .;           
+        __bss_end__ = .;
     } > SRAM
 }
