@@ -27,7 +27,7 @@ import trace = stm32f42.trace;
 private enum width  = 240;
 private enum height = 320;
 
-__gshared ushort[width * height] frameBuffer = void;
+private __gshared ushort[width * height] frameBuffer = void;
 
 private @inline pragma(inline, true) ushort[] getFrameBuffer() @trusted
 {
