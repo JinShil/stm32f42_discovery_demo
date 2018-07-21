@@ -30,11 +30,7 @@ package void init()
 
 public uint get()
 {
-    if (RNG.SR.CECS || RNG.SR.SECS)
-    {
-        trace.writeln("RNG Error");
-        while(true) { }
-    }
+    assert(!RNG.SR.CECS && !RNG.SR.SECS, "RNG error");
     while(!RNG.SR.DRDY) { }
     return RNG.DR.RNDATA;
 }
