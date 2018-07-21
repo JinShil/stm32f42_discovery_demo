@@ -55,13 +55,7 @@ private int clamp(int value, int min, int max)
 
 public void fillRect(int x, int y, uint width, uint height, ushort color)
 {
-    int x2 = x + width;
     int y2 = y + height;
-    x = clamp(x, 0, getWidth() - 1);
-    y = clamp(y, 0, getHeight() - 1);
-    x2 = clamp(x2, 0, getWidth() - 1);
-    y2 = clamp(y2, 0, getHeight() - 1);
-    width = x2 - x + 1;
     for(int _y = y; _y <= y2; _y++)
     {
         ltdc.fillSpan(x, _y, width, color);
