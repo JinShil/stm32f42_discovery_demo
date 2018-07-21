@@ -21,8 +21,7 @@ nothrow:
 import stm32f42.gpio;
 import stm32f42.rcc;
 import stm32f42.ltdc;
-
-import trace = stm32f42.trace;
+import stm32f42.trace;
 
 private enum width  = 240;
 private enum height = 320;
