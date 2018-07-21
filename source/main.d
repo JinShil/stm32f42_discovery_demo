@@ -26,6 +26,9 @@ import random = board.random;
 
 extern(C) void main(string[] args)
 {
+    enum width = lcd.getWidth();
+    enum height = lcd.getHeight();
+
     uint i = 0;
     while(true)
     {
@@ -33,14 +36,14 @@ extern(C) void main(string[] args)
         ushort color = cast(ushort)(r & 0xFFFF);
 
         r = random.get();
-        int x = cast(int)((r >> 16) % lcd.getWidth());
-        int y = cast(int)(r % lcd.getHeight());
+        uint x = (r >> 16) % width;
+        uint y = r % height;
 
         r = random.get();
-        uint width = (r >> 16) % lcd.getWidth();
-        uint height = r % lcd.getHeight();
+        uint w = (r >> 16) % (width - x);
+        uint h = r % (height - y);
 
-        lcd.fillRect(x, y, width, height, color);
+        lcd.fillRect(x, y, w, h, color);
         if ((i % 1000) == 0)
         {
             statusLED.toggle();
