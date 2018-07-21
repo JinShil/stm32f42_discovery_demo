@@ -16,6 +16,7 @@
 module board.ltdc;
 
 nothrow:
+@safe:
 
 import stm32f42.gpio;
 import stm32f42.rcc;
@@ -27,6 +28,11 @@ private enum width  = 240;
 private enum height = 320;
 
 __gshared ushort[width * height] frameBuffer = void;
+
+private @inline pragma(inline, true) ushort[] getFrameBuffer() @trusted
+{
+    return frameBuffer;
+}
 
 @inline pragma(inline, true) package uint getWidth()
 {
@@ -500,7 +506,7 @@ package void init()
         );
     }
 
-    LTDC.L1CFBAR.CFBADD = cast(uint)(frameBuffer.ptr);
+    LTDC.L1CFBAR.CFBADD = cast(uint)(getFrameBuffer().ptr);
 
     /* the length of one line of pixels in bytes + 3 then :
     Line Length = Active high width x number of bytes per pixel + 3
@@ -532,6 +538,6 @@ package void fillSpan(int x, int y, uint spanWidth, ushort color)
     int start = y * width + x;
     for(int i = 0; i < spanWidth; i++)
     {
-        frameBuffer[start + i] = color;
+        getFrameBuffer()[start + i] = color;
     }
 }

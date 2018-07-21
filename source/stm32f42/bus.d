@@ -16,6 +16,7 @@
 module stm32f42.bus;
 
 nothrow:
+@safe:
 
 // see pp. 63 of the STM32F4 datasheet
 

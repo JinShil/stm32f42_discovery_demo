@@ -16,6 +16,7 @@
 module stm32f42.ltdc;
 
 nothrow:
+@safe:
 
 import stm32f42.mmio;
 import stm32f42.bus;

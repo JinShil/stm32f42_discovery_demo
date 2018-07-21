@@ -16,6 +16,7 @@
 module stm32f42.dma2d;
 
 nothrow:
+@safe:
 
 import stm32f42.mmio;
 import stm32f42.bus;

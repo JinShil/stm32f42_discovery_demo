@@ -16,6 +16,7 @@
 module board.random;
 
 nothrow:
+@safe:
 
 import stm32f42.rcc;
 import stm32f42.rng;

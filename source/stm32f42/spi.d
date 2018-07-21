@@ -16,6 +16,7 @@
 module stm32f42.spi;
 
 nothrow:
+@safe:
 
 import stm32f42.bus;
 import stm32f42.mmio;

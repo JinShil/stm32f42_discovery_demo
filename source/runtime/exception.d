@@ -1,8 +1,9 @@
 module exception;
 
-import trace = stm32f42.trace;
-
 nothrow:
+@safe:
+
+import trace = stm32f42.trace;
 
 /***********************************************************************
     For assert(condition) statements

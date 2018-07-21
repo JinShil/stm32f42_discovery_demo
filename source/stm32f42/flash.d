@@ -16,6 +16,7 @@
 module stm32f42.flash;
 
 nothrow:
+@safe:
 
 import stm32f42.mmio;
 import stm32f42.bus;
