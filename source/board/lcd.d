@@ -16,6 +16,7 @@
 module board.lcd;
 
 nothrow:
+@safe:
 
 import ILI9341 = board.ILI9341;
 import ltdc = board.ltdc;

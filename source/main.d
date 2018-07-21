@@ -16,6 +16,7 @@
 module main;
 
 nothrow:
+@safe:
 
 import lcd = board.lcd;
 import trace = stm32f42.trace;
