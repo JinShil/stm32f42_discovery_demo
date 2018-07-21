@@ -72,9 +72,9 @@ private void semihostingWrite(const scope void* ptr, uint length)
 /************************************************************************************
 * Print unsigned integer
 */
-void write(uint value, uint base = 10)
+void write(uint value)
 {
-    assert(base == 10 || base == 16, "Only base 10 and base 16 are supported");
+    enum base = 10;
 
     //Will use at most 10 digits, for a 32-bit base-10 number
     char[10] buffer;
@@ -97,18 +97,18 @@ void write(uint value, uint base = 10)
 /************************************************************************************
 * Print signed integer
 */
-void write(int value, uint base = 10)
+void write(int value)
 {
     // if negative, write minus sign and get absolute value
     if (value < 0)
     {
         write("-");
-        write(cast(uint)(value * -1), base);
+        write(cast(uint)(value * -1));
     }
     // if greater than or equal to 0, just treat it as an unsigned int
     else
     {
-        write(cast(uint)value, base);
+        write(cast(uint)value);
     }
 }
 
@@ -131,9 +131,9 @@ void write(ubyte value)
 /************************************************************************************
 * Print unsigned integer with a new line
 */
-void writeln(uint value, uint base = 10)
+void writeln(uint value)
 {
-    write(value, base);
+    write(value);
     write("\r\n");
 }
 
@@ -158,11 +158,11 @@ void writeln(ubyte value)
 /************************************************************************************
 * Print signed integer with a new line
 */
-//void writeln(int value, uint base = 10)
-//{
-//    write(value, base);
-//    write("\r\n");
-//}
+void writeln(int value)
+{
+   write(value);
+   write("\r\n");
+}
 
 /************************************************************************************
 * Print string of charactes
