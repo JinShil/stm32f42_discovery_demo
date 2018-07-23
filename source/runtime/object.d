@@ -18,6 +18,9 @@ version(GNU)
     private import gcc.attribute;
     enum inline = attribute("forceinline");
     enum noinline = attribute("noinline");
+
+    private import gcc.builtins;
+    public alias alloca = __builtin_alloca;
 }
 
 version(LDC)
@@ -38,4 +41,7 @@ version(LDC)
         void __asm()(const(char)[] asmcode, const(char)[] constraints, ...) pure nothrow @nogc;
         T __asm(T)(const(char)[] asmcode, const(char)[] constraints, ...) pure nothrow @nogc;
     }
+
+    pragma(LDC_alloca)
+    void* alloca(size_t size) pure;
 }
