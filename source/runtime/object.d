@@ -8,11 +8,6 @@ alias ptrdiff_t = typeof(cast(void*)0 - cast(void*)0);
 
 alias string = immutable(char)[];
 
-bool _xopEquals(in void*, in void*)
-{
-    return false;
-}
-
 version(GNU)
 {
     private import gcc.attribute;
@@ -21,6 +16,12 @@ version(GNU)
 
     private import gcc.builtins;
     public alias alloca = __builtin_alloca;
+
+    // See https://bugzilla.gdcproject.org/show_bug.cgi?id=299
+    bool _xopEquals(in void*, in void*)
+    {
+        return false;
+    }
 }
 
 version(LDC)
